@@ -1,32 +1,48 @@
-# Prerequisites
-*.d
+# Visual Studio generated files.
+Debug
+Release
+Spica.sdf
+.vs
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
+# Code::Blocks generated files.
+bin
+obj
+*.depend
+*.layout
+
+# depend generated files.
+depend.out
+
+# Doxygen generated files.
+api
+
+# Open Watcom generated files.
+owbuild
+*.err
 *.obj
+*.lb1
+*.mk
+*.mk1
+SpicaCpp.lib
 
-# Precompiled Headers
-*.gch
-*.pch
+# LLVM generated files.
+*.bc
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# gcc generated files.
+*.o
+libSpicaCpp.a
+check/u_tests
+check/u_tests.exe
 
-# Fortran module files
-*.mod
-*.smod
+# LaTeX generated files.
+*.aux
+*.log
+*.pdf
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+# Eclipse files.
 
-# Executables
-*.exe
-*.out
-*.app
+# There is controversy about this file. It includes a hash of the environment that
+# is unique to each developer's system. However, it also includes some items that
+# probably should be shared between developers. See:
+# https://www.eclipse.org/forums/index.php/t/1074031/
+.settings/language.settings.xml
