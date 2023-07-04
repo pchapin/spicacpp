@@ -3,7 +3,7 @@
 #
 
 CXX=g++
-CXXFLAGS=-std=c++11 -Wall -I.. -c -O
+CXXFLAGS=-std=c++20 -Wall -I.. -c -O
 LINKFLAGS=
 SOURCES=u_tests.cpp        \
 	BinomialHeap_tests.cpp \

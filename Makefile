@@ -3,7 +3,7 @@
 #
 
 CXX=g++
-CXXFLAGS=-std=c++11 -Wall -c -O
+CXXFLAGS=-std=c++20 -Wall -c -O
 LINK=ar
 LINKFLAGS=-r -c
 SOURCES=base64.cpp       \
