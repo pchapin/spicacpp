@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
   <!-- FILE   : FileVector.xht
-       AUTHOR : Peter C. Chapin
+       AUTHOR : Peter Chapin
        SUBJECT: Documentation for the FileVector template class.  -->
 
   <head>
@@ -69,7 +69,7 @@ p[1] = 20; // This stores 20 into the next vector element.
     amount of address space. This leads to the question: is FileVector really any more useful
     than <tt>std::vector</tt>? Under certain conditions it is. Suppose you had a large file of
     POD structures and that you wanted to randomly access a relatively small subset of those
-    structures. You could use ordinary file I/O functions to do so, but that is syntatically
+    structures. You could use ordinary file I/O functions to do so, but that is syntactically
     awkward and error prone. Also since FileVector provides random access iterators, using an
     FileVector to access the file makes it easy to apply library algorithms to a file's
     contents. Normal stream iterators are in the input/output catagories and are thus far weaker
@@ -96,7 +96,7 @@ p[1] = 20; // This stores 20 into the next vector element.
     FileVector is really only useful for files that are large enough to be awkward to read into
     an ordinary vector, yet small enough to fit into the virtual address space.</p>
 
-    <p>Since FileVectors are presistent and since the template (for speed reasons) currenty
+    <p>Since FileVectors are persistent and since the template (for speed reasons) currently
     treats its elements as raw bytes, there are some restrictions on the type of object you can
     put into an FileVector. Here are the rules for what is acceptable</p>
 
@@ -120,7 +120,7 @@ p[1] = 20; // This stores 20 into the next vector element.
 
     </ol>
 
-    <p>The last restriction is due to the persistant nature of FileVectors. Normally pointers in
+    <p>The last restriction is due to the persistent nature of FileVectors. Normally pointers in
     one process are invalid in another so storing raw pointers in a file is typically quite
     useless. However, if you are using an FileVector as a large temporary storage area in a
     single process, restriction number four can be lifted.</p>
@@ -165,7 +165,7 @@ p[1] = 20; // This stores 20 into the next vector element.
         Note that the semantics of this function is different than that of
         <tt>std::vector</tt>'s corresponding constructor because the default constructor of
         <tt>std::vector</tt> never creates a vector with any initial contents. This difference
-        is a reflection of the persistant nature of FileVector.</p>
+        is a reflection of the persistent nature of FileVector.</p>
       </dd>
 
       <dt><b>FileVector(const char *file_name, size_type n, const T &amp;initial = T())</b></dt>
@@ -188,13 +188,13 @@ p[1] = 20; // This stores 20 into the next vector element.
     available address space (in which case <tt>std::bad_alloc</tt> should probably be thrown
     instead), or it might occur for some other unknown reason.</p>
 
-    <p>After a FileVector throws an exception, you should consider it unusuable. The data
+    <p>After a FileVector throws an exception, you should consider it unusable. The data
     already stored in the vector should be preserved in the file normally, but the FileVector
     object should be thrown away.</p>
 
     <!-- BEGIN signature block -->
     <hr />
-    <p>&copy; Copyright 2013 by Peter C. Chapin</p>
+    <p>&copy; Copyright 2013 by Peter Chapin</p>
 
     <p>
       <i>Permission is granted to copy, distribute and/or modify this document under the terms

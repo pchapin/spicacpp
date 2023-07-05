@@ -1,7 +1,7 @@
 /*! \file    graph_tests.cpp
-    \brief   Exercise Spica's C++ graph handling.
-    \author  Peter C. Chapin <pcc482719@gmail.com>
-*/
+ *  \brief   Exercise Spica's C++ graph handling.
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
+ */
 
 #include <iostream>
 #include <spica.hpp>

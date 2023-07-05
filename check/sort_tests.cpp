@@ -1,7 +1,7 @@
 /*! \file    sort_tests.cpp
-    \brief   Exercise Spica's C++ sorting algorithms.
-    \author  Peter C. Chapin <pcc482719@gmail.com>
-*/
+ *  \brief   Exercise Spica's C++ sorting algorithms.
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
+ */
 
 #include <cstring>
 #include <iostream>

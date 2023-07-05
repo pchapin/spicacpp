@@ -1,6 +1,6 @@
 /*! \file    u_tests.cpp
  *  \brief   Main unit test driver program for the Spica C++ library.
- *  \author  Peter C. Chapin <pchapin@vtc.edu>
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  */
 
 #include <cstdlib>

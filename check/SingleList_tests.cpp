@@ -1,3 +1,7 @@
+/*! \file    SingleList_tests.cpp
+ *  \brief   Exercise spica::SingleList.
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
+ */
 
 #include <cassert>
 #include <cstdlib>

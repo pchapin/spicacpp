@@ -1,6 +1,6 @@
 /*! \file    test_semaphore.cpp
  *  \brief   Program for CIS-4230, Homework #2.
- *  \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
  *  Simple test program to exercise the Semaphore class.
  */

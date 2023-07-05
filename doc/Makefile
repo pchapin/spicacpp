@@ -1,7 +1,7 @@
 #
 # FILE   : Makefile
 # SUBJECT: Makefile for the Spica/Cpp documentation.
-# AUTHOR : Peter C. Chapin
+# AUTHOR : Peter Chapin
 #
 
 # Implicit Rules

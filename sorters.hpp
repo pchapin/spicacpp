@@ -1,11 +1,11 @@
 /*! \file    sorters.hpp
-    \brief   Various sorting function templates.
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
-
-    This file contains function templates that implement various sorting algorithms. Each
-    algorithm has its own strengths and weaknesses. See the documentation on each algorithm for
-    specifics about its running time, limitations, etc.
-*/
+ *  \brief   Various sorting function templates.
+ *  \author  Peter C. Chapin <spicacality@kelseymoutain.org>
+ *
+ * This file contains function templates that implement various sorting algorithms. Each
+ * algorithm has its own strengths and weaknesses. See the documentation on each algorithm for
+ * specifics about its running time, limitations, etc.
+ */
 
 #ifndef SORTERS_HPP
 #define SORTERS_HPP

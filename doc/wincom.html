@@ -92,7 +92,7 @@ exceptions are handled generically.<P>
 Be advised that your function will be called in the context of the
 port's helper thread. Processing of input characters occurs
 asynchronously to all other threads in the program. If you want your
-input to be sychronized to the activities of some other thread, then it
+input to be synchronized to the activities of some other thread, then it
 is up to you to handle that.<P>
 
 <HR>
@@ -106,8 +106,8 @@ for this class.<P>
 
 <DT><B><TT>Com_Port(bool Testing = false);</TT></B><P>
 
-<DD>The constructor initailizes a few internal data objects in the
-Com_Port object. It does <EM>not</EM> initalize the port itself. You can
+<DD>The constructor initializes a few internal data objects in the
+Com_Port object. It does <EM>not</EM> initialize the port itself. You can
 construct a Com_Port object without knowing yet what parameters you want
 to use for the port. If the flag <TT>Testing</TT> is "true", the
 Com_Port object is created in testing mode. In that mode all writes to
@@ -134,7 +134,7 @@ rate given is a value such as 9600. The parameter <TT>Read</TT> is a
 pointer to your read processing function that will be called by the
 helper thread as I described above.<P>
 
-This function will set the port to 8 data bits, 1 stop bit, activiate
+This function will set the port to 8 data bits, 1 stop bit, activate
 RTS/CTS flow control, and set both read and write timeouts to
 "reasonable" values. It would probably be nice if you were allowed to
 control some of these settings. However, in the interest of simplicity
@@ -223,14 +223,8 @@ warnings apply here as to the function <TT>Stop_Reading()</TT> above.<P>
 <!-- BEGIN signature block -->
 <HR>
 <P>&copy; Copyright 2001 by Peter Chapin &lt;<A
-HREF="mailto:pchapin@sover.net">pchapin@sover.net</A>&gt;. All rights
+HREF="mailto:spicacality@kelseymountain.org">spicacality@kelseymountain.org</A>&gt;. All rights
 reserved.</P>
-
-<P><I>Permission is granted to copy, distribute and/or modify this
-document under the terms of the <A HREF="GFDL.txt">GNU Free
-Documentation License</A>, Version 1.1 or any later version published by
-the Free Software Foundation; with no Invariant Sections, no Front-Cover
-Texts, and no Back-Cover Texts.</I></P>
 
 <P>Last Revised: <B>June 24, 2001</B></P>
 <!-- END signature block -->

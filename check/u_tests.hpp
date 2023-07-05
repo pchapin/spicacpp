@@ -1,6 +1,6 @@
 /*! \file    u_tests.hpp
     \brief   Interface to the Spica C++ unit tests.
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
+    \author  Peter Chapin <spicacality@kelseymountain.org>
 */
 
 #ifndef U_TESTS_HPP
