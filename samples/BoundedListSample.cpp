@@ -1,6 +1,6 @@
 /*! \file   main.cpp
  *  \brief  BoundedList demonstration program.
- *  \author Peter C. Chapin <PChapin@vtc.vsc.edu>
+ *  \author Peter Chapin <spicacality@kelseymountain.org>
  */
 
 #include <algorithm>

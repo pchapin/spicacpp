@@ -1,7 +1,7 @@
 /*! \file    string_utilities.hpp
-    \brief   Declarations of supplementary (helper) string functions.
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
-*/
+ *  \brief   Declarations of supplementary (helper) string functions.
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
+ */
 
 #ifndef STRING_UTILITIES_HPP
 #define STRING_UTILITIES_HPP

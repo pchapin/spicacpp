@@ -1,6 +1,6 @@
 /*! \file    VeryLong.cpp
  *  \brief   Implementation of an arbitrary precision integer class.
- *  \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
  * VeryLong integers are implemented as vectors of "long digits". Each long digit contains several
  * (generally 16 or 32) bits; the exact number depends on the capacity of the system's primitive
@@ -11,7 +11,7 @@
  *
  * This implementation uses a "signed magnitude" representation and not a two's complement
  * representation. This is significant when individual bits are accessed, but should not be
- * noticable for other, higher level operations. This implementation ensures that there is no
+ * noticeable for other, higher level operations. This implementation ensures that there is no
  * negative zero. Thus two zero values generated in different ways will compare equal.
  *
  * TODO:

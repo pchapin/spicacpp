@@ -40,4 +40,4 @@ The API documentation for the library can built using Doxygen. It is left in a f
 contains additional documentation.
 
 Peter Chapin  
-chapin@proton.me  
+spicacality@kelseymountain.org  

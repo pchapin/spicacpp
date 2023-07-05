@@ -1,8 +1,7 @@
 /*! \file    ThreadPool.cpp
-    \brief   Implementation of a thread pool class.
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
-
-*/
+ *  \brief   Implementation of a thread pool class.
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
+ */
 
 #include "ThreadPool.hpp"
 

@@ -1,46 +1,46 @@
 /*! \file    FileVector.hpp
-    \brief   Vector-like container backed by a file.
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
-
-A file vector looks and acts like a normal library vector except that it stores its data in a
-regular, named file. File vectors provide random access iterators that act appropriately
-allowing the library algorithms to be applied to files in a natural way.
-
-File vector is a template allowing different types of objects to be placed in the vector.
-However, there are restrictions on what types of elements can be used. See the documentation for
-more details.
-
-TODO:
-
-+ This version only supports Win32. It could be generalized to any system that supports memory
-  mapped files.
-
-+ Reverse iterators are not implemented, but should be.
-
-+ Under some circumstances there is a conflict between some of the member functions. For
-  example, the insert() that takes a size and a value will take two integers for the case of
-  FileVector<int>. Yet such a call also looks like an instantiation of the template insert()
-  using "int" for "InputIterator". This general problem is well known and the solution, which is
-  ugly, is described in "Generic Programming and the STL" by Matthew Austern.
-
-+ The template insert() function isn't currently implemented at all. The simple way of doing it
-  will cause it to have O(n*m) performance---a violation of the standard for vectors. The
-  correct solution is to detect the different iterator catagories at compile time and use an
-  appropriate version of the function depending on the catagory. This is also described in
-  Austern's book.
-
-+ This implementation never reduces the capacity of a fvector except for when the fvector is
-  destroyed. It probably should reduce capacity under certain circumstances in order to reclaim
-  disk space.
-
-+ I really should be using placement new() and explicit destruction whenever I install a new
-  object into the vector or deallocate objects that are already in the vector. That would allow
-  me to accept objects that have constructors and destructors as long as they obeyed the other
-  restrictions mentioned in the documentation. (If I do this, I should probably also use the
-  assignment operator to move objects around in the vector instead of memmove() as is currently
-  done).
-
-+ Several of the standard vector member functions are unimplemented.
+ *   \brief   Vector-like container backed by a file.
+ *   \author  Peter Chapin <spicacality@kelseymountain.org>
+ *
+ * A file vector looks and acts like a normal library vector except that it stores its data in a
+ * regular, named file. File vectors provide random access iterators that act appropriately
+ * allowing the library algorithms to be applied to files in a natural way.
+ *
+ * File vector is a template allowing different types of objects to be placed in the vector.
+ * However, there are restrictions on what types of elements can be used. See the documentation
+ * for more details.
+ *
+ * TODO:
+ *
+ * + This version only supports Win32. It could be generalized to any system that supports
+ *   memory mapped files.
+ *
+ * + Reverse iterators are not implemented, but should be.
+ *
+ * + Under some circumstances there is a conflict between some of the methods. For example,
+ *   `insert` that takes a size and a value will take two integers for the case of
+ *   FileVector<int>. Yet such a call also looks like an instantiation of the template `insert`
+ *   using "int" for "InputIterator". This general problem is well known and the solution, which
+ *   is ugly, is described in "Generic Programming and the STL" by Matthew Austern.
+ *
+ * + The template `insert` method isn't currently implemented at all. The simple way of doing it
+ *   will cause it to have O(n*m) performance---a violation of the standard for vectors. The
+ *   correct solution is to detect the different iterator categories at compile time and use an
+ *   appropriate version of the function depending on the category. This is also described in
+ *   Austern's book.
+ *
+ * + This implementation never reduces the capacity of a FileVector except for when the
+ *   FileVector is destroyed. It probably should reduce capacity under certain circumstances in
+ *   order to reclaim disk space.
+ *
+ * + I really should be using placement `new` and an explicit destruction whenever I install a
+ *   new object into the vector or deallocate objects that are already in the vector. That would
+ *   allow me to accept objects that have constructors and destructors as long as they obeyed
+ *   the other restrictions mentioned in the documentation. (If I do this, I should probably
+ *   also use the assignment operator to move objects around in the vector instead of using
+ *   `memmove` as is currently done).
+ *
+ * + Several of the standard vector methods are unimplemented.
 */
 
 #ifndef FILEVECTOR_HPP

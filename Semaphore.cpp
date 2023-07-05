@@ -1,6 +1,6 @@
 /*! \file    Semaphore.cpp
  *  \brief   Implementation of a semaphore class.
- *  \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  */
 
 #include "Semaphore.hpp"

@@ -1,6 +1,6 @@
 /*! \file    Semaphore.hpp
  *  \brief   Interface to a semaphore class.
- *  \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
  * The semaphores defined here are implemented in terms of boost::thread facilities.
  */

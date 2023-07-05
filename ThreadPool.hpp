@@ -1,6 +1,6 @@
 /*! \file    ThreadPool.hpp
  *  \brief   Interface to a thread pool class.
- *  \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
  * The thread pool defined here uses boost::threads as the underlying thread API.
  */

@@ -1,6 +1,6 @@
 /*! \file    date.hpp
  *  \brief   Interface to calendar dates.
- *  \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  */
 
 #ifndef DATE_HPP

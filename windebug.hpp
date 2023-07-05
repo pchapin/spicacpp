@@ -1,14 +1,14 @@
 /*! \file    windebug.hpp
-    \brief   Interface to a Windows run-time debugging module.
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
-
-This component provides an application with a simple embedded debugger. The debugger supports
-traces and breakpoints with a simple logging feature. Many additional enhancements are possible.
-Although I certainly make use of traditional debuggers during application development, there are
-times when having a debugging facility built into the application is useful. In this way end
-users can be walked through debugging operations that can't be reproduced on the development
-station.
-*/
+ *  \brief   Interface to a Windows run-time debugging module.
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
+ *
+ * This component provides an application with a simple embedded debugger. The debugger supports
+ * traces and breakpoints with a simple logging feature. Many additional enhancements are
+ * possible. Although I certainly make use of traditional debuggers during application
+ * development, there are times when having a debugging facility built into the application is
+ * useful. In this way end users can be walked through debugging operations that can't be
+ * reproduced on the development station.
+ */
 
 #ifndef WINDEBUG_H
 #define WINDEBUG_H

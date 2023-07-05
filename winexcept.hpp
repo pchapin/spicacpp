@@ -1,14 +1,14 @@
 /*! \file    winexcept.hpp
-    \brief   Helper classes for exception throwing Win32 programs.
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
-
-This file contains a number of classes that are useful in preventing resource leaks in Win32
-programs that throw exceptions. Any resource that is acquired and that later needs releasing
-should have a small class to control that process. An object should be created in such a way
-that its initialization obtains the resource and its destruction releases the resource. Since
-destructors are automatically executed both when an exception is thrown and when a block is
-exited normally, this approach makes resource deallocation automatic.
-*/
+ *   \brief   Helper classes for exception throwing Win32 programs.
+ *   \author  Peter Chapin <spicacality@kelseymountain.org>
+ *
+ * This file contains a number of classes that are useful in preventing resource leaks in Win32
+ * programs that throw exceptions. Any resource that is acquired and that later needs releasing
+ * should have a small class to control that process. An object should be created in such a way
+ * that its initialization obtains the resource and its destruction releases the resource. Since
+ * destructors are automatically executed both when an exception is thrown and when a block is
+ * exited normally, this approach makes resource deallocation automatic.
+ */
 
 #ifndef WINEXCEPT_H
 #define WINEXCEPT_H
@@ -42,7 +42,7 @@ namespace spica {
             DWORD error_code() const throw()
                 { return raw_error & 0x0000FFFF; }
 
-            // Returns the 12 bit facility code assciated with this error.
+            // Returns the 12 bit facility code associated with this error.
             DWORD facility_code() const throw()
                 { return (raw_error & 0x0FFF0000) >> 16; }
 
@@ -84,8 +84,8 @@ namespace spica {
 
         private:
             // Make copying illegal for now. To allow copying is trickier than it looks.
-            Handle(const Handle &);
-            Handle &operator=(const Handle &);
+            Handle(const Handle &) = delete;
+            Handle &operator=(const Handle &) = delete;
         };
 
 
@@ -107,8 +107,8 @@ namespace spica {
             CRITICAL_SECTION *cs;
 
             // Make copying illegal for now. To allow copying is trickier than it looks.
-            Critical_Grabber(const Critical_Grabber &);
-            Critical_Grabber &operator=(const Critical_Grabber &);
+            Critical_Grabber(const Critical_Grabber &) = delete;
+            Critical_Grabber &operator=(const Critical_Grabber &) = delete;
         };
 
 
@@ -135,8 +135,8 @@ namespace spica {
             HDC         context_handle;
 
             // Make copying illegal for now. To allow copying is trickier than it looks.
-            Paint_Context(const Paint_Context &);
-            Paint_Context &operator=(const Paint_Context &);
+            Paint_Context(const Paint_Context &) = delete;
+            Paint_Context &operator=(const Paint_Context &) = delete;
         };
 
 
@@ -162,8 +162,8 @@ namespace spica {
             HDC    context_handle;
             
             // Make copying illegal for now. To allow copying is trickier than it looks.
-            Device_Context(const Device_Context &);
-            Device_Context &operator=(const Device_Context &);
+            Device_Context(const Device_Context &) = delete;
+            Device_Context &operator=(const Device_Context &) = delete;
         };
 
     }

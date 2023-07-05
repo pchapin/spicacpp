@@ -1,3 +1,7 @@
+/*! \file   SingleList.hpp
+ *  \brief  Implementation of a single linked list.
+ *  \author Peter Chapin <spicacality@kelseymountain.org>
+ */
 
 #ifndef SINGLELIST_HPP
 #define SINGLELIST_HPP

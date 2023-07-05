@@ -1,19 +1,19 @@
 /*! \file    WorkQueue.hpp
-    \brief   Interface to a queue class for use in multithreaded programs.
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
-
-This class facilitates thread communication. One thread can add entities to the queue while
-another takes entities off the queue. This is the classic producer/consumer problem. This
-solution uses the library queue template to provide a large work area. The constructor function
-sets a maximum size to prevent a very fast producer thread from overwhelming a slow consumer
-thread and filling memory with queued work. This code works correctly when there are multiple
-producers or multiple consumers.
-
-This code is exception safe in the sense that if an exception is thrown during either the push
-or pop operations the threads will release any locks that they own and leave the queue in a
-consistent state. This code currently does very little error checking on the various functions
-that it uses. This is an area where it could be improved.
-*/
+ *   \brief   Interface to a queue class for use in multithreaded programs.
+ *   \author  Peter Chapin <spicacality@kelseymountain.org>
+ *
+ * This class facilitates thread communication. One thread can add entities to the queue while
+ * another takes entities off the queue. This is the classic producer/consumer problem. This
+ * solution uses the library queue template to provide a large work area. The constructor
+ * function sets a maximum size to prevent a very fast producer thread from overwhelming a slow
+ * consumer thread and filling memory with queued work. This code works correctly when there are
+ * multiple producers or multiple consumers.
+ *
+ * This code is exception safe in the sense that if an exception is thrown during either the
+ * push or pop operations the threads will release any locks that they own and leave the queue
+ * in a consistent state. This code currently does very little error checking on the various
+ * functions that it uses. This is an area where it could be improved.
+ */
 
 #ifndef WORKQUEUE_H
 #define WORKQUEUE_H

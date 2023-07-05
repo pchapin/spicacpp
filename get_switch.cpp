@@ -1,16 +1,16 @@
 /*! \file    get_switch.cpp
-    \brief   Functions to read command line switches.
-    \author  Allen I Holub
-
-(C) Copyright 1985, 1987 Allen I Holub. All rights reserved. This program may be copied for
-personal, non-profit use only. Information on this program can be found in the book "C chest and
-Other C Treasures" by Allen Holub. (C) 1987. M & T Books. Pages 41-51.
-
-I have made extensive modifications to this code. Most of my modifications are stylistic, but
-some are more significant. In particular, I converted the code to C++.
-
-Peter C. Chapin <PChapin@vtc.vsc.edu>
-*/
+ *  \brief   Functions to read command line switches.
+ *  \author  Allen I Holub
+ *
+ * (C) Copyright 1985, 1987 Allen I Holub. All rights reserved. This program may be copied for
+ * personal, non-profit use only. Information on this program can be found in the book "C chest
+ * and Other C Treasures" by Allen Holub. (C) 1987. M & T Books. Pages 41-51.
+ *
+ * I have made extensive modifications to this code. Most of my modifications are stylistic, but
+ * some are more significant. In particular, I converted the code to C++.
+ *
+ * Peter Chapin <spicacality@kelseymountain.org>
+ */
 
 #include <cctype>
 #include <iostream>
@@ -95,7 +95,7 @@ void print_usage( SwitchInfo *switch_table, int table_size, std::ostream &output
             break;
 
         default:
-            cerr << "INTERNAL ERROR: Bad switch type passed to print_usage()." << endl;
+            cerr << "INTERNAL ERROR: Bad switch type passed to print_usage( )." << endl;
             break;
         }
     }

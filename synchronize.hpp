@@ -1,16 +1,16 @@
 /*! \file    synchronize.hpp
-    \brief   Cross-platform semaphore classes.
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
-
-This file defines the interface to a number of semphore classes. These classes have been
-implemented with the same interface on several different platforms. Currently, this
-implementation only supports anonymous semaphores that can be used inside a single process to
-synchronize multiple threads in that process. Future versions of these classes may support named
-semaphores that can be used to synchronize threads in different processes.
-
-These classes currently have no error handling. They assume that all their primitive operations
-work. This assumption should be removed eventually.
-*/
+ *  \brief   Cross-platform semaphore classes.
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
+ *
+ * This file defines the interface to a number of semaphore classes. These classes have been
+ * implemented with the same interface on several different platforms. Currently, this
+ * implementation only supports anonymous semaphores that can be used inside a single process to
+ * synchronize multiple threads in that process. Future versions of these classes may support
+ * named semaphores that can be used to synchronize threads in different processes.
+ *
+ * These classes currently have no error handling. They assume that all their primitive
+ * operations work. This assumption should be removed eventually.
+ */
 
 #ifndef SYNCHRONIZE_HPP
 #define SYNCHRONIZE_HPP

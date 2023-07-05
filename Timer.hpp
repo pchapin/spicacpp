@@ -1,6 +1,6 @@
 /*! \file    Timer.hpp
  *  \brief   Interface to a simple timer class.
- *  \author  Peter Chapin <chapinp@proton.me>
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  */
 
 #ifndef TIMER_HPP

@@ -1,6 +1,6 @@
 /*! \file    Timer.cpp
  *  \brief   Implementation of a simple timer class.
- *  \author  Peter Chapin <chapinp@proton.me>
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  */
 
 #include <cstddef>

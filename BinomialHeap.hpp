@@ -1,6 +1,6 @@
 /*! \file    BinomialHeap.hpp
  *  \brief   Binomial heap container template
- *  \author  Peter Chapin <chapinp@proton.me>
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
  * TODO:
  *
@@ -186,7 +186,7 @@ namespace spica {
             const StrictWeakOrdering &C = StrictWeakOrdering( )
         );
 
-        //! Destory the heap and all contained nodes.
+        //! Destroy the heap and all contained nodes.
        ~BinomialHeap( );
 
         //! Return the number of data items in the heap. O(1)

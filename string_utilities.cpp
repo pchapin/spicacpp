@@ -1,7 +1,7 @@
 /*! \file    string_utilities.cpp
-    \brief   Implementation of supplementary (helper) string functions.
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
-*/
+ *  \brief   Implementation of supplementary (helper) string functions.
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
+ */
 
 #include <cstdlib>
 #include <iomanip>
@@ -20,7 +20,7 @@ namespace spica {
      * range.
      *
      * This function makes use of the standard random number generator, but it does not seed it.
-     * If the caller wants to seed the generator first, that is up to him/her.
+     * If the caller wants to seed the generator first, that is up to them.
      *
      * \param result The string to receive the long string with no matches.
      * \param search The string that will be used to search result.
@@ -48,12 +48,12 @@ namespace spica {
             result[index] = static_cast< char >( ( std::rand( ) % range ) + 'a' );
         }
 
-        // Put a null character in the last position so std::strstr() will terminate properly.
+        // Put a null character in the last position so `std::strstr` will terminate properly.
         result[size - 1] = '\0';
 
-        // Now keep looping until std::string::find() returns failure. This might take a while
+        // Now keep looping until `std::string::find` returns failure. This might take a while
         // depending on the search string and the range of characters being used. Also
-        // std::string::find() is probably O(N*M).
+        // `std::string::find` is probably O(N*M).
         //
         // Can you prove that this loop will always terminate eventually?
         //
@@ -70,8 +70,8 @@ namespace spica {
 
 
     //
-    // The following function searches for search in result and reports
-    // information about all the partial matches that occur.
+    // The following function searches for search in result and reports information about all
+    // the partial matches that occur.
     //
     void display_partial_matches( const std::string &result, const std::string &search )
     {

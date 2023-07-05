@@ -1,6 +1,6 @@
 /*! \file    spica.hpp
  *  \brief   The master header file for the Spica C++ library.
- *  \author  Peter C. Chapin <pchapin@vtc.edu>
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
  * To simplify use of the Spica library this header is provided. It includes all other Spica
  * headers. Simply include spica.hpp in your project to access any spica related component.

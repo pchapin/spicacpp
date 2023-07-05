@@ -1,17 +1,7 @@
-/****************************************************************************
-FILE          : base64.h
-LAST REVISION : 2007-11-22
-SUBJECT       : Functions to do base64 encoding and decoding.
-PROGRAMMER    : (C) Copyright 2007 by Peter C. Chapin
-
-Please send comments or bug reports to
-
-     Peter C. Chapin
-     Electrical and Computer Engineering Technology
-     Vermont Technical College
-     Randolph Center, VT 05061
-     Peter.Chapin@vtc.vsc.edu
-****************************************************************************/
+/*! \file   base64.hpp
+ *  \brief  Declarations of functions to do base64 encoding and decoding.
+ *  \author Peter Chapin <spicacality@kelseymountain.org>
+ */
 
 #ifndef BASE64_HPP
 #define BASE64_HPP
@@ -22,8 +12,8 @@ Please send comments or bug reports to
 extern "C" {
 #endif
 
-void base64_encode(std::FILE *infile, std::FILE *outfile);
-void base64_decode(std::FILE *infile, std::FILE *outfile);
+void base64_encode( std::FILE *infile, std::FILE *outfile );
+void base64_decode( std::FILE *infile, std::FILE *outfile );
 
 #ifdef __cplusplus
 }

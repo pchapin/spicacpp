@@ -1,6 +1,6 @@
 /*! \file    VeryLong.hpp
  *  \brief   Arbitrary precision integer class.
- *  \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  */
 
 #ifndef VERYLONG_HPP
@@ -140,7 +140,7 @@ namespace spica {
         //! Constructs a VeryLong from a string of digit characters.
         /*!
          * For example if the argument is "123456", this constructor would initialize the VeryLong
-         * with the value 123,456. The string can contain an arbitrarly large number of digits.
+         * with the value 123,456. The string can contain an arbitrarily large number of digits.
          * Leading white space is skipped and a leading '+' or '-' sign is handled appropriately.
          * Currently only base 10 numbers are supported.
          *

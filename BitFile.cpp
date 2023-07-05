@@ -1,6 +1,6 @@
 /*! \file BitFile.cpp
  *  \brief Declarations of the bit_file methods.
- *  \author Peter Chapin <chapinp@proton.me>
+ *  \author Peter Chapin <spicacality@kelseymountain.org>
  *  \date November 11, 2007
  *  \warning This code has not been extensively tested!
  */

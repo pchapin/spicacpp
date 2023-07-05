@@ -1,6 +1,6 @@
 /*! \file    BinaryTree.hpp
  *  \brief   Binary tree template.
- *  \author  Peter Chapin <chapinp@proton.me>
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
  * TODO:
  *

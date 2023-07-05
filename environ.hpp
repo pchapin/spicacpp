@@ -1,6 +1,6 @@
 /*! \file    environ.hpp
  *  \brief   Defines the compilation and the target environments.
- *  \author  Peter Chapin <chapinp@proton.me>
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
  * This file contains settings that define the environment in which the program was compiled and
  * the environment where it runs. This file should be included into source files that need to

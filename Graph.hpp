@@ -1,7 +1,7 @@
 /*! \file    Graph.hpp
-    \brief   Interface to a graph template.
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
-*/
+ *  \brief   Interface to a graph template.
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
+ */
 
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
@@ -13,15 +13,15 @@ namespace spica {
 
     //! Weighted, directed graphs.
     /*!
-     * This template contains an adjacancy list representation of a weighted, directed graph.
+     * This template contains an adjacency list representation of a weighted, directed graph.
      * The type used for weights is a template parameter. If an unweighted graph is needed, use
      * a dummy type, such as int, for the weights and otherwise ignore them. If an undirected
      * graph is needed, you will have to insert two directed edges to simulate a single
      * undirected edge.
      *
-     * Verticies are numbered from 0 to some maximum value. All vertex numbers in that range are
-     * assumed to correspond to actual verticies in the graph; the vertex numbering can't have
-     * any "holes." Both verticies and edges are counted with an unsigned integral type named
+     * Vertices are numbered from 0 to some maximum value. All vertex numbers in that range are
+     * assumed to correspond to actual vertices in the graph; the vertex numbering can't have
+     * any "holes." Both vertices and edges are counted with an unsigned integral type named
      * 'count_t.'
      */
     template< typename Weight >
@@ -79,8 +79,8 @@ namespace spica {
             typename std::vector< EdgeInfo >::iterator current;
         };
 
-        //! Return the number of verticies in the graph.
-        count_t num_verticies( ) const;
+        //! Return the number of vertices in the graph.
+        count_t num_vertices( ) const;
 
         //! Return the number of directed edges in the graph.
         count_t num_edges( ) const;
@@ -88,7 +88,7 @@ namespace spica {
         //! Creates a new vertex.
         /*!
          *  \param v_number The vertex number to create. If the vertex already exists, there is
-         *  no effect. Creating a particular vertex, v, also creates verticies 0..v-1 if they
+         *  no effect. Creating a particular vertex, v, also creates vertices 0..v-1 if they
          *  don't already exist.
          *
          *  \exception std::bad_alloc if memory exhausted.
@@ -110,7 +110,7 @@ namespace spica {
         //! Start an edge iteration.
         /*!
          * The edges of a vertex are return in an unspecified order. Specific- ally it is not
-         * gaurenteed that the edges will be returned in the same order in which they were
+         * guaranteed that the edges will be returned in the same order in which they were
          * created using create_edge.
          *
          * \param v_number The vertex for whose outgoing edges we wish to examine.
@@ -133,7 +133,7 @@ namespace spica {
 
     template< typename Weight >
     inline
-    typename Graph< Weight >::count_t Graph< Weight >::num_verticies( ) const
+    typename Graph< Weight >::count_t Graph< Weight >::num_vertices( ) const
     {
         return adjacency.size( );
     }

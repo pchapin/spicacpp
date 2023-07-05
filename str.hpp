@@ -1,10 +1,10 @@
 /*! \file    str.hpp
-    \brief   Interface to a Rexx-like string class.
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
-
-Everyone has their own string class. This is mine. These strings mimic the features of strings
-that exist in the Rexx language.
-*/
+ *  \brief   Interface to a Rexx-like string class.
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
+ *
+ * Everyone has their own string class. This is mine. These strings mimic the features of
+ * strings that exist in the Rexx language.
+ */
 
 #ifndef STR_HPP
 #define STR_HPP

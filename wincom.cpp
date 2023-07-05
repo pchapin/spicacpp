@@ -1,8 +1,7 @@
 /*! \file    wincom.cpp
-    \brief   Implementation of a serial port class for Win32
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
-
-*/
+ *  \brief   Implementation of a serial port class for Win32
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
+ */
 
 #include <string>
 #include <process.h>

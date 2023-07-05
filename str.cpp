@@ -1,6 +1,6 @@
 /*! \file    str.hpp
     \brief   Interface to a Rexx-like string class.
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
+    \author  Peter Chapin <spicacality@kelseymountain.org>
 
 This file implements a simple string class. It supports a set of operations that allow clients
 to use string objects in a manner similar to the way Rexx works.
@@ -32,15 +32,14 @@ TO DO
  * Class String has features that are similar to those offered by the strings built into the
  * Rexx language. However, not all of the features of Rexx strings are currently implemented.
  * Furthermore, the names of these methods and their semantics are not always exactly the same
- * as the corresponding Rexx operation. Nevertheless the general behavior of these strings
- * should be very familiar to a Rexx programmer. I may or may not make these strings more
- * "Rexx-like" in the future. It will depend on how they get used.
+ * as the corresponding Rexx operation. Nevertheless, the general behavior of these strings
+ * should be very familiar to a Rexx programmer.
  *
- * These strings can not hold a null character as part of the string's data. However, these
+ * These strings can *not* hold a null character as part of the string's data. However, these
  * strings are fully dynamic and can expand (and contract) as necessary. These strings are
  * exception safe in the sense that if an exception occurs during a string operation there is no
  * resource leakage and the string being operated on is left unchanged. The only exception these
- * methods might throw would be std::bad_alloc due to an out of memory condition.
+ * methods might throw is `std::bad_alloc` due to an out of memory condition.
  *
  * Some of the operations in this class cause the string to be changed while many of the others
  * return a new string with the changed value. In the future I may provide both "mutating" and
@@ -111,8 +110,8 @@ namespace spica {
     //--------------------------------------
 
     /*!
-     * This funtion returns true if the strings have the same contents. The comparison is done in
-     * a case sensitive manner.
+     * This function returns true if the strings have the same contents. The comparison is done
+     * in a case sensitive manner.
      */
     bool operator==( const String &left, const String &right )
     {
@@ -142,7 +141,7 @@ namespace spica {
 
     /*!
      * This function writes the characters of the given string into the given output stream. A
-     * newline character is <em>not</em> added to the output automatically.
+     * newline character is *not* added to the output automatically.
      */
     std::ostream &operator<<( std::ostream &os, const String &right )
     {
@@ -156,10 +155,10 @@ namespace spica {
 
 
     /*!
-     * This function reads characaters from the given input stream into the given string.
+     * This function reads characters from the given input stream into the given string.
      * Characters are read until a newline or EOF is reached. The string is expanded as
-     * necessary. Note that this funtion does not add the newline to the string although it does
-     * remove the newline from the input.
+     * necessary. Note that this function does not add the newline to the string although it
+     * does remove the newline from the input.
      */
     std::istream &operator>>( std::istream &is, String &right )
     {

@@ -1,15 +1,15 @@
 /*! \file    windebug.cpp
-    \brief   Implementation of a Windows run-time debugging module.
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
-
-See windebug.hpp for more information. Note that for this module to work, several non-local
-static objects need to be initialized first. This has implications about when functions from
-this module can be called as the program starts up. If they are called during the construction
-(or destruction) of non-local static objects in other modules, they might fail because they
-might not be constructed yet. This is less than ideal since it would be desirable to display
-debugging information for the constructors of non-local static objects. Currently that can't be
-done reliably.
-*/
+ *  \brief   Implementation of a Windows run-time debugging module.
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
+ *
+ * See windebug.hpp for more information. Note that for this module to work, several non-local
+ * static objects need to be initialized first. This has implications about when functions from
+ * this module can be called as the program starts up. If they are called during the
+ * construction (or destruction) of non-local static objects in other modules, they might fail
+ * because they might not be constructed yet. This is less than ideal since it would be
+ * desirable to display debugging information for the constructors of non-local static objects.
+ * Currently that can't be done reliably.
+ */
 
 #include <algorithm>
 #include <cstring>

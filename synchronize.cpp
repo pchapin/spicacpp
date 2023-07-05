@@ -1,8 +1,7 @@
 /*! \file    synchronize.cpp
-    \brief   Cross-platform semaphore classes.
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
-
-*/
+ *  \brief   Cross-platform semaphore classes.
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
+ */
 
 #include <climits>
 #include "synchronize.hpp"

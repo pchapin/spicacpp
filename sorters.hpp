@@ -1,6 +1,6 @@
 /*! \file    sorters.hpp
  *  \brief   Various sorting function templates.
- *  \author  Peter C. Chapin <spicacality@kelseymoutain.org>
+ *  \author  Peter Chapin <spicacality@kelseymoutain.org>
  *
  * This file contains function templates that implement various sorting algorithms. Each
  * algorithm has its own strengths and weaknesses. See the documentation on each algorithm for

@@ -1,11 +1,11 @@
-/*! \file base64.c
+/*! \file base64.cpp
     \brief Base64 encoding functions.
-    \author Peter C. Chapin <chapinp@proton.me>
+    \author Peter Chapin <spicacality@kelseymountain.org>
     \date November 11, 2007
     \warning This code has not been extensively tested!
 
 
-The functions in this file do base64 encoding and decoding as decribed in RFC-2045. The text
+The functions in this file do base64 encoding and decoding as described in RFC-2045. The text
 below has been extracted from RFC-2045 and documents the format. This implementation does not
 attempt to convert the input to canonical form first (as required by the MIME standard for email
 attachments). Such a conversion requires prior knowledge of the MIME type being encoded. It is

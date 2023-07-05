@@ -1,6 +1,6 @@
 /*! \file    main.cpp
  *  \brief   Date demonstration program.
- *  \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
  * This program shows off some features of class Date. It is not a detailed test program!
  */
@@ -16,15 +16,15 @@ using namespace spica;
 
 void date_subtraction( )
 {
-    Date birthdate;
+    Date birth_date;
     Date today;
 
-    cout << "What is your birthdate (yyyy-mm-dd)? ";
-    cin  >> birthdate;
+    cout << "What is your birth date (yyyy-mm-dd)? ";
+    cin  >> birth_date;
     cout << "What is today's date? ";
     cin  >> today;
-    cout << "You are " << today - birthdate << " days old!\n";
-    cout << workday_difference( today, birthdate ) << " workdays have elapsed in your life.\n";
+    cout << "You are " << today - birth_date << " days old!\n";
+    cout << workday_difference( today, birth_date ) << " workdays have elapsed in your life.\n";
 }
 
 

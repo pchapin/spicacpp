@@ -1,6 +1,6 @@
 /*! \file    date.cpp
  *  \brief   Implementation of calendar dates.
- *  \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
  * The implementation is based on the "obvious" representation. This representation makes it
  * easy to do I/O on dates (the construction and access functions are trivial), but difficult to

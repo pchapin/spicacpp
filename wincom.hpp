@@ -1,6 +1,6 @@
 /*! \file    wincom.hpp
     \brief   Interface to a serial port class for Win32
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
+    \author  Peter Chapin <spicacality@kelseymountain.org>
 
 */
 

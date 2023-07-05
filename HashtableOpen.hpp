@@ -1,6 +1,6 @@
 /*! \file    HashtableOpen.hpp
     \brief   An open addressing (with linear probing) style hash table.
-    \author  Peter C. Chapin <PChapin@vtc.vsc.edu>
+    \author  Peter Chapin <spicacality@kelseymountain.org>
 */
 
 #ifndef HASHTABLEOPEN_HPP
