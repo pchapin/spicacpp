@@ -1,0 +1,61 @@
+
+html {
+    color      : black;
+    text-align : left;
+    font-family: Verdana, Calibri, sans-serif;
+}
+
+body { background: white; }
+
+p {
+    text-align  : justify;
+    margin-left : 1cm;
+    margin-right: 1cm;
+    /*  color      : black; */
+    /*  font-size  : small; */
+    /*  font-family: Arial, Helvetica, sans-serif; */
+}
+p.signature {
+    margin-left: 0;
+}
+
+a {
+    color : #993300;
+    /* text-decoration: none; */
+}
+
+dl,
+dt,
+ol,
+ul {
+    /* color       : black; */
+    /* font-size   : small; */
+    text-align  : left;
+    margin-left : 1cm; 
+    margin-right: 1cm;
+}
+
+ul {
+    list-style: circle;
+}
+li p { margin-left: 0; }
+
+/* This is how I will highlight sections of text to catch a reader's eye. */
+.highlight { font-weight: bold; }
+
+/* This is how section overview paragraphs are styled. */
+.overview {
+    font-style : italic;
+    margin-left: 0.5in;
+    /* margin-right: 0.5in; */
+}
+
+/* This is how filenames are to be styled. */
+.filename { 
+    font-family: monospace;
+}
+
+/* This is how commands are to be styled. */
+.command { 
+    font-family: monospace;
+}

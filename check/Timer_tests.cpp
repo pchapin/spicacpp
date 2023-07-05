@@ -87,7 +87,7 @@ static void test_2( )
               << "ms (should be the same as above)" << std::endl;
 
     object_2.start( );
-    std::coout << "         I have started object_2 again. I will sleep some more..." << std::endl;
+    std::cout << "         I have started object_2 again. I will sleep some more..." << std::endl;
     do_sleep( 5 );
     object_2.stop( );
     

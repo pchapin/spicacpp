@@ -14,8 +14,8 @@ bool Graph_tests( )
 {
     Graph<double> my_graph;
 
-    UNIT_CHECK( my_graph.num_verticies( ) == 0 );
-    UNIT_CHECK( my_graph.num_edges( )     == 0 );
+    UNIT_CHECK( my_graph.num_vertices( ) == 0 );
+    UNIT_CHECK( my_graph.num_edges( )    == 0 );
 
     my_graph.create_edge( 0, 1, 1.23 );
     my_graph.create_edge( 1, 2, 4.56 );
@@ -23,8 +23,8 @@ bool Graph_tests( )
     my_graph.create_edge( 3, 3, 0.12 );
     my_graph.create_vertex( 4 );
 
-    UNIT_CHECK( my_graph.num_verticies( ) == 5 );
-    UNIT_CHECK( my_graph.num_edges( )     == 4 );
+    UNIT_CHECK( my_graph.num_vertices( ) == 5 );
+    UNIT_CHECK( my_graph.num_edges( )    == 4 );
 
     Graph<double>::EdgeInfo expected_results[] = {
         { 1, 1.23 },
@@ -35,7 +35,7 @@ bool Graph_tests( )
     };
     Graph<double>::EdgeInfo *expected = expected_results;
 
-    for(Graph<double>::count_t i = 0; i < my_graph.num_verticies( ); ++i ) {
+    for(Graph<double>::count_t i = 0; i < my_graph.num_vertices( ); ++i ) {
         Graph<double>::edge_iterator p1, p2;
         p1 = my_graph.ebegin( i );
         p2 = my_graph.eend( i );

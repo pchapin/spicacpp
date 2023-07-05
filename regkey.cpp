@@ -8,7 +8,7 @@
 #include <windows.h>
 #include "regkey.hpp"
 
-namespace common {
+namespace spica {
     namespace Win32 {
 
         //

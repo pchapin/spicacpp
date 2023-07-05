@@ -22,7 +22,7 @@
 #include <string>
 #include <windows.h>
 
-namespace common {
+namespace spica {
     namespace Win32 {
 
         class RegistryKey {
