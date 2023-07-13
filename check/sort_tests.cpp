@@ -6,7 +6,8 @@
 #include <cstring>
 #include <iostream>
 #include <functional>
-#include <spica.hpp>
+
+#include "sorters.hpp"
 #include "u_tests.hpp"
 #include "UnitTestManager.hpp"
 

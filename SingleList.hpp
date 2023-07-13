@@ -54,8 +54,17 @@ public:
     SingleList &operator=( SingleList &&other ) noexcept;
 
      // Iterators for SingleList are ForwardIterators.
-    class iterator : public std::iterator<std::forward_iterator_tag, T> {
+    class iterator {
+
         friend class SingleList;
+
+    public:
+        typedef std::forward_iterator_tag iterator_category;
+        typedef T                         value_type;
+        typedef T                        *pointer;
+        typedef T                        &reference;
+        typedef std::ptrdiff_t           difference_type;
+
     private:
         SingleList *object;  // The object into which this iterator points.
         Node *previous; // The node just before the current node.
@@ -77,9 +86,6 @@ public:
 
         //! Returns true if *this and other point at the same object.
         bool operator==( const iterator &other ) const noexcept;
-
-        //! Returns true if *this and other point at different objects.
-        bool operator!=( const iterator &other ) const noexcept;
 
         //! Returns a reference to the item the iterator is pointing at.
         reference operator*( ) const noexcept;
@@ -247,13 +253,6 @@ template<typename T>
 inline bool SingleList<T>::iterator::operator==( const iterator &other ) const noexcept
 {
     return (object == other.object && previous == other.previous && current == other.current);
-}
-
-
-template<typename T>
-inline bool SingleList<T>::iterator::operator!=( const iterator &other ) const noexcept
-{
-    return !(*this == other);
 }
 
 

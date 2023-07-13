@@ -20,6 +20,7 @@
 #include <BoundedList.hpp>
 #include <Graph.hpp>
 #include <sorters.hpp>
+#include <VeryLong.hpp>
 
 #endif
 

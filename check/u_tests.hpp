@@ -12,6 +12,7 @@ extern bool Graph_tests( );
 extern bool sort_tests( );
 extern bool str_tests( );
 extern bool Timer_tests( );
+extern bool VeryLong_tests( );
 
 #endif
 

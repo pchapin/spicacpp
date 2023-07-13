@@ -7,6 +7,7 @@
 #include <stdexcept>
 
 namespace UnitTestManager {
+
     typedef bool ( *unittest_t )( );
     
     void register_test( unittest_t test_function, const char *test_title );
@@ -18,6 +19,7 @@ namespace UnitTestManager {
     public:
         UnitException( const std::string &message) : std::logic_error( message ) { }
     };
+    
 }
 
 #define UNIT_FAIL( description ) \

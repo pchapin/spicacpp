@@ -11,7 +11,8 @@ SOURCES=u_tests.cpp        \
 	Graph_tests.cpp        \
 	sort_tests.cpp         \
 	str_tests.cpp          \
-	Timer_tests.cpp
+	Timer_tests.cpp        \
+	VeryLong_tests.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 LIBRARY=libSpicaCpp.a
 EXECUTABLE=u_tests
@@ -27,19 +28,25 @@ $(EXECUTABLE):	$(OBJECTS) ../$(LIBRARY)
 # File Dependencies
 ###################
 
-u_tests.o:				u_tests.cpp u_tests.hpp ../UnitTestManager.hpp
+# Module dependencies -- Produced with 'depend' on Thu Jul 13 11:08:49 2023
 
-BinomialHeap_tests.o:	BinomialHeap_tests.cpp ../BinomialHeap.hpp
 
-BoundedList_tests.o:	BoundedList_tests.cpp ../BoundedList.hpp
+u_tests.o:	u_tests.cpp u_tests.hpp ../UnitTestManager.hpp 
 
-Graph_tests.o:			Graph_tests.cpp ../Graph.hpp
+BinomialHeap_tests.o:	BinomialHeap_tests.cpp ../BinomialHeap.hpp u_tests.hpp ../UnitTestManager.hpp 
 
-sort_tests.o:			sort_tests.cpp ../sorters.hpp
+BoundedList_tests.o:	BoundedList_tests.cpp ../BoundedList.hpp u_tests.hpp ../UnitTestManager.hpp 
 
-str_tests.o:			str_tests.cpp ../str.hpp
+Graph_tests.o:	Graph_tests.cpp ../Graph.hpp u_tests.hpp ../UnitTestManager.hpp 
 
-Timer_tests.o:			Timer_tests.cpp ../Timer.hpp
+sort_tests.o:	sort_tests.cpp ../sorters.hpp u_tests.hpp ../UnitTestManager.hpp 
+
+VeryLong_tests.o:	VeryLong_tests.cpp ../VeryLong.hpp u_tests.hpp ../UnitTestManager.hpp 
+
+str_tests.o:	str_tests.cpp ../environ.hpp ../str.hpp 
+
+Timer_tests.o:	Timer_tests.cpp ../environ.hpp ../Timer.hpp 
+
 
 # Additional Rules
 ##################

@@ -4,7 +4,8 @@
  */
 
 #include <iostream>
-#include <spica.hpp>
+
+#include "Graph.hpp"
 #include "u_tests.hpp"
 #include "UnitTestManager.hpp"
 

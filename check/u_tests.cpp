@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+
 #include "u_tests.hpp"
 #include "UnitTestManager.hpp"
 
@@ -26,7 +27,8 @@ int main( int argc, char **argv )
     UnitTestManager::register_test( BinomialHeap_tests, "BinomialHeap" );
     UnitTestManager::register_test( BoundedList_tests, "BoundedList" );
     UnitTestManager::register_test( Graph_tests, "Graph" );
-    UnitTestManager::register_test( sort_tests, "sort" );
+    UnitTestManager::register_test( sort_tests, "sorters" );
+    UnitTestManager::register_test( VeryLong_tests, "VeryLong" );
 
     // TODO: The following tests are interactive, which is not ideal. They're better than nothing.
     UnitTestManager::register_test( str_tests, "str" );

@@ -9,7 +9,6 @@
 #include <iostream>
 #include <vector>
 
-#include <spica.hpp>
 #include "BinomialHeap.hpp"
 #include "u_tests.hpp"
 #include "UnitTestManager.hpp"

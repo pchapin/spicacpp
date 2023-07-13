@@ -16,7 +16,7 @@ namespace UnitTestManager {
             const char *title;
         };
         
-        std::vector< TestCase > test_cases;
+        std::vector<TestCase> test_cases;
         std::ostream *output_pointer;
         bool          success = true;
 
@@ -52,7 +52,7 @@ namespace UnitTestManager {
     
     void execute_tests( std::ostream &test_output, const char *title )
     {
-        std::vector< TestCase >::iterator current_test;
+        std::vector<TestCase>::iterator current_test;
 
         output_pointer = &test_output;
         output_head( test_output );
