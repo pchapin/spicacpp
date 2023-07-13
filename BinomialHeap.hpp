@@ -92,8 +92,8 @@ namespace spica {
         void binomial_merge( BinomialHeap &other );
 
         // Make copy operations illegal on binomial heaps (for now).
-        BinomialHeap( const BinomialHeap & );
-        BinomialHeap &operator=( const BinomialHeap & );
+        BinomialHeap( const BinomialHeap & ) = delete;
+        BinomialHeap &operator=( const BinomialHeap & ) = deleter;
 
     public:
 
@@ -124,9 +124,9 @@ namespace spica {
 
         private:
             const BinomialTreeNode *current;
-            std::queue< const BinomialTreeNode * > *pQ;
+            std::queue<const BinomialTreeNode *> *pQ;
 
-            iterator( const BinomialTreeNode *c, std::queue< const BinomialTreeNode * > *q )
+            iterator( const BinomialTreeNode *c, std::queue<const BinomialTreeNode *> *q )
                 : current( c ), pQ( q ) { }
 
         public:
@@ -137,7 +137,7 @@ namespace spica {
             iterator( const iterator &other )
             {
                 current = other.current;
-                pQ      = new std::queue< const BinomialTreeNode * >( *other.pQ );
+                pQ      = new std::queue<const BinomialTreeNode *>( *other.pQ );
             }
 
             //! Assignment operator.
@@ -145,13 +145,25 @@ namespace spica {
             {
                 delete pQ;
                 current = other.current;
-                pQ      = new std::queue< const BinomialTreeNode * >( *other.pQ );
+                pQ      = new std::queue<const BinomialTreeNode *>( *other.pQ );
                 return *this;
             }
 
             //! Destructor.
            ~iterator( ) { delete pQ; }
 
+            // TODO: Convert this method to a free function template taking two references to interator.
+            //
+            // The problem is that an expression like x == y entails the conversion of the right
+            // operand to type iterator &. However, with C++ 2020 the compiler also considers y
+            // == x, which also entails the conversion of the right operand to type iterator &.
+            // The result is ambiguous.
+            // 
+            // Because BinomialHeap iterators are quite large, I really don't want to pass them
+            // by value. I think the solution is to make operator== a free function with both
+            // parameters of type iterator & However, in that case it becomes necessary to
+            // declare it a friend of class BinomialHeap<T>::iterator.
+            // 
             //! Returns true if two iterators point at the same object or both end( ).
             bool operator==( const iterator &other )
                 { return current == other.current; }

@@ -57,6 +57,9 @@
     <ClCompile Include="BitFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VeryLong.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BinaryTree.hpp">
@@ -138,6 +141,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SingleList.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VeryLong.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

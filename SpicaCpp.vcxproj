@@ -104,6 +104,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -118,6 +119,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -130,6 +132,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -142,6 +145,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -157,6 +161,7 @@
     <ClCompile Include="synchronize.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="UnitTestManager.cpp" />
+    <ClCompile Include="VeryLong.cpp" />
     <ClCompile Include="wincom.cpp" />
     <ClCompile Include="windebug.cpp" />
   </ItemGroup>
@@ -184,6 +189,7 @@
     <ClInclude Include="synchronize.hpp" />
     <ClInclude Include="Timer.hpp" />
     <ClInclude Include="UnitTestManager.hpp" />
+    <ClInclude Include="VeryLong.hpp" />
     <ClInclude Include="wincom.hpp" />
     <ClInclude Include="windebug.hpp" />
     <ClInclude Include="winexcept.hpp" />
