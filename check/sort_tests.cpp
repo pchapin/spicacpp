@@ -71,13 +71,13 @@ struct sort_test_case tests[] = {
 };
 
 // Radix Sort doesn't require a comparison. However, the test fixture does.
-template< typename Bidirectional, typename SWO >
+template<typename Bidirectional, typename SWO>
 void radix_sort_wrapper( Bidirectional first, Bidirectional last, SWO )
 {
     spica::radix_sort( first, last );
 }
 
-typedef void sort_function( int *, int *, std::less< int > );
+typedef void sort_function( int *, int *, std::less<int> );
 sort_function *test_functions[] = {
     spica::bubble_sort,
     spica::selection_sort,
@@ -92,6 +92,7 @@ bool sort_tests( )
 {
     int workspace[MAX_SIZE];
     int i = 0;
+    // TODO: Create a UnitTest object that names each algorithm.
     while( test_functions[i] != 0 ) {
         for( size_t j = 0; j < sizeof( tests ) / sizeof( struct sort_test_case ); ++j ) {
 

@@ -24,6 +24,8 @@ static void make_list( BoundedList<int> &my_list )
 
 static void constructor_test( )
 {
+    UnitTestManager::UnitTest test( "constructor" );
+
     BoundedList<int> list_d(   0 );  // Degenerate case.
     BoundedList<int> list_0(   1 );
     BoundedList<int> list_1(  10 );
@@ -59,10 +61,11 @@ static void constructor_test( )
 
 static void push_back_test( )
 {
+    UnitTestManager::UnitTest( "push_back" );
+
     BoundedList<int> my_list( 100 );
 
     make_list( my_list );
-
     BoundedList<int>::iterator p( my_list.begin( ) );
     int i = 0;
     while( p != my_list.end( ) ) {
@@ -74,6 +77,8 @@ static void push_back_test( )
 
 static void pop_back_test( )
 {
+    UnitTestManager::UnitTest( "pop_back" );
+
     int i;
     BoundedList<int> my_list( 100 );
 
@@ -90,6 +95,8 @@ static void pop_back_test( )
 
 static void iterator_test( )
 {
+    UnitTestManager::UnitTest( "iterator" );
+
     int i;
     BoundedList<int> my_list( 100 );
     BoundedList<int>::iterator p;
@@ -118,6 +125,8 @@ static void iterator_test( )
 
 static void insert_test( )
 {
+    UnitTestManager::UnitTest( "insert" );
+
     BoundedList<int> my_list( 103 );
     BoundedList<int>::iterator p1, p2;
 
@@ -157,6 +166,8 @@ static void insert_test( )
 
 static void erase_test( )
 {
+    UnitTestManager::UnitTest( "erase" );
+    
     BoundedList<int> my_list( 100 );
     BoundedList<int>::iterator p1, p2;
     int i;

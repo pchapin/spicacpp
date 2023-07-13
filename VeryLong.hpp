@@ -41,25 +41,21 @@ namespace spica {
      *
      * The following statements describe the exception safety of this class.
      *
-     * <ol>
+     * + If an exception occurs during an operation on one or more VeryLongs, the VeryLong
+     *   objects that were *not* being modified by the operation will retain their original
+     *   value after the exception.
      *
-     * <li><p>If an exception occurs during an operation on one or more VeryLongs, the VeryLong
-     * objects that were <B>not</B> being modified by the operation will retain their original
-     * value after the exception.</p></li>
-     *
-     * <li><p>The VeryLong objects that were being modified by an operation that throws an
-     * exception enter an unspecified state and should not be used in any further operations of
-     * any kind. However, such objects are still destructable and the destructor will correctly
-     * recover all resources that were being used by such objects.</p></li>
-     *
-     * </ol>
+     * + The VeryLong objects that were being modified by an operation that throws an exception
+     *   enter an unspecified state and should not be used in any further operations. However,
+     *   such objects can still be destroyed, and the destructor will correctly recover all
+     *   resources that were being used by such objects.
      *
      * A stronger and more desirable mode of exception safety would be for an operation to leave
-     * <em>all</em> of its operands in the same state they were in before the exception was
-     * thrown. VeryLong can almost make that claim, but there are a few operations for which
-     * that is not true. Correcting VeryLong so that it would be exception safe in this stronger
-     * sense would require making modifications to the class that would likely reduce its
-     * performance to an unacceptable degree (in general).
+     * *all* of its operands in the same state they were in before the exception was thrown.
+     * VeryLong can almost make that claim, but there are a few operations for which that is not
+     * true. Correcting VeryLong so that it would be exception safe in this stronger sense would
+     * require making modifications to the class that would likely reduce its performance to an
+     * unacceptable degree (in general).
      */
 
     class VeryLong {
@@ -125,7 +121,7 @@ namespace spica {
     public:
 
         //! Unsigned type to represent the number of long digits and bits.
-        typedef std::vector< storage_type >::size_type size_type;
+        typedef std::vector<storage_type>::size_type size_type;
 
         //------------------------------------
         //           Public Methods

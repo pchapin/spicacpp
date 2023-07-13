@@ -13,6 +13,9 @@ using namespace spica;
 
 bool Graph_tests( )
 {
+    // TODO: Split the graph tests into several smaller test functions.
+    UnitTestManager::UnitTest test( "all graph tests" );
+
     Graph<double> my_graph;
 
     UNIT_CHECK( my_graph.num_vertices( ) == 0 );

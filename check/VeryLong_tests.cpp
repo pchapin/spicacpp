@@ -15,6 +15,8 @@ using namespace spica;
 
 void check_constructor( )
 {
+    UnitTestManager::UnitTest test( "constructor" );
+
     VeryLong object;
     UNIT_CHECK( object.number_bits( ) == 0u );
     UNIT_CHECK( object == VeryLong::zero );
@@ -24,6 +26,8 @@ void check_constructor( )
 
 void check_io( )
 {
+    UnitTestManager::UnitTest test( "io" );
+
     std::string raw_digits( "123456789" );
 
     VeryLong object_1( "12345678900000987654321" );
@@ -66,37 +70,41 @@ void check_io( )
 
 void check_relational( )
 {
-        VeryLong zero_1( 0L );
-        VeryLong zero_2( 0L );
-        VeryLong object_1(  "1234567890987654321" );
-        VeryLong object_2(  "1234567890987654321" );
-        VeryLong object_3(  "5678909876543211234" );
-        VeryLong object_4( "-1234567890987654321" );
-        VeryLong object_5( "-1234567890987654321" );
-        VeryLong object_6( "-5678909876543211234" );
+    UnitTestManager::UnitTest test( "relational" );
 
-        UNIT_CHECK(   zero_1 == zero_2  );
-        UNIT_CHECK( !(zero_1 == object_1) );
-        UNIT_CHECK( !(zero_1   < zero_2) );
-        UNIT_CHECK(   zero_1   < object_1 );
-        UNIT_CHECK( !(object_1 < zero_1) );
+    VeryLong zero_1( 0L );
+    VeryLong zero_2( 0L );
+    VeryLong object_1(  "1234567890987654321" );
+    VeryLong object_2(  "1234567890987654321" );
+    VeryLong object_3(  "5678909876543211234" );
+    VeryLong object_4( "-1234567890987654321" );
+    VeryLong object_5( "-1234567890987654321" );
+    VeryLong object_6( "-5678909876543211234" );
 
-        UNIT_CHECK(   object_1 == object_2  );
-        UNIT_CHECK( !(object_1 == object_3) );
-        UNIT_CHECK(   object_4 == object_5  );
-        UNIT_CHECK( !(object_4 == object_1) );
-        UNIT_CHECK( !(object_1  < object_2) );
-        UNIT_CHECK(   object_1  < object_3  );
-        UNIT_CHECK( !(object_3  < object_1) );
-        UNIT_CHECK(   object_4  < object_1  );
-        UNIT_CHECK( !(object_1  < object_4) );
-        UNIT_CHECK(   object_6  < object_4  );
-        UNIT_CHECK( !(object_4  < object_6) );
+    UNIT_CHECK(   zero_1 == zero_2  );
+    UNIT_CHECK( !(zero_1 == object_1) );
+    UNIT_CHECK( !(zero_1   < zero_2) );
+    UNIT_CHECK(   zero_1   < object_1 );
+    UNIT_CHECK( !(object_1 < zero_1) );
+
+    UNIT_CHECK(   object_1 == object_2  );
+    UNIT_CHECK( !(object_1 == object_3) );
+    UNIT_CHECK(   object_4 == object_5  );
+    UNIT_CHECK( !(object_4 == object_1) );
+    UNIT_CHECK( !(object_1  < object_2) );
+    UNIT_CHECK(   object_1  < object_3  );
+    UNIT_CHECK( !(object_3  < object_1) );
+    UNIT_CHECK(   object_4  < object_1  );
+    UNIT_CHECK( !(object_1  < object_4) );
+    UNIT_CHECK(   object_6  < object_4  );
+    UNIT_CHECK( !(object_4  < object_6) );
 }
 
 
 void check_assignment( )
 {
+    UnitTestManager::UnitTest test( "assignment" );
+
     VeryLong target;
     VeryLong source_1( 0L );
     VeryLong source_2(  "1234567890987654321" );
@@ -110,6 +118,8 @@ void check_assignment( )
 
 void check_bit_manipulation( )
 {
+    UnitTestManager::UnitTest test( "bit_manipulation" );
+
     VeryLong object_1( 0L );
     VeryLong object_2( 5L );
 
@@ -138,8 +148,10 @@ void check_bit_manipulation( )
 }
 
 
-void check_incdec( )
+void check_increment_decrement( )
 {
+    UnitTestManager::UnitTest test( "increment/decrement" );
+
     VeryLong zero( 0L );
     VeryLong object_1( -1L );
     VeryLong object_2( +1L );
@@ -155,6 +167,8 @@ void check_incdec( )
 
 void check_unary_minus( )
 {
+    UnitTestManager::UnitTest test( "unary_minus" );
+
     VeryLong zero( 0L );
     VeryLong object_1(  "1234567890987654321" );
     VeryLong object_2( "-1234567890987654321" );
@@ -167,6 +181,8 @@ void check_unary_minus( )
 
 void check_plus( )
 {
+    UnitTestManager::UnitTest test( "plus" );
+
     VeryLong zero( 0L );
     VeryLong one( 1L );
     VeryLong minus_one( -1L );
@@ -199,6 +215,8 @@ void check_plus( )
 
 void check_minus( )
 {
+    UnitTestManager::UnitTest test( "minus" );
+
     VeryLong zero( 0L );
     VeryLong one( 1L );
     VeryLong minus_one( -1L );
@@ -234,6 +252,8 @@ void check_minus( )
 
 void check_multiply( )
 {
+    UnitTestManager::UnitTest test( "multiply" );
+
     VeryLong zero( 0L );
     VeryLong one( 1 );
     VeryLong target;
@@ -252,6 +272,8 @@ void check_multiply( )
 
 void check_divide( )
 {
+    UnitTestManager::UnitTest test( "divide" );
+
     VeryLong zero(0L);
     VeryLong one(1);
     VeryLong target;
@@ -276,6 +298,8 @@ void check_divide( )
 
 void check_modulus( )
 {
+    UnitTestManager::UnitTest test( "modulus" );
+
     VeryLong zero(0L);
     VeryLong one(1);
     VeryLong target;
@@ -302,7 +326,7 @@ bool VeryLong_tests( )
     check_relational( );
     check_assignment( );
     check_bit_manipulation( );
-    check_incdec( );
+    check_increment_decrement( );
     check_unary_minus( );
     check_plus( );
     check_minus( );
