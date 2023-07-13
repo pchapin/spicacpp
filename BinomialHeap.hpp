@@ -111,10 +111,16 @@ namespace spica {
          * a large heap this queue can contain a sizable number of pointers [TODO: Figure out
          * some specifics about how large the queue might get].
          */
-        class iterator :
-            public std::iterator< std::forward_iterator_tag, const T > {
+        class iterator {
 
             friend class BinomialHeap;
+
+        public:
+            typedef std::forward_iterator_tag iterator_category;
+            typedef const T                   value_type;
+            typedef const T                  *pointer;
+            typedef const T                  &reference;
+            typedef std::ptrdiff_t           difference_type;
 
         private:
             const BinomialTreeNode *current;
@@ -149,10 +155,6 @@ namespace spica {
             //! Returns true if two iterators point at the same object or both end( ).
             bool operator==( const iterator &other )
                 { return current == other.current; }
-
-            //! Returns true if two iterators point at different objects.
-            bool operator!=( const iterator &other )
-                { return current != other.current; }
 
             //! Returns a reference to the current object.
             /*! Applying this operation to an end() iterator is undefined. */
@@ -262,8 +264,8 @@ namespace spica {
     //
     // binomial_link
     //
-    template< typename T, typename StrictWeakOrdering >
-    void BinomialHeap< T, StrictWeakOrdering >::
+    template<typename T, typename StrictWeakOrdering>
+    void BinomialHeap<T, StrictWeakOrdering>::
         binomial_link( BinomialTreeNode *left, BinomialTreeNode *right )
     {
         left->parent  = right;
@@ -276,8 +278,8 @@ namespace spica {
     //
     // destroy_heap
     //
-    template< typename T, typename StrictWeakOrdering >
-    void BinomialHeap< T, StrictWeakOrdering >::destroy_heap( BinomialTreeNode *p )
+    template<typename T, typename StrictWeakOrdering>
+    void BinomialHeap<T, StrictWeakOrdering>::destroy_heap( BinomialTreeNode *p )
     {
         if( p == 0 ) return;
         destroy_heap( p->child );
@@ -298,8 +300,8 @@ namespace spica {
     //
     // binomial_merge
     //
-    template< typename T, typename StrictWeakOrdering >
-    void BinomialHeap< T, StrictWeakOrdering >::binomial_merge( BinomialHeap &other )
+    template<typename T, typename StrictWeakOrdering>
+    void BinomialHeap<T, StrictWeakOrdering>::binomial_merge( BinomialHeap &other )
     {
         // Update the item count information.
         count += other.count;
@@ -376,9 +378,9 @@ namespace spica {
     //
     // operator++
     //
-    template< typename T, typename StrictWeakOrdering >
-    typename BinomialHeap< T, StrictWeakOrdering >::iterator &
-        BinomialHeap< T, StrictWeakOrdering >::iterator::operator++( )
+    template<typename T, typename StrictWeakOrdering>
+    typename BinomialHeap<T, StrictWeakOrdering>::iterator &
+        BinomialHeap<T, StrictWeakOrdering>::iterator::operator++( )
     {
         if( current->sibling != 0 ) {
             current = current->sibling;
@@ -405,9 +407,9 @@ namespace spica {
     //
     // Template constructor
     //
-    template< typename T, typename StrictWeakOrdering >
-    template< typename InputIterator >
-        BinomialHeap< T, StrictWeakOrdering >::BinomialHeap(
+    template<typename T, typename StrictWeakOrdering>
+    template<typename InputIterator>
+        BinomialHeap<T, StrictWeakOrdering>::BinomialHeap(
             InputIterator first, InputIterator last, const StrictWeakOrdering &C)
                 : roots( 0 ), count( 0 ), comp( C )
     {
@@ -418,8 +420,8 @@ namespace spica {
     //
     // Destructor
     //
-    template< typename T, typename StrictWeakOrdering >
-    BinomialHeap< T, StrictWeakOrdering >::~BinomialHeap( )
+    template<typename T, typename StrictWeakOrdering>
+    BinomialHeap<T, StrictWeakOrdering>::~BinomialHeap( )
     {
         // Destroying a NULL pointer is safe.
         destroy_heap( roots );
@@ -429,12 +431,12 @@ namespace spica {
     //
     // begin
     //
-    template< typename T, typename StrictWeakOrdering >
-    typename BinomialHeap< T, StrictWeakOrdering >::iterator
-        BinomialHeap< T, StrictWeakOrdering >::begin( ) const
+    template<typename T, typename StrictWeakOrdering>
+    typename BinomialHeap<T, StrictWeakOrdering>::iterator
+        BinomialHeap<T, StrictWeakOrdering>::begin( ) const
     {
         if( roots == 0 ) return iterator( );
-        std::queue< const BinomialTreeNode * > *q = new std::queue< const BinomialTreeNode * >;
+        std::queue<const BinomialTreeNode *> *q = new std::queue<const BinomialTreeNode *>;
         if( roots->child != 0 ) q->push( roots->child );
         return iterator( roots, q );
     }
@@ -443,10 +445,10 @@ namespace spica {
     //
     // insert
     //
-    template< typename T, typename StrictWeakOrdering >
-    const T *BinomialHeap< T, StrictWeakOrdering >::insert( const T &new_item )
+    template<typename T, typename StrictWeakOrdering>
+    const T *BinomialHeap<T, StrictWeakOrdering>::insert( const T &new_item )
     {
-        BinomialHeap< key_type, StrictWeakOrdering > temp_heap( comp );
+        BinomialHeap<key_type, StrictWeakOrdering> temp_heap( comp );
 
         BinomialTreeNode *new_node = new BinomialTreeNode( new_item );
 
@@ -461,9 +463,9 @@ namespace spica {
     //
     // Template insert
     //
-    template< typename T, typename StrictWeakOrdering >
-    template< typename InputIterator >
-        void BinomialHeap< T, StrictWeakOrdering >::
+    template<typename T, typename StrictWeakOrdering>
+    template<typename InputIterator>
+        void BinomialHeap<T, StrictWeakOrdering>::
             insert( InputIterator first, InputIterator last )
     {
         while( first != last ) {
@@ -476,8 +478,8 @@ namespace spica {
     //
     // front
     //
-    template< typename T, typename StrictWeakOrdering >
-    const T &BinomialHeap< T, StrictWeakOrdering >::front( ) const
+    template<typename T, typename StrictWeakOrdering>
+    const T &BinomialHeap<T, StrictWeakOrdering>::front( ) const
     {
         // Add error handling?
         // if( roots == 0 ) ...
@@ -507,8 +509,8 @@ namespace spica {
     //
     // pop
     //
-    template< typename T, typename StrictWeakOrdering >
-    void BinomialHeap< T, StrictWeakOrdering >::pop( )
+    template<typename T, typename StrictWeakOrdering>
+    void BinomialHeap<T, StrictWeakOrdering>::pop( )
     {
         // Add error handling?
         // if( roots == 0 ) ...
@@ -551,7 +553,7 @@ namespace spica {
         front_node->child = 0;
 
         // Create a temporary heap.
-        BinomialHeap< key_type > temp_heap( comp );
+        BinomialHeap<key_type> temp_heap( comp );
 
         // Walk down the sibling list of the leftovers and prepend the nodes to the temp heap's
         // root list. Note that this works fine if the minimum node has no children.
@@ -577,9 +579,9 @@ namespace spica {
     //
     // merge
     //
-    template< typename T, typename StrictWeakOrdering >
-    BinomialHeap< T, StrictWeakOrdering > &
-        BinomialHeap< T, StrictWeakOrdering >::merge( BinomialHeap &other )
+    template<typename T, typename StrictWeakOrdering>
+    BinomialHeap<T, StrictWeakOrdering> &
+        BinomialHeap<T, StrictWeakOrdering>::merge( BinomialHeap &other )
     {
         // Combine the root lists in sorted order and empty the 'other' heap. This operation
         // takes O(Lg(n)) time.
