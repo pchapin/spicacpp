@@ -2,35 +2,47 @@
 
 <!-- When designing an XML schema, it is useful to experiment with a sample instance document. -->
 
-<TestOutput xmlns="http://www.kelseymountain.org/xml/UnitTestManager_0.0"
+<TestOutput xmlns="http://www.kelseymountain.org/XML/UnitTestManager_0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.kelseymountain.org/xml/UnitTestManager_0.0 UnitTestManager.xsd">
+  xsi:schemaLocation="http://www.kelseymountain.org/XML/UnitTestManager_0.0 UnitTestManager.xsd">
 
   <MetaData>
     <Title>Sample UnitTestManager Output</Title>
   </MetaData>
 
   <Results>
-    <TestResult title="Test 1">
-      <Failure>Badness #1!</Failure>
-      <Failure>Badness #2!</Failure>
-    </TestResult>
+    <SuiteResult title="Suite 1">
+      <TestResult name="feature-1">
+        <Failure>Badness #1!</Failure>
+        <Failure>Badness #2!</Failure>
+      </TestResult>
 
-    <TestResult title="Test 2">
-      <Failure>Badness #1!</Failure>
-      <Failure file="c:\home\prog\y\check\check.cpp"
-               line="18">test_buffer1.length( ) == 1</Failure>
+      <!-- No news is good news. -->
+      <TestResult name="feature-2"/>
+    </SuiteResult>
+
+    <SuiteResult title="Suite 2">
+      <TestResult name="feature-1">
+        <Failure file="c:\home\prog\y\check\check.cpp" line="18">test_buffer1.length( ) == 1</Failure>
+      </TestResult>
+      
+      <!-- This exception applies to the previous TestResult. The suite is aborted. -->
       <Exception type="UnitException">explicit raise</Exception>
-    </TestResult>
+    </SuiteResult>
 
-    <TestResult title="Test 3">
-      <Failure>Badness #1!</Failure>
+    <SuiteResult title="Suite 3">
+      <TestResult name="feature-1">
+        <Failure>Badness #1!</Failure>
+      </TestResult>
+      
+      <!-- The suite has ended but it returned false. -->
       <BadReturn>false</BadReturn>
-    </TestResult>
-    
-    <TestResult title="Test 4">
-    </TestResult>
-    
+    </SuiteResult>
+
+    <SuiteResult title="Suite 4">
+      <!-- Write some tests!! -->
+    </SuiteResult>
+
   </Results>
 
 </TestOutput>

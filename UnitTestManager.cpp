@@ -28,9 +28,9 @@ namespace UnitTestManager {
         void output_head( ostream &test_output )
         {
             test_output << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-            test_output << "<TestOutput xmlns=\"http://www.kelseymountain.org/xml/UnitTestManager_0.0\"\n"
+            test_output << "<TestOutput xmlns=\"http://www.kelseymountain.org/XML/UnitTestManager_0.0\"\n"
                         << "            xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                        << "            xsi:schemaLocation=\"http://www.kelseymountain.org/xml/UnitTestManager_0.0 UnitTestManager.xsd\">\n";
+                        << "            xsi:schemaLocation=\"http://www.kelseymountain.org/XML/UnitTestManager_0.0 UnitTestManager.xsd\">\n";
 
         }
 
@@ -114,12 +114,12 @@ namespace UnitTestManager {
 
     UnitTest::UnitTest( const std::string &test_name )
     {
-        *output_pointer << "\n    <Test name=\"" << test_name << "\">";
+        *output_pointer << "\n    <TestResult name=\"" << test_name << "\">";
     }
 
 
     UnitTest::~UnitTest( )
     {
-        *output_pointer << "</Test>";
+        *output_pointer << "</TestResult>";
     }
 }
