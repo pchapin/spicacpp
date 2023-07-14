@@ -120,7 +120,7 @@ namespace spica {
                 { iterator temp( *this ); my_node = my_list->previous[my_node]; return temp; }
 
             //! Returns true if *this and other point at the same object.
-            bool operator==( const iterator &other ) noexcept
+            bool operator==( const iterator other ) noexcept
                 { return( my_node == other.my_node ); }
 
             //! Returns a reference to the item the iterator is pointing at.

@@ -106,7 +106,7 @@ namespace spica {
          * practice I do not expect that this would be a major problem. They might also consume
          * a considerable amount of memory if they are iterating over a large heap.
          *
-         * Specifically a binomial heap iterator maintains a queue of node pointes that it uses
+         * Specifically a binomial heap iterator maintains a queue of node pointers that it uses
          * to keep track of portions of the heap it needs to "go back" and explore further. For
          * a large heap this queue can contain a sizable number of pointers [TODO: Figure out
          * some specifics about how large the queue might get].
@@ -152,20 +152,8 @@ namespace spica {
             //! Destructor.
            ~iterator( ) { delete pQ; }
 
-            // TODO: Convert this method to a free function template taking two references to interator.
-            //
-            // The problem is that an expression like x == y entails the conversion of the right
-            // operand to type iterator &. However, with C++ 2020 the compiler also considers y
-            // == x, which also entails the conversion of the right operand to type iterator &.
-            // The result is ambiguous.
-            // 
-            // Because BinomialHeap iterators are quite large, I really don't want to pass them
-            // by value. I think the solution is to make operator== a free function with both
-            // parameters of type iterator & However, in that case it becomes necessary to
-            // declare it a friend of class BinomialHeap<T>::iterator.
-            // 
             //! Returns true if two iterators point at the same object or both end( ).
-            bool operator==( const iterator &other )
+            bool operator==( const iterator other )
                 { return current == other.current; }
 
             //! Returns a reference to the current object.

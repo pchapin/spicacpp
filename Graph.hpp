@@ -74,7 +74,7 @@ namespace spica {
                 return( edge_iterator( temp ) );
             }
 
-            bool operator==( const edge_iterator &other )
+            bool operator==( const edge_iterator other )
                 { return( current == other.current ); }
 
         private:
