@@ -1,4 +1,4 @@
-/*! \file    str.hpp
+/*! \file    RexxString.hpp
  *  \brief   Interface to a Rexx-like string class.
  *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
@@ -16,23 +16,23 @@
 namespace spica {
 
     //! String class supporting Rexx-like operations.
-    class String {
+    class RexxString {
 
         //! Insert a string into an output stream.
-        friend std::ostream &operator<<( std::ostream &, const String & );
+        friend std::ostream &operator<<( std::ostream &, const RexxString & );
 
         //! Extract a string from an input stream.
-        friend std::istream &operator>>( std::istream &, String & );
+        friend std::istream &operator>>( std::istream &, RexxString & );
 
         //! Compare two strings for equality.
-        friend bool operator==( const String &, const String & );
+        friend bool operator==( const RexxString &, const RexxString & );
 
         //! Compare two strings.
-        friend bool operator< ( const String &, const String & );
+        friend bool operator< ( const RexxString &, const RexxString & );
 
     private:
 
-        // The text of a string is found through a string_node. There might be many String
+        // The text of a string is found through a string_node. There might be many RexxString
         // objects pointing to any particular string_node. Strings share their representations
         // when possible. Copying is done on demand.
         //
@@ -49,25 +49,25 @@ namespace spica {
 
 
         //! Construct an empty string.
-        String( );
+        RexxString( );
 
         //! Construct a string that is a copy of the given string.
-        String( const String & );
+        RexxString( const RexxString & );
 
         //! Construct a string that is a copy of the given string.
-        String( const char * );
+        RexxString( const char * );
 
         //! Construct a string from a single character.
-        String( char );
+        RexxString( char );
 
         //! Assign the given string to this string.
-        String &operator=( const String & );
+        RexxString &operator=( const RexxString & );
 
         //! Assign the given string to this string.
-        String &operator=( const char * );
+        RexxString &operator=( const char * );
 
         //! Destroy this string.
-        ~String( );
+        ~RexxString( );
 
         //! Convert this string to a C-style string.
         /*!
@@ -84,34 +84,34 @@ namespace spica {
         int size( ) const { return length( ); }
 
         //! Append the given string to the end of this string.
-        String &append( const String & );
+        RexxString &append( const RexxString & );
 
         //! Append the given string to the end of this string.
-        String &append( const char * );
+        RexxString &append( const char * );
 
         //! Append the given character to the end of this string.
-        String &append( char );
+        RexxString &append( char );
 
         //! Erase this string, making it empty.
         void erase( );
 
         //! Return the rightmost characters of this string.
-        String right( int length, char pad = ' ' ) const;
+        RexxString right( int length, char pad = ' ' ) const;
 
         //! Return the leftmost characters of this string.
-        String left( int length, char pad = ' ' ) const;
+        RexxString left( int length, char pad = ' ' ) const;
 
         //! Return this string centered between runs of pad characters.
-        String center( int length, char pad = ' ' ) const;
+        RexxString center( int length, char pad = ' ' ) const;
 
         //! Copy this string.
-        String copy( int count ) const;
+        RexxString copy( int count ) const;
 
         //! Erase a substring of this string.
-        String erase( int offset, int count = INT_MAX ) const;
+        RexxString erase( int offset, int count = INT_MAX ) const;
 
         //! Insert a string into this string.
-        String insert( const String &incoming, int offset = 1, int length = INT_MAX ) const;
+        RexxString insert( const RexxString &incoming, int offset = 1, int length = INT_MAX ) const;
 
         //! Search this string forward for a character.
         int pos( char needle, int offset = 1 ) const;
@@ -123,13 +123,13 @@ namespace spica {
         int last_pos( char needle, int offset = INT_MAX ) const;
 
         //! Strip leading or trailing instances of kill_char from this string.
-        String strip( char mode = 'B', char kill_char = ' ' ) const;
+        RexxString strip( char mode = 'B', char kill_char = ' ' ) const;
 
         //! Locate a substring of this string.
-        String substr( int offset, int count = INT_MAX ) const;
+        RexxString substr( int offset, int count = INT_MAX ) const;
 
         //! Locate a substring of this string consisting of the specified number of words.
-        String subword( int offset, int count = INT_MAX, const char *white = 0 ) const;
+        RexxString subword( int offset, int count = INT_MAX, const char *white = 0 ) const;
 
         //! Return a specific word from this string.
         /*!
@@ -139,7 +139,7 @@ namespace spica {
          * \param offset The index of the word of interest.
          * \param white Pointer to a string of word delimiter characters.
          */
-        String word( int offset, const char *white = 0 ) const
+        RexxString word( int offset, const char *white = 0 ) const
             { return subword( offset, 1, white ); }
 
         //! Return the number of words in this string.
@@ -152,33 +152,33 @@ namespace spica {
 
     //! Compare two strings for inequality.
     /*!
-     * This funtion returns true if the strings are different. The comparison is done in a case
+     * This function returns true if the strings are different. The comparison is done in a case
      * sensitive manner.
      */
-    inline bool operator!=( const String &left, const String &right )
+    inline bool operator!=( const RexxString &left, const RexxString &right )
         { return !( left == right ); }
 
     //! Compare two strings.
     /*!
-     * This funtion returns true if the first string is the same as the second or if it comes
+     * This function returns true if the first string is the same as the second or if it comes
      * after the second. The comparison is done in a case sensitive manner.
      */
-    inline bool operator>=( const String &left, const String &right )
+    inline bool operator>=( const RexxString &left, const RexxString &right )
         { return !( left < right ); }
 
     //! Compare two strings.
     /*!
-     * This funtion returns true if the first strings comes after the second.
+     * This function returns true if the first strings comes after the second.
      */
-    inline bool operator>( const String &left, const String &right )
+    inline bool operator>( const RexxString &left, const RexxString &right )
         { return right < left; }
 
     //! Compare two strings.
     /*!
-     * This funtion returns true if the first string is the same as the second or if it comes
+     * This function returns true if the first string is the same as the second or if it comes
      * before the second. The comparison is done in a case sensitive manner.
      */
-    inline bool operator<=( const String &left, const String &right )
+    inline bool operator<=( const RexxString &left, const RexxString &right )
         { return right >= left; }
 
     // +++++
@@ -186,19 +186,19 @@ namespace spica {
     // +++++
 
     //! Concatenate two strings.
-    String operator+( const String &left, const String &right );
+    RexxString operator+( const RexxString &left, const RexxString &right );
 
     //! Concatenate two strings.
-    String operator+( const String &left, const char *right );
+    RexxString operator+( const RexxString &left, const char *right );
 
     //! Concatenate two strings.
-    String operator+( const char *left, const String &right );
+    RexxString operator+( const char *left, const RexxString &right );
 
     //! Concatenate a character and a string.
-    String operator+( const String &left, char right );
+    RexxString operator+( const RexxString &left, char right );
 
     //! Concatenate a character and a string.
-    String operator+( char left, const String &right );
+    RexxString operator+( char left, const RexxString &right );
 
 }
 

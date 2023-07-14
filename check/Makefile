@@ -9,8 +9,8 @@ SOURCES=u_tests.cpp        \
 	BinomialHeap_tests.cpp \
 	BoundedList_tests.cpp  \
 	Graph_tests.cpp        \
+	RexxString_tests.cpp   \
 	sort_tests.cpp         \
-	str_tests.cpp          \
 	Timer_tests.cpp        \
 	VeryLong_tests.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
@@ -39,11 +39,11 @@ BoundedList_tests.o:	BoundedList_tests.cpp ../BoundedList.hpp u_tests.hpp ../Uni
 
 Graph_tests.o:	Graph_tests.cpp ../Graph.hpp u_tests.hpp ../UnitTestManager.hpp 
 
+RexxString_tests.o:	RexxString_tests.cpp ../environ.hpp ../RexxString.hpp 
+
 sort_tests.o:	sort_tests.cpp ../sorters.hpp u_tests.hpp ../UnitTestManager.hpp 
 
 VeryLong_tests.o:	VeryLong_tests.cpp ../VeryLong.hpp u_tests.hpp ../UnitTestManager.hpp 
-
-str_tests.o:	str_tests.cpp ../environ.hpp ../str.hpp 
 
 Timer_tests.o:	Timer_tests.cpp ../environ.hpp ../Timer.hpp 
 

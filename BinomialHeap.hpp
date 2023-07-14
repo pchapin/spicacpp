@@ -93,7 +93,7 @@ namespace spica {
 
         // Make copy operations illegal on binomial heaps (for now).
         BinomialHeap( const BinomialHeap & ) = delete;
-        BinomialHeap &operator=( const BinomialHeap & ) = deleter;
+        BinomialHeap &operator=( const BinomialHeap & ) = delete;
 
     public:
 

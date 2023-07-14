@@ -4,7 +4,7 @@ config.cpp
 crc.cpp
 Date.cpp
 get_switch.cpp
-str.cpp
+RexxString.cpp
 string_utilities.cpp
 Timer.cpp
 UnitTestManager.cpp

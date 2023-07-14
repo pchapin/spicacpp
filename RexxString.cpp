@@ -1,5 +1,5 @@
-/*! \file    str.hpp
-    \brief   Interface to a Rexx-like string class.
+/*! \file    RexxString.cpp
+    \brief   Implementation of a Rexx-like string class.
     \author  Peter Chapin <spicacality@kelseymountain.org>
 
 This file implements a simple string class. It supports a set of operations that allow clients
@@ -21,15 +21,16 @@ TO DO
 #include <cstring>
 #include <iostream>
 #include <memory>
-#include "str.hpp"
+
+#include "RexxString.hpp"
 
 #if defined(pMULTITHREADED)
 #include "synchronize.hpp"
 #endif
 
-/*! \class spica::String
+/*! \class spica::RexxString
  *
- * Class String has features that are similar to those offered by the strings built into the
+ * Class RexxString has features that are similar to those offered by the strings built into the
  * Rexx language. However, not all of the features of Rexx strings are currently implemented.
  * Furthermore, the names of these methods and their semantics are not always exactly the same
  * as the corresponding Rexx operation. Nevertheless, the general behavior of these strings
@@ -80,7 +81,7 @@ TO DO
 namespace spica {
 
     #if defined(pMULTITHREADED)
-    // This is the "BSL" (Big String Lock).
+    // This is the "BSL" (Big RexxString Lock).
     static mutex_sem string_lock;
     #endif
 
@@ -113,7 +114,7 @@ namespace spica {
      * This function returns true if the strings have the same contents. The comparison is done
      * in a case sensitive manner.
      */
-    bool operator==( const String &left, const String &right )
+    bool operator==( const RexxString &left, const RexxString &right )
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -129,7 +130,7 @@ namespace spica {
      * This function returns true if the first string comes before the second. [Elaborate on
      * what 'comes before' means for strings]
      */
-    bool operator<( const String &left, const String &right )
+    bool operator<( const RexxString &left, const RexxString &right )
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -143,7 +144,7 @@ namespace spica {
      * This function writes the characters of the given string into the given output stream. A
      * newline character is *not* added to the output automatically.
      */
-    std::ostream &operator<<( std::ostream &os, const String &right )
+    std::ostream &operator<<( std::ostream &os, const RexxString &right )
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -160,10 +161,10 @@ namespace spica {
      * necessary. Note that this function does not add the newline to the string although it
      * does remove the newline from the input.
      */
-    std::istream &operator>>( std::istream &is, String &right )
+    std::istream &operator>>( std::istream &is, RexxString &right )
     {
         char   ch;
-        String temp;
+        RexxString temp;
 
         // This is sort of inefficient. Do I care? Not right now.
         while( is.get( ch ) ) {
@@ -179,7 +180,7 @@ namespace spica {
     //           Methods
     //----------------------------
 
-    String::String( )
+    RexxString::RexxString( )
     {
         std::unique_ptr< string_node > new_node( new string_node );
         new_node->workspace = new char[1];
@@ -189,7 +190,7 @@ namespace spica {
     }
 
 
-    String::String( const String &existing )
+    RexxString::RexxString( const RexxString &existing )
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock(string_lock);
@@ -200,7 +201,7 @@ namespace spica {
     }
 
 
-    String::String( const char *existing )
+    RexxString::RexxString( const char *existing )
     {
         std::unique_ptr< string_node > new_node( new string_node );
         new_node->workspace = new char[std::strlen( existing ) + 1];
@@ -210,7 +211,7 @@ namespace spica {
     }
 
 
-    String::String( char existing )
+    RexxString::RexxString( char existing )
     {
         std::unique_ptr< string_node > new_node( new string_node );
         new_node->workspace = new char[2];
@@ -225,7 +226,7 @@ namespace spica {
      * This method releases the memory owned by the string provided that this string's
      * representation is not being shared.
      */
-    String::~String( )
+    RexxString::~RexxString( )
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -239,7 +240,7 @@ namespace spica {
     }
 
 
-    String &String::operator=( const String &other )
+    RexxString &RexxString::operator=( const RexxString &other )
     {
         // Check for assignment to self.
         if( &other == this ) return *this;
@@ -261,7 +262,7 @@ namespace spica {
     }
 
 
-    String &String::operator=( const char *other )
+    RexxString &RexxString::operator=( const char *other )
     {
         if( other == 0 ) return *this;
 
@@ -289,7 +290,7 @@ namespace spica {
      * The length does not include the terminating null character. Note that currently this is
      * an O(n) operation.
      */
-    int String::length( ) const
+    int RexxString::length( ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -299,7 +300,7 @@ namespace spica {
     }
 
 
-    String &String::append( const String &other )
+    RexxString &RexxString::append( const RexxString &other )
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -323,7 +324,7 @@ namespace spica {
     }
 
 
-    String &String::append( const char *other )
+    RexxString &RexxString::append( const char *other )
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -347,7 +348,7 @@ namespace spica {
     }
 
 
-    String &String::append( char other )
+    RexxString &RexxString::append( char other )
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -376,7 +377,7 @@ namespace spica {
      * After this method returns, this string is empty. This is a mutating operation. In that
      * respect it differs from erase(int, int)
      */
-    void String::erase( )
+    void RexxString::erase( )
     {
         std::unique_ptr< string_node > new_node( new string_node );
         new_node->workspace = new char[1];
@@ -405,14 +406,14 @@ namespace spica {
      * \param pad The pad character to use if length is too large.
      * \return A new string containing the result. The original string is unchanged.
      */
-    String String::right( int length, char pad ) const
+    RexxString RexxString::right( int length, char pad ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
         #endif
 
         // A place to put the answer.
-        String result;
+        RexxString result;
 
         // Ignore attempts to use a negative count.
         if (length <= 0) return result;
@@ -449,14 +450,14 @@ namespace spica {
      * \param pad The pad character to use if length is too large.
      * \return A new string containing the result. The original string is unchanged.
      */
-    String String::left( int length, char pad ) const
+    RexxString RexxString::left( int length, char pad ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
         #endif
 
         // A place to put the answer.
-        String result;
+        RexxString result;
 
         // Ignore attempts to use a negative count.
         if( length <= 0 ) return result;
@@ -496,14 +497,14 @@ namespace spica {
      * \param pad The pad character to use on either side of the centered string.
      * \return A new string containing the result. The original string is not changed.
      */
-    String String::center( int length, char pad ) const
+    RexxString RexxString::center( int length, char pad ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
         #endif
 
         // A place to put the answer.
-        String result;
+        RexxString result;
 
         // Ignore attempts to use a negative length.
         if( length <= 0 ) return result;
@@ -543,14 +544,14 @@ namespace spica {
      * \return A new string containing count copies of this string concatenated onto one
      * another. The original string is unchanged.
      */
-    String String::copy( int count ) const
+    RexxString RexxString::copy( int count ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
         #endif
 
         // A place to put the answer.
-        String result;
+        RexxString result;
 
         // Ignore attempts to use a negative count.
         if( count < 0 ) return result;
@@ -572,14 +573,14 @@ namespace spica {
      * \return A new string containing the result after erasure. The original string is
      * unchanged.
      */
-    String String::erase( int offset, int count ) const
+    RexxString RexxString::erase( int offset, int count ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
         #endif
 
         // A place to put the answer.
-        String result;
+        RexxString result;
 
         // The client uses one based offsets. We'll used zero based offsets.
         offset--;
@@ -627,14 +628,14 @@ namespace spica {
      * \return A new string containing the result after insertion. The original string is
      * unchanged.
      */
-    String String::insert( const String &incoming, int offset, int count ) const
+    RexxString RexxString::insert( const RexxString &incoming, int offset, int count ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
         #endif
 
         // A place to put the answer.
-        String result;
+        RexxString result;
 
         offset--;
 
@@ -672,7 +673,7 @@ namespace spica {
      * \param offset The starting index for the search.
      * \return The index of the first occurance of the needle or 0 if it is not found.
      */
-    int String::pos( char needle, int offset ) const
+    int RexxString::pos( char needle, int offset ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -705,7 +706,7 @@ namespace spica {
      * \return The index to the beginning of the needle string's first occurance or 0 if the
      * needle string is not found.
      */
-    int String::pos( const char *needle, int offset ) const
+    int RexxString::pos( const char *needle, int offset ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -738,7 +739,7 @@ namespace spica {
      * \return The index of the last occurance of the needle character (last relative to the
      * starting index) or 0 if the character was not found.
      */
-    int String::last_pos( char needle, int offset ) const
+    int RexxString::last_pos( char needle, int offset ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -775,14 +776,14 @@ namespace spica {
      *
      * \return A new string containing the result. The original string is unchanged.
      */
-    String String::strip( char mode, char kill_char ) const
+    RexxString RexxString::strip( char mode, char kill_char ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
         #endif
 
         // A place to put the answer.
-        String result;
+        RexxString result;
 
         const char *start = rep->workspace;
         const char *end   = std::strchr( rep->workspace, '\0' );
@@ -838,14 +839,14 @@ namespace spica {
      * \param count The length of the substring
      * \return The specified substring.
      */
-    String String::substr( int offset, int count ) const
+    RexxString RexxString::substr( int offset, int count ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
         #endif
 
         // A place to put the answer.
-        String result;
+        RexxString result;
 
         offset--;
 
@@ -889,14 +890,14 @@ namespace spica {
      * \param white Pointer to a string containing word delimiter characters.
      * \return The specified substring.
      */
-    String String::subword( int offset, int count, const char *white ) const
+    RexxString RexxString::subword( int offset, int count, const char *white ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
         #endif
 
         // A place to put the answer.
-        String result;
+        RexxString result;
 
         offset--;
 
@@ -961,7 +962,7 @@ namespace spica {
      * \return The number of words in this string.
      * \sa subword
      */
-    int String::words( const char *white ) const
+    int RexxString::words( const char *white ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -993,35 +994,35 @@ namespace spica {
      * This function concatenates right onto the end of left and returns the result. Neither
      * right nor left are modified.
      */
-    String operator+( const String &left, const String &right )
-        { String temp( left ); temp.append( right ); return temp; }
+    RexxString operator+( const RexxString &left, const RexxString &right )
+        { RexxString temp( left ); temp.append( right ); return temp; }
 
     /*!
      * This function concatenates right onto the end of left and returns the result. Neither
      * right nor left are modified.
      */
-    String operator+( const String &left, const char *right )
-        { String temp( left ); temp.append( right ); return temp; }
+    RexxString operator+( const RexxString &left, const char *right )
+        { RexxString temp( left ); temp.append( right ); return temp; }
 
     /*!
      * This function concatenates right onto the end of left and returns the result. Neither
      * right nor left are modified.
      */
-    String operator+( const char *left, const String &right )
-        { String temp( left ); temp.append( right ); return temp; }
+    RexxString operator+( const char *left, const RexxString &right )
+        { RexxString temp( left ); temp.append( right ); return temp; }
 
     /*!
      * This function concatenates right onto the end of left and returns the result. Neither
      * right nor left are modified.
      */
-    String operator+( const String &left, char right )
-        { String temp( left ); temp.append( right ); return temp; }
+    RexxString operator+( const RexxString &left, char right )
+        { RexxString temp( left ); temp.append( right ); return temp; }
 
     /*!
      * This function concatenates right onto the end of left and returns the result. Neither
      * right nor left are modified.
      */
-    String operator+( char left, const String &right )
-        { String temp( left ); temp.append( right ); return temp; }
+    RexxString operator+( char left, const RexxString &right )
+        { RexxString temp( left ); temp.append( right ); return temp; }
 
 }

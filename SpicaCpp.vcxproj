@@ -156,7 +156,7 @@
     <ClCompile Include="Date.cpp" />
     <ClCompile Include="get_switch.cpp" />
     <ClCompile Include="regkey.cpp" />
-    <ClCompile Include="str.cpp" />
+    <ClCompile Include="RexxString.cpp" />
     <ClCompile Include="string_utilities.cpp" />
     <ClCompile Include="synchronize.cpp" />
     <ClCompile Include="Timer.cpp" />
@@ -181,10 +181,10 @@
     <ClInclude Include="Graph.hpp" />
     <ClInclude Include="HashtableOpen.hpp" />
     <ClInclude Include="regkey.hpp" />
+    <ClInclude Include="RexxString.hpp" />
     <ClInclude Include="SingleList.hpp" />
     <ClInclude Include="sorters.hpp" />
     <ClInclude Include="spica.hpp" />
-    <ClInclude Include="str.hpp" />
     <ClInclude Include="string_utilities.hpp" />
     <ClInclude Include="synchronize.hpp" />
     <ClInclude Include="Timer.hpp" />

@@ -33,7 +33,7 @@ int main( int argc, char **argv )
     UnitTestManager::register_suite( VeryLong_tests, "VeryLong Tests" );
 
     // TODO: The following tests are interactive, which is not ideal. They're better than nothing.
-    UnitTestManager::register_suite( str_tests, "String Tests" );
+    UnitTestManager::register_suite( RexxString_tests, "RexxString Tests" );
     UnitTestManager::register_suite( Timer_tests, "Timer Tests" );
 
     UnitTestManager::execute_suites( *output, "Spica C++ Tests" );

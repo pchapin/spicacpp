@@ -33,9 +33,6 @@
     <ClCompile Include="regkey.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="str.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="synchronize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -58,6 +55,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VeryLong.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RexxString.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,9 +107,6 @@
     <ClInclude Include="regkey.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="str.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="synchronize.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -144,6 +141,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VeryLong.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RexxString.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -30,12 +30,6 @@
     <ClCompile Include="Graph_tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="str_tests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="str_testsMT.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="string_utilities_tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -43,6 +37,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VeryLong_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RexxString_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RexxString_testsMT.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,9 +1,9 @@
 /*! \file    str_tests.cpp
- *  \brief   Exercise spica::String.
+ *  \brief   Exercise spica::RexxString.
  *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
  * This program does not do exhaustive testing, but it does allow the user to exercise the basic
- * functionality of the String class. If all tests pass, you can be somewhat confident that the
+ * functionality of the RexxString class. If all tests pass, you can be somewhat confident that the
  * class works.
  */
 
@@ -17,7 +17,7 @@
 #include <iostream>
 #include <cstring>
 
-#include "str.hpp"
+#include "RexxString.hpp"
 
 using namespace spica;
 
@@ -51,12 +51,12 @@ static void print_header( const char *message )
 
 
 //
-// void print_string( char *caption, String &S )
+// void print_string( char *caption, RexxString &S )
 //
 // This function prints out a string with delimiter bars so that it will be easy to see where
 // the string starts and stops. This function assumes that the string operator<<() works.
 //
-static void print_string( const char *caption, String &S )
+static void print_string( const char *caption, RexxString &S )
 {
     std::cout << caption << ": |" << S << "|" << std::endl;
 }
@@ -92,13 +92,13 @@ static void strupr( char *text )
 void Constructor_Test( )
 {
     print_header( "Constructor tests" );
-    String object_1;
-    String object_2( "Hello" );
-    String object_3( object_2 );
+    RexxString object_1;
+    RexxString object_2( "Hello" );
+    RexxString object_3( object_2 );
 
-    print_string("Result of String::String( ). Expecting \"\"", object_1);
-    print_string("Result of String::String( const char * ). Expecting \"Hello\"", object_2);
-    print_string("Result of String::String( const String & ). Expecting \"Hello\"", object_3);
+    print_string("Result of RexxString::RexxString( ). Expecting \"\"", object_1);
+    print_string("Result of RexxString::RexxString( const char * ). Expecting \"Hello\"", object_2);
+    print_string("Result of RexxString::RexxString( const RexxString & ). Expecting \"Hello\"", object_3);
 }
 
 
@@ -111,7 +111,7 @@ void IO_Test( )
 {
     print_header( "I/O tests" );
 
-    String object_1;
+    RexxString object_1;
     
     std::cout << "Enter a string: " << std::flush;
     std::cin  >> object_1;
@@ -128,22 +128,22 @@ void Append_Test( )
 {
     print_header( "Append tests" );
 
-    String junk( "Junk" );
-    String buffer;
+    RexxString junk( "Junk" );
+    RexxString buffer;
     int    counter;
     int    i;
 
     std::cout
         << "How many times should I concatenate Junk to the buffer? "
         << std::flush;
-    std::cin  >> counter;
+    std::cin >> counter;
     std::cin.get( );
 
     // Try appending one string onto another (several times).
     for( i = 0; i < counter; i++ ) {
         buffer.append( junk );
     }
-    print_string( "Result of String::append( const String & )", buffer );
+    print_string( "Result of RexxString::append( const RexxString & )", buffer );
 
     buffer.erase( );
     print_string( "After erasing", buffer );
@@ -152,7 +152,7 @@ void Append_Test( )
     for( i = 0; i < counter; i++ ) {
         buffer.append( "Junk" );
     }
-    print_string( "Result of String::append( const char * )", buffer );
+    print_string( "Result of RexxString::append( const char * )", buffer );
 
     buffer.erase( );
     print_string( "After erasing", buffer );
@@ -161,7 +161,7 @@ void Append_Test( )
     for( i = 0; i < counter; i++ ) {
         buffer.append( 'J' );
     }
-    print_string( "Result of String::append( char )", buffer );
+    print_string( "Result of RexxString::append( char )", buffer );
 
     buffer.erase( );
     print_string( "After erasing", buffer );
@@ -178,8 +178,8 @@ void Assignment_Test( )
     print_header( "Assignment tests" );
 
     const  int BUFFER_SIZE = 256;
-    String one;
-    String two;
+    RexxString one;
+    RexxString two;
     char   line[BUFFER_SIZE + 1];
 
     std::cout << "Enter a string: " << std::flush;
@@ -187,7 +187,7 @@ void Assignment_Test( )
     one = line;
     two = one;
     print_string( "After assignment of a char *", one );
-    print_string( "After assignment of a String", two );
+    print_string( "After assignment of a RexxString", two );
 }
 
 
@@ -200,7 +200,7 @@ void Length_Test( )
 {
     print_header( "Length test" );
 
-    String one;
+    RexxString one;
 
     std::cout << "Enter a string: " << std::flush;
     std::cin  >> one;
@@ -217,8 +217,8 @@ void LeftRight_Test( )
 {
     print_header( "Left/Right test" );
 
-    String object_1;
-    String object_2;
+    RexxString object_1;
+    RexxString object_2;
     int    count;
 
     std::cout << "Enter a test string: " << std::flush;
@@ -246,7 +246,7 @@ void Center_Test( )
 {
     print_header( "Center test" );
 
-    String object_1;
+    RexxString object_1;
     int    width;
 
     std::cout << "Enter a string: " << std::flush;
@@ -269,7 +269,7 @@ void Copy_Test( )
 {
     print_header( "Copy test" );
 
-    String object_1;
+    RexxString object_1;
     int    count;
 
     std::cout << "Enter a string: " << std::flush;
@@ -292,7 +292,7 @@ void Erase_Test( )
 {
     print_header( "Erase test" );
 
-    String object_1;
+    RexxString object_1;
     int    offset;
     int    count;
 
@@ -319,8 +319,8 @@ void Insert_Test( )
 {
     print_header( "Insert test" );
 
-    String object_1;
-    String object_2;
+    RexxString object_1;
+    RexxString object_2;
     int    offset;
     int    count;
 
@@ -349,10 +349,10 @@ void Pos_Test( )
 {
     print_header( "Position test" );
 
-    String object_1;
+    RexxString object_1;
     int    offset;
     char   needle_1;
-    String needle_2;
+    RexxString needle_2;
 
     std::cout << "Enter a string to search: " << std::flush;
     std::cin  >> object_1;
@@ -385,7 +385,7 @@ void Strip_Test( )
 {
     print_header( "Strip test" );
 
-    String object_1;
+    RexxString object_1;
     char   kill_char;
 
     std::cout << "Enter a string: " << std::flush;
@@ -408,7 +408,7 @@ void Substr_Test( )
 {
     print_header( "Substr test" );
 
-    String object_1;
+    RexxString object_1;
     int    offset;
     int    count;
 
@@ -435,8 +435,8 @@ void Words_Test( )
 {
     print_header( "Words test" );
 
-    String object_1;
-    String delimiters;
+    RexxString object_1;
+    RexxString delimiters;
 
     std::cout << "Enter a string: " << std::flush;
     std::cin  >> object_1;
@@ -458,8 +458,8 @@ void Subword_Test( )
 {
     print_header( "Subword test" );
 
-    String object_1;
-    String delimiters;
+    RexxString object_1;
+    RexxString delimiters;
     int    offset;
     int    count;
 
@@ -487,12 +487,12 @@ void Subword_Test( )
 //           Main Program
 //----------------------------------
 
-bool str_tests( )
+bool RexxString_tests( )
 {
     const int BUFFER_SIZE = 256;
     char line_buffer[BUFFER_SIZE+1];
 
-    std::cout << "str_test: Program to exercise class spica::String.\n"
+    std::cout << "RexxString_tests: Program to exercise class spica::RexxString.\n"
               << "(C) Copyright 2001 by Peter Chapin.\n"
               << std::endl;
 

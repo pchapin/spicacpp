@@ -12,7 +12,7 @@ SOURCES=base64.cpp       \
 	crc.cpp              \
 	Date.cpp             \
 	get_switch.cpp       \
-	str.cpp              \
+	RexxString.cpp       \
 	string_utilities.cpp \
 	synchronize.cpp      \
 	Timer.cpp            \
@@ -48,7 +48,7 @@ Date.o:	Date.cpp Date.hpp
 
 get_switch.o:	get_switch.cpp get_switch.hpp 
 
-str.o:	str.cpp environ.hpp str.hpp synchronize.hpp 
+RexxString.o:	RexxString.cpp environ.hpp RexxString.hpp synchronize.hpp 
 
 string_utilities.o:	string_utilities.cpp string_utilities.hpp 
 

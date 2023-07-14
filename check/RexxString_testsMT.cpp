@@ -12,10 +12,10 @@
 
 #include <process.h>
 #include <windows.h>
-#include "str.hpp"
+#include "RexxString.hpp"
 
-spica::String *A;
-spica::String *B;
+spica::RexxString *A;
+spica::RexxString *B;
 
 unsigned __stdcall assigner( void * )
 {
@@ -38,8 +38,8 @@ int str_testsMT( )
     unsigned ass_thread;
     unsigned app_thread;
 
-    A = new spica::String;
-    B = new spica::String;
+    A = new spica::RexxString;
+    B = new spica::RexxString;
     *B = "Hello!";
 
     uintptr_t ass_handle = _beginthreadex( NULL, 0, assigner, NULL, 0, &ass_thread );

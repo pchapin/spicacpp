@@ -33,8 +33,8 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-std=c++11" />
 			<Add option="-Wall" />
+			<Add option="-std=c++17" />
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="BinaryTree.hpp" />
@@ -47,10 +47,14 @@
 		<Unit filename="FileVector.hpp" />
 		<Unit filename="Graph.hpp" />
 		<Unit filename="HashtableOpen.hpp" />
+		<Unit filename="RexxString.cpp" />
+		<Unit filename="RexxString.hpp" />
 		<Unit filename="Timer.cpp" />
 		<Unit filename="Timer.hpp" />
 		<Unit filename="UnitTestManager.cpp" />
 		<Unit filename="UnitTestManager.hpp" />
+		<Unit filename="VeryLong.cpp" />
+		<Unit filename="VeryLong.hpp" />
 		<Unit filename="WorkQueue.hpp" />
 		<Unit filename="base64.cpp" />
 		<Unit filename="base64.hpp" />
@@ -63,15 +67,10 @@
 		<Unit filename="get_switch.hpp" />
 		<Unit filename="sorters.hpp" />
 		<Unit filename="spica.hpp" />
-		<Unit filename="str.cpp" />
-		<Unit filename="str.hpp" />
 		<Unit filename="string_utilities.cpp" />
 		<Unit filename="string_utilities.hpp" />
 		<Unit filename="synchronize.cpp" />
 		<Unit filename="synchronize.hpp" />
-		<Extensions>
-			<code_completion />
-			<debugger />
-		</Extensions>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

@@ -190,10 +190,10 @@
     <ClCompile Include="BinomialHeap_tests.cpp" />
     <ClCompile Include="BoundedList_tests.cpp" />
     <ClCompile Include="Graph_tests.cpp" />
+    <ClCompile Include="RexxString_tests.cpp" />
+    <ClCompile Include="RexxString_testsMT.cpp" />
     <ClCompile Include="sort_tests.cpp" />
     <ClCompile Include="string_utilities_tests.cpp" />
-    <ClCompile Include="str_tests.cpp" />
-    <ClCompile Include="str_testsMT.cpp" />
     <ClCompile Include="Timer_tests.cpp" />
     <ClCompile Include="u_tests.cpp" />
     <ClCompile Include="VeryLong_tests.cpp" />
