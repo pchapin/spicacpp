@@ -28,7 +28,7 @@ namespace spica {
                     topLevel_key,            // One of the special top level key names.
                     key_name,                // Name of subkey to open or create.
                     0,                       // Reserved. Must be zero.
-                    "",                      // Name of key class. Ignored if key exists.
+                    nullptr,                 // Name of key class. Ignored if key exists.
                     REG_OPTION_NON_VOLATILE, // Save this key between reboots.
                     KEY_ALL_ACCESS,          // Want full access.
                     0,                       // Security attributes.
