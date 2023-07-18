@@ -1,21 +1,21 @@
 /*! \file    RexxString.cpp
-    \brief   Implementation of a Rexx-like string class.
-    \author  Peter Chapin <spicacality@kelseymountain.org>
-
-This file implements a simple string class. It supports a set of operations that allow clients
-to use string objects in a manner similar to the way Rexx works.
-
-The 'rep' member should never be NULL. This is because if an exception is throw during
-construction (that's the only time rep might become NULL), the object under construction can
-never be accessed in a well defined manner.
-
-This version is well behaved in a multi-threaded environment provided the symbol pMULTITHREADED
-is defined before compilation.
-
-TO DO
-
-+ The inserter and extractor operators should honor stream formatting state.
-*/
+ *  \brief   Implementation of a Rexx-like string class.
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
+ *
+ * This file implements a simple string class. It supports a set of operations that allow
+ * clients to use string objects in a manner similar to the way strings in Rexx work.
+ *
+ * The 'rep' member should never be NULL. This is because if an exception is throw during
+ * construction (that's the only time rep might become NULL), the object under construction can
+ * never be accessed in a well defined manner.
+ *
+ * This version is well behaved in a multi-threaded environment provided the symbol
+ * pMULTITHREADED is defined before compilation.
+ *
+ * TODO
+ *
+ * + The inserter and extractor operators should honor stream formatting state.
+ */
 
 #include "environ.hpp"
 #include <cstring>
@@ -27,6 +27,8 @@ TO DO
 #if defined(pMULTITHREADED)
 #include "synchronize.hpp"
 #endif
+
+using namespace std;
 
 /*! \class spica::RexxString
  *
@@ -69,7 +71,7 @@ TO DO
  * It is important that no global strings are created in a multithreaded program. This is
  * because this class uses a global lock and C++ does not define the order in which global
  * static data is initialized across translation units. If you need a global string, create a
- * global pointer to a string and then give that pointer a value using operator new after main()
+ * global pointer to a string and then give that pointer a value using operator new after `main`
  * has started.
  *
  * To compile in multithreaded support the symbol pMULTITHREADED must be defined when this file
@@ -80,29 +82,33 @@ TO DO
 
 namespace spica {
 
-    #if defined(pMULTITHREADED)
-    // This is the "BSL" (Big RexxString Lock).
-    static mutex_sem string_lock;
-    #endif
+    namespace {
 
-    //-------------------------------------------------
-    //           Internally Linked Functions
-    //-------------------------------------------------
+        #if defined(pMULTITHREADED)
+        // This is the "BSL" (Big RexxString Lock).
+        mutex_sem string_lock;
+        #endif
 
-    static bool is_white( int ch, const char *white )
-    {
-        // If the user is trying to use a special kind of whitespace...
-        if( white != 0 ) {
-            if( std::strchr( white, ch ) != 0 ) return true;
+        //-------------------------------------------------
+        //           Internally Linked Functions
+        //-------------------------------------------------
+
+        bool is_white( int ch, const char *white )
+        {
+            // If the user is trying to use a special kind of whitespace...
+            if( white != nullptr ) {
+                if( strchr( white, ch ) != nullptr ) return true;
+                return false;
+            }
+
+            // Otherwise use the default.
+            if( ch == ' '  || ch == '\t' || ch == '\v' ||
+                ch == '\r' || ch == '\n' || ch == '\f' )
+                return true;
+
             return false;
         }
 
-        // Otherwise use the default.
-        if( ch == ' '  || ch == '\t' || ch == '\v' ||
-            ch == '\r' || ch == '\n' || ch == '\f' )
-            return true;
-
-        return false;
     }
 
 
@@ -120,9 +126,9 @@ namespace spica {
         mutex_sem::grabber lock( string_lock );
         #endif
 
-        // Is this first comparison worthwhile?
+        // Is this comparison worthwhile?
         if( left.rep == right.rep ) return true;
-        return ( std::strcmp( left.rep->workspace, right.rep->workspace ) == 0 );
+        return ( strcmp( left.rep->workspace, right.rep->workspace ) == 0 );
     }
 
 
@@ -136,7 +142,9 @@ namespace spica {
         mutex_sem::grabber lock( string_lock );
         #endif
 
-        return ( std::strcmp( left.rep->workspace, right.rep->workspace ) < 0 );
+        // Is this comparison worthwhile?
+        if( left.rep == right.rep ) return false;
+        return ( strcmp( left.rep->workspace, right.rep->workspace ) < 0 );
     }
 
 
@@ -156,10 +164,11 @@ namespace spica {
 
 
     /*!
-     * This function reads characters from the given input stream into the given string.
-     * Characters are read until a newline or EOF is reached. The string is expanded as
-     * necessary. Note that this function does not add the newline to the string although it
-     * does remove the newline from the input.
+     * This function reads an entire line of characters from the given input stream into the
+     * given string. Not that this behavior is different than the stream extractor for
+     * `std::string` which only reads a single word. Here characters are read until a newline or
+     * EOF is reached. The string is expanded as necessary. This function does not add the
+     * newline to the string although it does remove the newline from the input.
      */
     std::istream &operator>>( std::istream &is, RexxString &right )
     {
@@ -203,9 +212,9 @@ namespace spica {
 
     RexxString::RexxString( const char *existing )
     {
-        std::unique_ptr< string_node > new_node( new string_node );
-        new_node->workspace = new char[std::strlen( existing ) + 1];
-        std::strcpy( new_node->workspace, existing );
+        unique_ptr<string_node> new_node( new string_node );
+        new_node->workspace = new char[strlen( existing ) + 1];
+        strcpy( new_node->workspace, existing );
         rep = new_node.get( );
         new_node.release( );
     }
@@ -213,7 +222,7 @@ namespace spica {
 
     RexxString::RexxString( char existing )
     {
-        std::unique_ptr< string_node > new_node( new string_node );
+        unique_ptr<string_node> new_node( new string_node );
         new_node->workspace = new char[2];
         new_node->workspace[0] = existing;
         new_node->workspace[1] = '\0';
@@ -266,9 +275,9 @@ namespace spica {
     {
         if( other == 0 ) return *this;
 
-        std::unique_ptr< string_node > new_node( new string_node );
-        new_node->workspace = new char[std::strlen( other ) + 1];
-        std::strcpy( new_node->workspace, other );
+        unique_ptr<string_node> new_node( new string_node );
+        new_node->workspace = new char[strlen( other ) + 1];
+        strcpy( new_node->workspace, other );
 
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -296,7 +305,7 @@ namespace spica {
         mutex_sem::grabber lock( string_lock );
         #endif
 
-        return std::strlen( rep->workspace );
+        return strlen( rep->workspace );
     }
 
 
@@ -306,12 +315,12 @@ namespace spica {
         mutex_sem::grabber lock( string_lock );
         #endif
 
-        int count = std::strlen( rep->workspace ) + std::strlen( other.rep->workspace );
-        std::unique_ptr< string_node > new_node( new string_node );
+        size_t count = strlen( rep->workspace ) + strlen( other.rep->workspace );
+        unique_ptr<string_node> new_node( new string_node );
         new_node->workspace = new char[count + 1];
 
-        std::strcpy( new_node->workspace, rep->workspace );
-        std::strcat( new_node->workspace, other.rep->workspace );
+        strcpy( new_node->workspace, rep->workspace );
+        strcat( new_node->workspace, other.rep->workspace );
 
         if( rep->count > 1 ) rep->count--;
         else {
@@ -330,12 +339,12 @@ namespace spica {
         mutex_sem::grabber lock( string_lock );
         #endif
 
-        int count = std::strlen( rep->workspace ) + std::strlen( other );
-        std::unique_ptr< string_node > new_node( new string_node );
+        size_t count = strlen( rep->workspace ) + strlen( other );
+        unique_ptr<string_node> new_node( new string_node );
         new_node->workspace = new char[count + 1];
 
-        std::strcpy( new_node->workspace, rep->workspace );
-        std::strcat( new_node->workspace, other );
+        strcpy( new_node->workspace, rep->workspace );
+        strcat( new_node->workspace, other );
 
         if( rep->count > 1 ) rep->count--;
         else {
@@ -354,11 +363,11 @@ namespace spica {
         mutex_sem::grabber lock( string_lock );
         #endif
 
-        int count = std::strlen( rep->workspace ) + 1;
-        std::unique_ptr< string_node > new_node( new string_node );
+        size_t count = strlen( rep->workspace ) + 1;
+        unique_ptr<string_node> new_node( new string_node );
         new_node->workspace = new char[count + 1];
 
-        std::strcpy( new_node->workspace, rep->workspace );
+        strcpy( new_node->workspace, rep->workspace );
         new_node->workspace[count - 1] = other;
         new_node->workspace[count    ] = '\0';
 
@@ -379,7 +388,7 @@ namespace spica {
      */
     void RexxString::erase( )
     {
-        std::unique_ptr< string_node > new_node( new string_node );
+        unique_ptr<string_node> new_node( new string_node );
         new_node->workspace = new char[1];
         *new_node->workspace = '\0';
 
@@ -406,7 +415,7 @@ namespace spica {
      * \param pad The pad character to use if length is too large.
      * \return A new string containing the result. The original string is unchanged.
      */
-    RexxString RexxString::right( int length, char pad ) const
+    RexxString RexxString::right( size_t length, char pad ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -415,15 +424,12 @@ namespace spica {
         // A place to put the answer.
         RexxString result;
 
-        // Ignore attempts to use a negative count.
-        if (length <= 0) return result;
-
-        int current_length = std::strlen( rep->workspace );
+        size_t current_length = strlen( rep->workspace );
 
         // If we need to make the string shorter...
         if( length < current_length ) {
             char *temp = new char[length + 1];
-            std::strcpy( temp, &rep->workspace[current_length - length] );
+            strcpy( temp, &rep->workspace[current_length - length] );
             delete [] result.rep->workspace;
             result.rep->workspace = temp;
         }
@@ -431,8 +437,8 @@ namespace spica {
         // otherwise we need to make the string longer or the same size...
         else {
             char *temp = new char[length + 1];
-            std::memset( temp, pad, length - current_length );
-            std::strcpy( &temp[length - current_length], rep->workspace );
+            memset( temp, pad, length - current_length );
+            strcpy( &temp[length - current_length], rep->workspace );
             delete [] result.rep->workspace;
             result.rep->workspace = temp;
         }
@@ -450,7 +456,7 @@ namespace spica {
      * \param pad The pad character to use if length is too large.
      * \return A new string containing the result. The original string is unchanged.
      */
-    RexxString RexxString::left( int length, char pad ) const
+    RexxString RexxString::left( size_t length, char pad ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -459,15 +465,12 @@ namespace spica {
         // A place to put the answer.
         RexxString result;
 
-        // Ignore attempts to use a negative count.
-        if( length <= 0 ) return result;
-
-        int current_length = std::strlen(rep->workspace);
+        size_t current_length = strlen(rep->workspace);
 
         // If we need to make the string shorter...
         if( length < current_length ) {
             char *temp = new char[length + 1];
-            std::strncpy( temp, rep->workspace, length );
+            strncpy( temp, rep->workspace, length );
             temp[length] = '\0';
             delete [] result.rep->workspace;
             result.rep->workspace = temp;
@@ -476,8 +479,8 @@ namespace spica {
         // otherwise we need to make the string longer...
         else {
             char *temp = new char[length + 1];
-            std::strcpy( temp, rep->workspace );
-            std::memset( &temp[current_length], pad, length - current_length );
+            strcpy( temp, rep->workspace );
+            memset( &temp[current_length], pad, length - current_length );
             temp[length] = '\0';
             delete [] result.rep->workspace;
             result.rep->workspace = temp;
@@ -497,7 +500,7 @@ namespace spica {
      * \param pad The pad character to use on either side of the centered string.
      * \return A new string containing the result. The original string is not changed.
      */
-    RexxString RexxString::center( int length, char pad ) const
+    RexxString RexxString::center( size_t length, char pad ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -506,26 +509,22 @@ namespace spica {
         // A place to put the answer.
         RexxString result;
 
-        // Ignore attempts to use a negative length.
-        if( length <= 0 ) return result;
+        size_t current_length = strlen( rep->workspace );
 
-        int current_length = std::strlen( rep->workspace );
-
-        // If the current string is too large or the same size, it's just a left() operation.
-        //
+        // If the current string is too large or the same size, it's just a `left` operation.
         if( length <= current_length ) {
             return left( length, pad );
         }
 
-        // Otherwise I have to do real work.
+        // Otherwise we have to do real work.
         else {
             int left_side  = ( length - current_length ) / 2;
             int right_side = length - current_length - left_side;
 
             char *temp = new char[length + 1];
-            std::memset( temp, pad, left_side );
-            std::strcpy( &temp[left_side], rep->workspace );
-            std::memset( &temp[left_side + current_length], pad, right_side );
+            memset( temp, pad, left_side );
+            strcpy( &temp[left_side], rep->workspace );
+            memset( &temp[left_side + current_length], pad, right_side );
             temp[length] = '\0';
             delete [] result.rep->workspace;
             result.rep->workspace = temp;
@@ -544,7 +543,7 @@ namespace spica {
      * \return A new string containing count copies of this string concatenated onto one
      * another. The original string is unchanged.
      */
-    RexxString RexxString::copy( int count ) const
+    RexxString RexxString::copy( size_t count ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -553,13 +552,10 @@ namespace spica {
         // A place to put the answer.
         RexxString result;
 
-        // Ignore attempts to use a negative count.
-        if( count < 0 ) return result;
-
-        char *temp = new char[count * std::strlen( rep->workspace ) + 1];
+        char *temp = new char[count * strlen( rep->workspace ) + 1];
 
         temp[0] = '\0';
-        for( int i = 0; i < count; i++ ) std::strcat( temp, rep->workspace );
+        for( size_t i = 0; i < count; i++ ) strcat( temp, rep->workspace );
         delete [] result.rep->workspace;
         result.rep->workspace = temp;
 
@@ -573,7 +569,7 @@ namespace spica {
      * \return A new string containing the result after erasure. The original string is
      * unchanged.
      */
-    RexxString RexxString::erase( int offset, int count ) const
+    RexxString RexxString::erase( size_t starting_position, size_t count ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -582,29 +578,24 @@ namespace spica {
         // A place to put the answer.
         RexxString result;
 
-        // The client uses one based offsets. We'll used zero based offsets.
-        offset--;
+        // The client uses one-based positions. We'll used zero-based offsets.
+        size_t offset = starting_position - 1;
 
-        // Ignore negative parameters.
-        if( offset < 0 || count < 0 )
-            { result = *this; return result; }
-
-        int current_length = std::strlen( rep->workspace );
+        size_t current_length = strlen( rep->workspace );
 
         // Verify that there is actual work to do.
         if( offset >= current_length || count == 0 )
             { result = *this; return result; }
 
         // Trim the count so that it fits into the bounds on the string. This has to be done
-        // carefully considering that count might be INT_MAX in many cases.
-        //
-        int max_count = current_length - offset;
+        // carefully considering that count might be maximum in many cases.
+        size_t max_count = current_length - offset;
         if( count > max_count ) count = max_count;
 
         // Now do the work.
         char *temp = new char[current_length - count + 1];
-        std::memcpy( temp, rep->workspace, offset );
-        std::strcpy( &temp[offset], &rep->workspace[offset + count] );
+        memcpy( temp, rep->workspace, offset );
+        strcpy( &temp[offset], &rep->workspace[offset + count] );
         delete [] result.rep->workspace;
         result.rep->workspace = temp;
 
@@ -628,7 +619,7 @@ namespace spica {
      * \return A new string containing the result after insertion. The original string is
      * unchanged.
      */
-    RexxString RexxString::insert( const RexxString &incoming, int offset, int count ) const
+    RexxString RexxString::insert( const RexxString &incoming, size_t starting_position, size_t count ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -637,27 +628,24 @@ namespace spica {
         // A place to put the answer.
         RexxString result;
 
-        offset--;
+        size_t offset = starting_position - 1;
 
-        if( offset < 0 || count < 0 )
-            { result = *this; return result; }
-
-        int current_length = std::strlen( rep->workspace );
+        size_t current_length = strlen( rep->workspace );
 
         // Verify that there is actual work to do.
         if( offset > current_length || count == 0 )
             { result = *this; return result; }
 
         // Trim the count.
-        int incoming_length = std::strlen( incoming.rep->workspace );
+        size_t incoming_length = strlen( incoming.rep->workspace );
         if( count > incoming_length ) count = incoming_length;
 
         // Now do the work.
         char *temp = new char [current_length + count + 1];
-        std::memcpy( temp, rep->workspace, offset );
-        // Does memcpy() freak if you copy 0 bytes?
-        std::memcpy( &temp[offset], incoming.rep->workspace, count );
-        std::strcpy( &temp[offset + count], &rep->workspace[offset] );
+        memcpy( temp, rep->workspace, offset );
+        // TODO: Does `memcpy` freak if you copy 0 bytes?
+        memcpy( &temp[offset], incoming.rep->workspace, count );
+        strcpy( &temp[offset + count], &rep->workspace[offset] );
         delete [] result.rep->workspace;
         result.rep->workspace = temp;
 
@@ -666,67 +654,65 @@ namespace spica {
 
 
     /*!
-     * You can <em>not</em> locate the null character at the end of the string using this
-     * method.
+     * You can *not* locate the null character at the end of the string using this method.
      *
      * \param needle The character to find.
      * \param offset The starting index for the search.
-     * \return The index of the first occurance of the needle or 0 if it is not found.
+     * \return The index of the first occurrence of the needle or 0 if it is not found.
      */
-    int RexxString::pos( char needle, int offset ) const
+    size_t RexxString::pos( char needle, size_t starting_position ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
         #endif
 
-        offset--;
+        size_t offset = starting_position - 1;
 
         // If we are starting off the end of the string, then obviously we didn't find anything.
         // Note that this function *does* allow the caller to locate the null character at the
         // end of the string.
-        //
-        if( offset < 0 || static_cast< std::size_t >( offset ) > std::strlen( rep->workspace ) )
+        if( offset > strlen( rep->workspace ) )
             return 0;
 
         // Locate the character.
         const char *p = rep->workspace + offset;
-        p = std::strchr( p, needle );
+        p = strchr( p, needle );
 
         // If we didn't find it, return error.
         if( p == 0 ) return 0;
 
         // Otherwise return the offset to the character.
-        return static_cast< int >( p - rep->workspace ) + 1;
+        return ( p - rep->workspace ) + 1;
     }
 
 
     /*!
      * \param needle Pointer to the string to find.
      * \param offset The starting index for the search.
-     * \return The index to the beginning of the needle string's first occurance or 0 if the
+     * \return The index to the beginning of the needle string's first occurrence or 0 if the
      * needle string is not found.
      */
-    int RexxString::pos( const char *needle, int offset ) const
+    size_t RexxString::pos( const char *needle, size_t starting_position ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
         #endif
 
-        offset--;
+        size_t offset = starting_position - 1;
 
         // If we are starting off the end of the string, then obviously we didn't find anything.
-        if( offset < 0 || static_cast< std::size_t >( offset ) > std::strlen( rep->workspace ) )
+        if( offset > strlen( rep->workspace ) )
             return 0;
 
         // Locate the substring.
         const char *p = rep->workspace + offset;
-        p = std::strstr( p, needle );
+        p = strstr( p, needle );
 
         // If we didn't find it, return error.
         if( p == 0 ) return 0;
 
         // Otherwise return the offset to the first character in the substring.
-        return static_cast< int >( p - rep->workspace ) + 1;
+        return ( p - rep->workspace ) + 1;
     }
 
 
@@ -736,28 +722,27 @@ namespace spica {
      * \param offset The starting index for the search. Any index that is off the end of the
      * string implies that the search starts at the string's end.
      *
-     * \return The index of the last occurance of the needle character (last relative to the
+     * \return The index of the last occurrence of the needle character (last relative to the
      * starting index) or 0 if the character was not found.
      */
-    int RexxString::last_pos( char needle, int offset ) const
+    size_t RexxString::last_pos( char needle, size_t starting_position ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
         #endif
 
-        offset--;
+        size_t offset = starting_position - 1;
 
-        int current_length = std::strlen( rep->workspace );
+        size_t current_length = strlen( rep->workspace );
 
         // Handle the case of offset being off the end of the string.
-        if( offset < 0 ) return 0;
         if( offset > current_length ) offset = current_length;
 
         const char *p = rep->workspace + offset;
 
         // Now back up. If we find the character, return the offset to it.
         while( p >= rep->workspace ) {
-            if( *p == needle ) return static_cast< int >( p - rep->workspace ) + 1;
+            if( *p == needle ) return ( p - rep->workspace ) + 1;
             p--;
             // Is it technically ok to step a pointer one off the beginning of an array? (NO!)
         }
@@ -786,13 +771,12 @@ namespace spica {
         RexxString result;
 
         const char *start = rep->workspace;
-        const char *end   = std::strchr( rep->workspace, '\0' );
+        const char *end   = strchr( rep->workspace, '\0' );
 
         // Handle the empty string as a special case.
         if( start == end ) return result;
 
         // Back up end so that it points just before the terminating null character.
-        //
         end--;
 
         // Move start to the desired spot.
@@ -822,9 +806,9 @@ namespace spica {
 
         // Otherwise there is something to do.
         else {
-            int length = static_cast< int >( end - start ) + 1;
+            ptrdiff_t length = ( end - start ) + 1;
             char *temp = new char[length + 1];
-            std::memcpy( temp, start, length );
+            memcpy( temp, start, length );
             temp[length] = '\0';
             delete [] result.rep->workspace;
             result.rep->workspace = temp;
@@ -839,7 +823,7 @@ namespace spica {
      * \param count The length of the substring
      * \return The specified substring.
      */
-    RexxString RexxString::substr( int offset, int count ) const
+    RexxString RexxString::substr( size_t starting_position, size_t count ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -848,11 +832,9 @@ namespace spica {
         // A place to put the answer.
         RexxString result;
 
-        offset--;
+        size_t offset = starting_position - 1;
 
-        if( offset < 0 || count < 0 ) return result;
-
-        int current_length = std::strlen( rep->workspace );
+        size_t current_length = strlen( rep->workspace );
 
         // If the offset is off the end of the string, then return an empty string.
         //
@@ -865,7 +847,7 @@ namespace spica {
 
         // Create the new string.
         char *temp = new char[count + 1];
-        std::memcpy( temp, &rep->workspace[offset], count );
+        memcpy( temp, &rep->workspace[offset], count );
         temp[count] = '\0';
 
         delete [] result.rep->workspace;
@@ -876,7 +858,7 @@ namespace spica {
 
 
     /*!
-     * Embeded delimiter characters are retained exactly as they exist in the string, but
+     * Embedded delimiter characters are retained exactly as they exist in the string, but
      * leading and trailing delimiter characters are removed. By default delimiters are the
      * white space characters: space, tab, vertical tab, carriage return, newline, and form
      * feed. However, if white is non-null it is taken to point at a string that defines the
@@ -890,7 +872,7 @@ namespace spica {
      * \param white Pointer to a string containing word delimiter characters.
      * \return The specified substring.
      */
-    RexxString RexxString::subword( int offset, int count, const char *white ) const
+    RexxString RexxString::subword( size_t starting_position, size_t count, const char *white ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
@@ -899,11 +881,9 @@ namespace spica {
         // A place to put the answer.
         RexxString result;
 
-        offset--;
+        size_t offset = starting_position - 1;
 
-        if( offset < 0 || count < 0 ) return result;
-
-        int current_length = words( white );
+        size_t current_length = words( white );
 
         // If the offset is off the end of the string, then return an empty string.
         if( offset >= current_length ) {
@@ -916,7 +896,7 @@ namespace spica {
         // Handle the count of zero as a special case.
         if( count == 0 ) return result;
 
-        // Find the beginning of the the offsetth word.
+        // Find the beginning of the the offset-th word.
         const char *start = rep->workspace;
         while( 1 ) {
 
@@ -930,7 +910,7 @@ namespace spica {
             offset--;
         }
 
-        // Now find the end of the countth word from start.
+        // Now find the end of the count-th word from start.
         const char *end = start;
         while( 1 ) {
 
@@ -945,9 +925,9 @@ namespace spica {
         }
 
         // Now create the new character string.
-        int length = static_cast< int >( end - start );
+        ptrdiff_t length = end - start;
         char *temp = new char[length + 1];
-        std::memcpy( temp, start, length );
+        memcpy( temp, start, length );
         temp[length] = '\0';
 
         delete [] result.rep->workspace;

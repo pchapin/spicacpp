@@ -11,7 +11,7 @@
 
 #include "environ.hpp"
 #include <iosfwd>
-#include <limits.h>
+#include <limits>
 
 namespace spica {
 
@@ -47,24 +47,23 @@ namespace spica {
 
     public:
 
-
         //! Construct an empty string.
         RexxString( );
 
-        //! Construct a string that is a copy of the given string.
-        RexxString( const RexxString & );
+        //! Construct a string that is a copy of the existing string.
+        RexxString( const RexxString &existing );
 
-        //! Construct a string that is a copy of the given string.
-        RexxString( const char * );
+        //! Construct a string that is a copy of the existing C-string.
+        RexxString( const char *existing );
 
-        //! Construct a string from a single character.
-        RexxString( char );
+        //! Construct a string from a single, existing character.
+        RexxString( char existing );
 
-        //! Assign the given string to this string.
-        RexxString &operator=( const RexxString & );
+        //! Assign the other string to this string.
+        RexxString &operator=( const RexxString &other );
 
-        //! Assign the given string to this string.
-        RexxString &operator=( const char * );
+        //! Assign the other C-string to this string.
+        RexxString &operator=( const char *other );
 
         //! Destroy this string.
         ~RexxString( );
@@ -77,6 +76,7 @@ namespace spica {
         operator const char *( ) const { return rep->workspace; }
 
         //! Return the length of this string.
+        /*! \sa size */
         int length( ) const;
 
         //! Return the length of this string.
@@ -84,52 +84,64 @@ namespace spica {
         int size( ) const { return length( ); }
 
         //! Append the given string to the end of this string.
-        RexxString &append( const RexxString & );
+        RexxString &append( const RexxString &other );
 
         //! Append the given string to the end of this string.
-        RexxString &append( const char * );
+        RexxString &append( const char *other );
 
         //! Append the given character to the end of this string.
-        RexxString &append( char );
+        RexxString &append( char other );
 
         //! Erase this string, making it empty.
         void erase( );
 
         //! Return the rightmost characters of this string.
-        RexxString right( int length, char pad = ' ' ) const;
+        RexxString right( size_t length, char pad = ' ' ) const;
 
         //! Return the leftmost characters of this string.
-        RexxString left( int length, char pad = ' ' ) const;
+        RexxString left( size_t length, char pad = ' ' ) const;
 
         //! Return this string centered between runs of pad characters.
-        RexxString center( int length, char pad = ' ' ) const;
+        RexxString center( size_t length, char pad = ' ' ) const;
 
         //! Copy this string.
-        RexxString copy( int count ) const;
+        RexxString copy( size_t count ) const;
 
         //! Erase a substring of this string.
-        RexxString erase( int offset, int count = INT_MAX ) const;
+        RexxString erase(
+            size_t starting_position,
+            size_t count = std::numeric_limits<std::size_t>::max( ) ) const;
 
         //! Insert a string into this string.
-        RexxString insert( const RexxString &incoming, int offset = 1, int length = INT_MAX ) const;
+        RexxString insert(
+            const RexxString &incoming,
+            size_t starting_position = 1,
+            size_t length = std::numeric_limits<std::size_t>::max( ) ) const;
 
         //! Search this string forward for a character.
-        int pos( char needle, int offset = 1 ) const;
+        size_t pos( char needle, size_t starting_position = 1 ) const;
 
         //! Search this string forward for a string.
-        int pos( const char *needle, int offset = 1 ) const;
+        size_t pos( const char *needle, size_t starting_position = 1 ) const;
 
         //! Search this string backward for a character.
-        int last_pos( char needle, int offset = INT_MAX ) const;
+        size_t last_pos(
+            char needle,
+            size_t starting_position = std::numeric_limits<std::size_t>::max( ) ) const;
 
         //! Strip leading or trailing instances of kill_char from this string.
         RexxString strip( char mode = 'B', char kill_char = ' ' ) const;
 
         //! Locate a substring of this string.
-        RexxString substr( int offset, int count = INT_MAX ) const;
+        RexxString substr(
+            size_t starting_position,
+            size_t count = std::numeric_limits<std::size_t>::max( ) ) const;
 
         //! Locate a substring of this string consisting of the specified number of words.
-        RexxString subword( int offset, int count = INT_MAX, const char *white = 0 ) const;
+        RexxString subword(
+            size_t starting_position,
+            size_t count = std::numeric_limits<std::size_t>::max( ),
+            const char *white = 0 ) const;
 
         //! Return a specific word from this string.
         /*!
@@ -139,8 +151,8 @@ namespace spica {
          * \param offset The index of the word of interest.
          * \param white Pointer to a string of word delimiter characters.
          */
-        RexxString word( int offset, const char *white = 0 ) const
-            { return subword( offset, 1, white ); }
+        RexxString word( size_t starting_position, const char *white = 0 ) const
+            { return subword( starting_position, 1, white ); }
 
         //! Return the number of words in this string.
         int words( const char *white = 0 ) const;
@@ -188,13 +200,13 @@ namespace spica {
     //! Concatenate two strings.
     RexxString operator+( const RexxString &left, const RexxString &right );
 
-    //! Concatenate two strings.
+    //! Concatenate a strings and a C-string.
     RexxString operator+( const RexxString &left, const char *right );
 
-    //! Concatenate two strings.
+    //! Concatenate a C-string and a string.
     RexxString operator+( const char *left, const RexxString &right );
 
-    //! Concatenate a character and a string.
+    //! Concatenate a string and a character.
     RexxString operator+( const RexxString &left, char right );
 
     //! Concatenate a character and a string.
