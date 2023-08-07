@@ -1,0 +1,12 @@
+############################################################################
+# FILE   : makefile
+# AUTHOR : (C) Peter Chapin <spicacality@kelseymountain.org>
+#
+# This is the makefile for the SpicaCpp project.
+############################################################################
+
+!include master.mif
+
+.cpp:     ..\..
+.cpp.obj: .AUTODEPEND
+    wpp386 $(cpp_options) /bt=nt $[*.cpp
