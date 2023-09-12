@@ -6,12 +6,20 @@
  * strings that exist in the Rexx language.
  */
 
-#ifndef STR_HPP
-#define STR_HPP
+#ifndef REXXSTRING_HPP
+#define REXXSTRING_HPP
 
 #include "environ.hpp"
+
 #include <iosfwd>
 #include <limits>
+
+// Unfortunately, the Windows version of <limits> appears to define min and max as macros that
+// hide the previously declared min and max templates in the standard library.
+#ifdef eWIN32
+#undef min
+#undef max
+#endif
 
 namespace spica {
 
@@ -77,11 +85,11 @@ namespace spica {
 
         //! Return the length of this string.
         /*! \sa size */
-        int length( ) const;
+        std::size_t length( ) const;
 
         //! Return the length of this string.
         /*! \sa length */
-        int size( ) const { return length( ); }
+        std::size_t size( ) const { return length( ); }
 
         //! Append the given string to the end of this string.
         RexxString &append( const RexxString &other );
@@ -96,51 +104,51 @@ namespace spica {
         void erase( );
 
         //! Return the rightmost characters of this string.
-        RexxString right( size_t length, char pad = ' ' ) const;
+        RexxString right( std::size_t length, char pad = ' ' ) const;
 
         //! Return the leftmost characters of this string.
-        RexxString left( size_t length, char pad = ' ' ) const;
+        RexxString left( std::size_t length, char pad = ' ' ) const;
 
         //! Return this string centered between runs of pad characters.
-        RexxString center( size_t length, char pad = ' ' ) const;
+        RexxString center( std::size_t length, char pad = ' ' ) const;
 
         //! Copy this string.
-        RexxString copy( size_t count ) const;
+        RexxString copy( std::size_t count ) const;
 
         //! Erase a substring of this string.
         RexxString erase(
-            size_t starting_position,
-            size_t count = std::numeric_limits<std::size_t>::max( ) ) const;
+            std::size_t starting_position,
+            std::size_t count = std::numeric_limits<std::size_t>::max( ) ) const;
 
         //! Insert a string into this string.
         RexxString insert(
-            const RexxString &incoming,
-            size_t starting_position = 1,
-            size_t length = std::numeric_limits<std::size_t>::max( ) ) const;
+            const RexxString& incoming,
+            std::size_t starting_position = 1,
+            std::size_t length = std::numeric_limits<std::size_t>::max( ) ) const;
 
         //! Search this string forward for a character.
-        size_t pos( char needle, size_t starting_position = 1 ) const;
+        size_t pos( char needle, std::size_t starting_position = 1 ) const;
 
         //! Search this string forward for a string.
-        size_t pos( const char *needle, size_t starting_position = 1 ) const;
+        size_t pos( const char *needle, std::size_t starting_position = 1 ) const;
 
         //! Search this string backward for a character.
         size_t last_pos(
             char needle,
-            size_t starting_position = std::numeric_limits<std::size_t>::max( ) ) const;
+            std::size_t starting_position = std::numeric_limits<std::size_t>::max( ) ) const;
 
         //! Strip leading or trailing instances of kill_char from this string.
         RexxString strip( char mode = 'B', char kill_char = ' ' ) const;
 
         //! Locate a substring of this string.
         RexxString substr(
-            size_t starting_position,
-            size_t count = std::numeric_limits<std::size_t>::max( ) ) const;
+            std::size_t starting_position,
+            std::size_t count = std::numeric_limits<std::size_t>::max( ) ) const;
 
         //! Locate a substring of this string consisting of the specified number of words.
         RexxString subword(
-            size_t starting_position,
-            size_t count = std::numeric_limits<std::size_t>::max( ),
+            std::size_t starting_position,
+            std::size_t count = std::numeric_limits<std::size_t>::max( ),
             const char *white = 0 ) const;
 
         //! Return a specific word from this string.
@@ -151,7 +159,7 @@ namespace spica {
          * \param offset The index of the word of interest.
          * \param white Pointer to a string of word delimiter characters.
          */
-        RexxString word( size_t starting_position, const char *white = 0 ) const
+        RexxString word( std::size_t starting_position, const char *white = 0 ) const
             { return subword( starting_position, 1, white ); }
 
         //! Return the number of words in this string.

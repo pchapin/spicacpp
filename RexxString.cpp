@@ -299,7 +299,7 @@ namespace spica {
      * The length does not include the terminating null character. Note that currently this is
      * an O(n) operation.
      */
-    int RexxString::length( ) const
+    size_t RexxString::length( ) const
     {
         #if defined(pMULTITHREADED)
         mutex_sem::grabber lock( string_lock );
