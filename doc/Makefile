@@ -7,7 +7,7 @@
 # Implicit Rules
 ################
 %.pdf:  %.svg
-        inkscape $< --batch-process --export-type=pdf --export-filename=$@
+	inkscape $< --batch-process --export-type=pdf --export-filename=$@
 
 all:    BoundedList.pdf
 
@@ -16,7 +16,7 @@ BoundedList-Representation.pdf: BoundedList-Representation.svg
 
 # Compile the documentation.
 BoundedList.pdf:        BoundedList.tex BoundedList-Representation.pdf
-        pdflatex BoundedList.tex
+	pdflatex BoundedList.tex
 
 clean:
-        rm -f *.aux *.log *.pdf
+	rm -f *.aux *.log *.pdf

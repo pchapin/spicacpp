@@ -140,7 +140,7 @@ namespace spica {
         //friend class BoundedList::iterator;
 
         BoundedList( size_type max_count );
-        BoundedList(const std::initializer_list<T>& initializer);
+        BoundedList(const std::initializer_list<T> &initializer);
        ~BoundedList( ) noexcept;
 
         BoundedList( BoundedList &&other ) noexcept;
@@ -259,7 +259,7 @@ namespace spica {
 
 
     template<typename T>
-    BoundedList<T>::BoundedList( const std::initializer_list<T>& initializer )
+    BoundedList<T>::BoundedList( const std::initializer_list<T> &initializer )
     {
         // Default construct *this so the list is fully functional.
         do_initialize( initializer.size( ) );
@@ -308,7 +308,7 @@ namespace spica {
 
 
     template<typename T>
-    BoundedList<T>& BoundedList<T>::operator=( BoundedList&& other ) noexcept
+    BoundedList<T> &BoundedList<T>::operator=( BoundedList&& other ) noexcept
     {
         if( this != &other ) {
             this->~BoundedList( );
