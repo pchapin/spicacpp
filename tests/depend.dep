@@ -1,8 +1,7 @@
-u_tests.cpp
 BinomialHeap_tests.cpp
 BoundedList_tests.cpp
 Graph_tests.cpp
-sort_tests.cpp
-VeryLong_tests.cpp
 RexxString_tests.cpp
+sort_tests.cpp
 Timer_tests.cpp
+VeryLong_tests.cpp

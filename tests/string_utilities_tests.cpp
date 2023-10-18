@@ -4,7 +4,7 @@
  */
 
 #include <iostream>
-#include "string_utilities.hpp"
+#include "../string_utilities.hpp"
 
 int string_utilities_tests( )
 {

@@ -7,7 +7,7 @@
  * class works.
  */
 
-#include "environ.hpp"
+#include "../environ.hpp"
 
 // I need ctype.h for strupr(). I provide my own strupr() on Unix systems.
 #if eOPSYS == ePOSIX
@@ -17,7 +17,7 @@
 #include <iostream>
 #include <cstring>
 
-#include "RexxString.hpp"
+#include "../RexxString.hpp"
 
 using namespace spica;
 

@@ -8,7 +8,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <boost/thread.hpp>
-#include "Semaphore.hpp"
+#include "../Semaphore.hpp"
 
 using namespace spica;
 

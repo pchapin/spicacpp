@@ -7,9 +7,9 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "BoundedList.hpp"
-#include "u_tests.hpp"
-#include "UnitTestManager.hpp"
+#include "../BoundedList.hpp"
+#include "../u_tests.hpp"
+#include "../UnitTestManager.hpp"
 
 using namespace spica;
 

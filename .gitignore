@@ -31,8 +31,8 @@ SpicaCpp.lib
 # gcc generated files.
 *.o
 libSpicaCpp.a
-check/u_tests
-check/u_tests.exe
+u_tests
+u_tests.exe
 
 # LaTeX generated files.
 *.aux

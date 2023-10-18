@@ -7,9 +7,9 @@
 #include <string>
 #include <sstream>
 
-#include "VeryLong.hpp"
-#include "u_tests.hpp"
-#include "UnitTestManager.hpp"
+#include "../VeryLong.hpp"
+#include "../u_tests.hpp"
+#include "../UnitTestManager.hpp"
 
 using namespace spica;
 

@@ -6,13 +6,13 @@
  * certainly not exhaustive but it is a start. Hopefully it is better than nothing.
  */
 
-#include "environ.hpp"
+#include "../environ.hpp"
 
 #include <iostream>
 
 #include <process.h>
 #include <windows.h>
-#include "RexxString.hpp"
+#include "../RexxString.hpp"
 
 spica::RexxString *A;
 spica::RexxString *B;

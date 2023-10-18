@@ -3,7 +3,7 @@
  *  \author  Peter Chapin <spicacality@kelseymountain.org>
  */
 
-#include "environ.hpp"
+#include "../environ.hpp"
 
 #include <iostream>
 
@@ -19,7 +19,7 @@
 #include <unistd.h>
 #endif
 
-#include "Timer.hpp"
+#include "../Timer.hpp"
 
 //
 // static void do_sleep( int )

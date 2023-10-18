@@ -45,7 +45,7 @@ namespace spica {
         //! Locks the semaphore (puts it into an owned state).
         void lock( );
 
-        //! Releases ownwership of the semaphore.
+        //! Releases ownership of the semaphore.
         void unlock( );
 
        //! Provides for locking and unlocking using RAI idiom.
@@ -93,14 +93,12 @@ namespace spica {
 
     //! Counting semaphores.
     /*!
-        Counting semaphores are simple counters. If a thread tries to
-        decrement a zero, the thread is blocked until some other thread
-        tries to increment the semaphore. At that time the blocked thread
-        is allowed to complete its decrement operation. These semaphores
-        are useful for keeping track of a limited resource that is being
-        used by multiple threads. A thread should decrememt a counting
-        semaphore before trying to use a unit of the resource to first
-        "reserve" a unit for itself.
+        Counting semaphores are simple counters. If a thread tries to decrement a zero, the
+        thread is blocked until some other thread tries to increment the semaphore. At that time
+        the blocked thread is allowed to complete its decrement operation. These semaphores are
+        useful for keeping track of a limited resource that is being used by multiple threads. A
+        thread should decrement a counting semaphore before trying to use a unit of the resource
+        to first "reserve" a unit for itself.
     */
     class counting_sem {
     public:
@@ -147,10 +145,9 @@ namespace spica {
 
     //! Read/Write semaphore
     /*!
-        Read/Write semaphores allow multiple readers to access a shared
-        resource but give exclusive access to a single writer. This type of
-        locking is appropriate when a shared resource can be read
-        simultaneously safely and when most access is, in fact, read
+        Read/Write semaphores allow multiple readers to access a shared resource but give
+        exclusive access to a single writer. This type of locking is appropriate when a shared
+        resource can be read simultaneously safely and when most access is, in fact, read
         access. This implementation gives writers priority over readers.
 
         THIS CLASS IS CURRENTLY UNIMPLEMENTED!
@@ -162,8 +159,7 @@ namespace spica {
 
         //! Read lock.
         /*!
-            Asking for a read lock always returns at once unless a writer has
-            locked.
+            Asking for a read lock always returns at once unless a writer has locked.
         */
         void r_lock( );
 
@@ -172,9 +168,9 @@ namespace spica {
 
         //! Write lock.
         /*!
-            Write locks are exclusive. When a thread has a write lock no other
-            thread (either readers or writers) are granted access. When a
-            write lock is requested, it will be granted as soon as possible.
+            Write locks are exclusive. When a thread has a write lock no other thread (either
+            readers or writers) are granted access. When a write lock is requested, it will be
+            granted as soon as possible.
         */
         void w_lock( );
 

@@ -7,7 +7,7 @@
 #include <ctime>
 #include <iostream>
 #include <vector>
-#include "BinaryTree.hpp"
+#include "../BinaryTree.hpp"
 
 #define MAXCOUNT 10000
 

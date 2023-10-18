@@ -9,9 +9,9 @@
 #include <iostream>
 #include <vector>
 
-#include "BinomialHeap.hpp"
-#include "u_tests.hpp"
-#include "UnitTestManager.hpp"
+#include "../BinomialHeap.hpp"
+#include "../u_tests.hpp"
+#include "../UnitTestManager.hpp"
 
 #define N 10000  // The number of items in the heap during primary testing.
 
