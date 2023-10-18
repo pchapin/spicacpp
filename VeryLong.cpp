@@ -14,7 +14,7 @@
  * noticeable for other, higher level operations. This implementation ensures that there is no
  * negative zero. Thus two zero values generated in different ways will compare equal.
  *
- * TODO:
+ * TODO: Consider the following items...
  *
  * + The I/O operations should be modified so that they don't depend on ASCII and they should
  *   honor formatting flags in the stream objects they are given. Also the handling of white

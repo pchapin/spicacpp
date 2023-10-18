@@ -2,15 +2,16 @@
  *  \brief   Binary tree template.
  *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
- * TODO:
+ * TODO: Consider the following items...
  *
+ * + Implement a test program! This is a priority, especially for a template!
  * + Implement operator--() for iterators.
  * + Implement reverse iterators.
  * + Implement the copy constructor and operator=()
  */
 
-#ifndef BINARYTREE_H
-#define BINARYTREE_H
+#ifndef SPICA_BINARYTREE_H
+#define SPICA_BINARYTREE_H
 
 #include <algorithm>
 #include <functional>
@@ -27,7 +28,7 @@ namespace spica {
      *
      * This template provides all the usual operations (or at least, that is the intent).
      */
-    template< typename T, typename StrictWeakOrdering = std::less< T > >
+    template<typename T, typename StrictWeakOrdering = std::less<T>>
     class BinaryTree {
 
     public:
@@ -64,15 +65,20 @@ namespace spica {
 
         //! Tree iterators class.
         /*!
-         * Tree iterators are bidirectional iterators and support all the usual bidirection
+         * Tree iterators are bidirectional iterators and support all the usual bidirectional
          * operations (at least that is the intent).
          */
-        class iterator :
-            public std::iterator< std::bidirectional_iterator_tag, const T > {
+        class iterator {
 
             friend class BinaryTree;
 
         public:
+            typedef std::bidirectional_iterator_tag iterator_category;
+            typedef T               value_type;
+            typedef T              *pointer;
+            typedef T              &reference;
+            typedef std::ptrdiff_t  difference_type;
+
             //! Returns a reference to the current data item.
             const_reference operator*( ) const { return my_node->data; }
 
@@ -99,7 +105,7 @@ namespace spica {
             }
 
             //! Default constructor.
-            iterator( ) : my_tree( 0 ), my_node( 0 ) { }
+            iterator( ) : my_tree( nullptr ), my_node( nullptr ) { }
 
         private:
             iterator( const BinaryTree *t, const typename BinaryTree::TreeNode *n ) :
@@ -113,10 +119,12 @@ namespace spica {
 
         //! Default constructors.
         BinaryTree( StrictWeakOrdering c = StrictWeakOrdering( ) )
-            : root( 0 ), count( 0 ), comp( c )
+            : root( nullptr ), count( 0 ), comp( c )
             { }
-        // BinaryTree( const BinaryTree & );
-        // BinaryTree &operator=( const BinaryTree & );
+
+        // For now don't bother with copying. Save that for version 2.0!
+        BinaryTree( const BinaryTree & ) = delete;
+        BinaryTree &operator=( const BinaryTree & ) = delete;
 
         //! Destructor.
        ~BinaryTree( );
@@ -131,7 +139,7 @@ namespace spica {
         size_type size( ) const { return count; }
 
         //! Inserts a new item in the tree.
-        std::pair< iterator, bool > insert( const T & );
+        std::pair<iterator, bool> insert( const T & );
 
         //! Locates an item in the tree.
         iterator find( const T & ) const;
@@ -146,22 +154,22 @@ namespace spica {
 
 
     // =====
-    // Methods of BinaryTree< T, StrictWeakOrdering >::iterator
+    // Methods of BinaryTree<T, StrictWeakOrdering>::iterator
     // =====
 
-    template< typename T, typename StrictWeakOrdering >
-    typename BinaryTree< T, StrictWeakOrdering >::iterator &
-        BinaryTree< T, StrictWeakOrdering >::iterator::operator++( )
+    template<typename T, typename StrictWeakOrdering>
+    typename BinaryTree<T, StrictWeakOrdering>::iterator &
+        BinaryTree<T, StrictWeakOrdering>::iterator::operator++( )
     {
         // Is incrementing an off-the-end iterator undefined?
-        if( my_node == 0 ) return *this;
+        if( my_node == nullptr ) return *this;
 
-        if( my_node->right != 0 ) {
+        if( my_node->right != nullptr ) {
             my_node = my_tree->minimum_node( my_node->right );
         }
         else {
             typename BinaryTree::TreeNode *candidate = my_node->parent;
-            while( candidate != 0 && my_node == candidate->right ) {
+            while( candidate != nullptr && my_node == candidate->right ) {
                 my_node = candidate;
                 candidate = my_node->parent;
             }
@@ -171,9 +179,9 @@ namespace spica {
     }
 
 
-    template< typename T, typename StrictWeakOrdering >
-    typename BinaryTree< T, StrictWeakOrdering >::iterator &
-        BinaryTree< T, StrictWeakOrdering >::iterator::operator--( )
+    template<typename T, typename StrictWeakOrdering>
+    typename BinaryTree<T, StrictWeakOrdering>::iterator &
+        BinaryTree<T, StrictWeakOrdering>::iterator::operator--( )
     {
         // UNFINISHED!
         return *this;
@@ -184,71 +192,71 @@ namespace spica {
     // Methods of BinaryTree
     // =====
 
-    template< typename T, typename StrictWeakOrdering >
-    void BinaryTree< T, StrictWeakOrdering >::kill_subtree( TreeNode *r )
+    template<typename T, typename StrictWeakOrdering>
+    void BinaryTree<T, StrictWeakOrdering>::kill_subtree( TreeNode *r )
     {
-        if( r == 0 ) return;
+        if( r == nullptr ) return;
         kill_subtree( r->left );
         kill_subtree( r->right );
         delete r;
     }
 
 
-    template< typename T, typename StrictWeakOrdering >
-    const typename BinaryTree< T, StrictWeakOrdering >::TreeNode *
-        BinaryTree< T, StrictWeakOrdering >::minimum_node( TreeNode *r ) const
+    template<typename T, typename StrictWeakOrdering>
+    const typename BinaryTree<T, StrictWeakOrdering>::TreeNode *
+        BinaryTree<T, StrictWeakOrdering>::minimum_node( TreeNode *r ) const
     {
-        while( r->left != 0 ) {
+        while( r->left != nullptr ) {
             r = r->left;
         }
         return r;
     }
 
 
-    template< typename T, typename StrictWeakOrdering >
-    const typename BinaryTree< T, StrictWeakOrdering >::TreeNode *
-        BinaryTree< T, StrictWeakOrdering >::maximum_node( TreeNode *r ) const
+    template<typename T, typename StrictWeakOrdering>
+    const typename BinaryTree<T, StrictWeakOrdering>::TreeNode *
+        BinaryTree<T, StrictWeakOrdering>::maximum_node( TreeNode *r ) const
     {
-        while( r->right != 0 ) {
+        while( r->right != nullptr ) {
             r = r->right;
         }
         return r;
     }
 
 
-    template< typename T, typename StrictWeakOrdering >
-    BinaryTree< T, StrictWeakOrdering >::~BinaryTree( )
+    template<typename T, typename StrictWeakOrdering>
+    BinaryTree<T, StrictWeakOrdering>::~BinaryTree( )
     {
         kill_subtree( root );
     }
 
 
-    template< typename T, typename StrictWeakOrdering >
-    typename BinaryTree< T, StrictWeakOrdering >::iterator
-        BinaryTree< T, StrictWeakOrdering >::begin( ) const
+    template<typename T, typename StrictWeakOrdering>
+    typename BinaryTree<T, StrictWeakOrdering>::iterator
+        BinaryTree<T, StrictWeakOrdering>::begin( ) const
     {
-        if( root == 0 ) return iterator( this, 0 );
+        if( root == nullptr ) return iterator( this, nullptr );
         return iterator( this, minimum_node( root ) );
     }
 
 
-    template< typename T, typename StrictWeakOrdering >
-    typename BinaryTree< T, StrictWeakOrdering >::iterator
-        BinaryTree< T, StrictWeakOrdering >::end( ) const
+    template<typename T, typename StrictWeakOrdering>
+    typename BinaryTree<T, StrictWeakOrdering>::iterator
+        BinaryTree<T, StrictWeakOrdering>::end( ) const
     {
-        return iterator( this, 0 );
+        return iterator( this, nullptr );
     }
 
 
-    template< typename T, typename StrictWeakOrdering >
-    std::pair< typename BinaryTree< T, StrictWeakOrdering >::iterator, bool >
+    template<typename T, typename StrictWeakOrdering>
+    std::pair<typename BinaryTree<T, StrictWeakOrdering>::iterator, bool>
         BinaryTree<T, StrictWeakOrdering>::insert( const T &item )
     {
-        TreeNode *bookmark = 0;
+        TreeNode *bookmark = nullptr;
         TreeNode *current  = root;
-        TreeNode *new_node = new TreeNode( item, 0, 0, 0 );
+        TreeNode *new_node = new TreeNode( item, nullptr, nullptr, nullptr );
 
-        while( current != 0 ) {
+        while( current != nullptr ) {
             bookmark = current;
             if( comp( new_node->data, current->data ) ) {
                 current = current->left;
@@ -259,12 +267,12 @@ namespace spica {
             else {
                 // Current is a copy of the new item.
                 delete new_node;
-                return std::pair< iterator, bool >( iterator( this, current ), false );
+                return std::pair<iterator, bool>( iterator( this, current ), false );
             }
         }
 
         new_node->parent = bookmark;
-        if( bookmark == 0 ) {
+        if( bookmark == nullptr ) {
             root = new_node;
         }
         else if( comp( new_node->data, bookmark->data ) ) {
@@ -275,13 +283,13 @@ namespace spica {
         }
 
         ++count;
-        return std::pair< iterator, bool >( iterator( this, new_node ), true );
+        return std::pair<iterator, bool>( iterator( this, new_node ), true );
     }
 
 
-    template< typename T, typename StrictWeakOrdering >
-    typename BinaryTree< T, StrictWeakOrdering >::iterator
-        BinaryTree< T, StrictWeakOrdering >::find( const T &item ) const
+    template<typename T, typename StrictWeakOrdering>
+    typename BinaryTree<T, StrictWeakOrdering>::iterator
+        BinaryTree<T, StrictWeakOrdering>::find( const T &item ) const
     {
         TreeNode *p = root;
         while( p != 0 && ( comp( item, p->data ) || comp( p->data, item ) ) ) {
@@ -296,21 +304,21 @@ namespace spica {
     }
 
 
-    template< typename T, typename StrictWeakOrdering >
-    void BinaryTree< T, StrictWeakOrdering >::erase( iterator it )
+    template<typename T, typename StrictWeakOrdering>
+    void BinaryTree<T, StrictWeakOrdering>::erase( iterator it )
     {
         // This version of erase assumes 'it' points at a valid node.
         const TreeNode *splice;
         TreeNode *rest;
 
-        if( it.my_node->left == 0 || it.my_node->right == 0 ) {
+        if( it.my_node->left == nullptr || it.my_node->right == nullptr ) {
             splice = it.my_node;
         }
         else {
             splice = minimum_node( it.my_node->right );
         }
 
-        if( splice->left != 0 ) {
+        if( splice->left != nullptr ) {
             rest = splice->left;
         }
         else {
@@ -320,7 +328,7 @@ namespace spica {
         if( rest != 0 ) {
             rest->parent = splice->parent;
         }
-        if( splice->parent == 0 ) {
+        if( splice->parent == nullptr ) {
             root = rest;
         }
         else if( splice == splice->parent->left ) {
@@ -331,21 +339,21 @@ namespace spica {
         }
 
         if( splice != it.my_node ) {
-            const_cast< TreeNode * >( it.my_node )->data = splice->data;
+            const_cast<TreeNode *>( it.my_node )->data = splice->data;
         }
 
         delete splice;
         --count;
 
-        // The iterator it is now invalid. Is that okay?
+        // The iterator `it` is now invalid. Is that okay?
     }
 
 
-    template< typename T, typename StrictWeakOrdering >
-    void BinaryTree< T, StrictWeakOrdering >::clear( )
+    template<typename T, typename StrictWeakOrdering>
+    void BinaryTree<T, StrictWeakOrdering>::clear( )
     {
         kill_subtree( root );
-        root  = 0;
+        root  = nullptr;
         count = 0;
     }
 

@@ -2,7 +2,7 @@
  *  \brief   Binomial heap container template
  *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
- * TODO:
+ * TODO: Consider the following...
  *
  * + Implement the DELETE and "DECREASE"-KEY operations.
  */
@@ -36,7 +36,7 @@ namespace spica {
      *  diagrams showing how these functions work. In addition, the reference contains several
      *  suggestions for ways this simple minded implementation might be improved.
      */
-    template< typename T, typename StrictWeakOrdering = std::less< T > >
+    template<typename T, typename StrictWeakOrdering = std::less<T>>
     class BinomialHeap {
     public:
 
@@ -62,7 +62,7 @@ namespace spica {
 
             // Initializes the members of a tree node.
             BinomialTreeNode( const key_type &new_item ) : data( new_item )
-                { parent = child = sibling = 0; degree = 0; }
+                { parent = child = sibling = nullptr; degree = 0; }
         };
 
         // The head of the root list.
@@ -101,7 +101,7 @@ namespace spica {
         /*!
          * Binomial heap iterators are forward iterators. They provide O(1) increment and O(n)
          * sweeps through the entire heap. However, because of the structure of a binomial heap,
-         * these iterators are relatively "heavyweight." As a consequence they might throw an
+         * these iterators are relatively "heavy weight." As a consequence they might throw an
          * exception (std::bad_alloc) when they are copied or when they are incremented. In
          * practice I do not expect that this would be a major problem. They might also consume
          * a considerable amount of memory if they are iterating over a large heap.
@@ -131,7 +131,7 @@ namespace spica {
 
         public:
             //! Default constructor.
-            iterator( ) : current( 0 ), pQ( 0 ) { }
+            iterator( ) : current( nullptr ), pQ( nullptr ) { }
 
             //! Copy constructor.
             iterator( const iterator &other )
@@ -177,11 +177,11 @@ namespace spica {
 
         //! Create an empty heap.
         BinomialHeap( const StrictWeakOrdering &C = StrictWeakOrdering( ) )
-            : roots( 0 ), count( 0 ), comp( C )
+            : roots( nullptr ), count( 0 ), comp( C )
             { }
 
         //! Create a heap from the given sequence.
-        template< typename InputIterator >
+        template<typename InputIterator>
         BinomialHeap(
             InputIterator first,
             InputIterator last,
@@ -231,7 +231,7 @@ namespace spica {
             { insert( new_item ); }
 
         //! Inserts each item in the range [first, last) into the heap.
-        template< typename InputIterator >
+        template<typename InputIterator>
         void insert( InputIterator first, InputIterator last );
 
         //! Return a reference to the object at the front of the heap.
@@ -284,7 +284,7 @@ namespace spica {
         if( p == 0 ) return;
         destroy_heap( p->child );
 
-        // This should be an interation to avoid creating a huge stack when removing large
+        // This should be an iteration to avoid creating a huge stack when removing large
         // heaps. (How true is this?)
         //
         destroy_heap( p->sibling );
@@ -308,12 +308,12 @@ namespace spica {
         other.count = 0;
 
         // If the other heap is empty, we are done already.
-        if( other.roots == 0 ) return;
+        if( other.roots == nullptr ) return;
 
         // If this heap is empty, it is easy.
-        if( roots == 0 ) {
+        if( roots == nullptr ) {
             roots            = other.roots;
-            other.roots      = 0;
+            other.roots      = nullptr;
             return;
         }
 
@@ -324,7 +324,7 @@ namespace spica {
         // We no longer need other.roots. Let's set it to 0. At this point the other heap is
         // emptied and ready to be reused.
         //
-        other.roots = 0;
+        other.roots = nullptr;
 
         // First, let's set an initial value to roots.
         if( this_walker->degree < other_walker->degree ) {
@@ -344,11 +344,11 @@ namespace spica {
             // If we have come to the end of one (we won't have come to the end of both at the
             // same time)...
             //
-            if( this_walker == 0 ) {
+            if( this_walker == nullptr ) {
                 new_walker->sibling = other_walker;
                 return;
             }
-            if( other_walker == 0 ) {
+            if( other_walker == nullptr ) {
                 new_walker->sibling = this_walker;
                 return;
             }
@@ -382,19 +382,19 @@ namespace spica {
     typename BinomialHeap<T, StrictWeakOrdering>::iterator &
         BinomialHeap<T, StrictWeakOrdering>::iterator::operator++( )
     {
-        if( current->sibling != 0 ) {
+        if( current->sibling != nullptr ) {
             current = current->sibling;
-            if( current->child != 0 ) pQ->push( current->child );
+            if( current->child != nullptr ) pQ->push( current->child );
         }
         else if( !pQ->empty( ) ) {
             current = pQ->front( );
             pQ->pop( );
-            if( current->child != 0 ) pQ->push( current->child );
+            if( current->child != nullptr ) pQ->push( current->child );
         }
         else { // We are done. Make *this into a valid end iterator.
-            current = 0;
+            current = nullptr;
             delete pQ;
-            pQ = 0;
+            pQ = nullptr;
         }
         return *this;
     }
@@ -411,7 +411,7 @@ namespace spica {
     template<typename InputIterator>
         BinomialHeap<T, StrictWeakOrdering>::BinomialHeap(
             InputIterator first, InputIterator last, const StrictWeakOrdering &C)
-                : roots( 0 ), count( 0 ), comp( C )
+                : roots( nullptr ), count( 0 ), comp( C )
     {
         insert( first, last );
     }
@@ -435,9 +435,9 @@ namespace spica {
     typename BinomialHeap<T, StrictWeakOrdering>::iterator
         BinomialHeap<T, StrictWeakOrdering>::begin( ) const
     {
-        if( roots == 0 ) return iterator( );
+        if( roots == nullptr ) return iterator( );
         std::queue<const BinomialTreeNode *> *q = new std::queue<const BinomialTreeNode *>;
-        if( roots->child != 0 ) q->push( roots->child );
+        if( roots->child != nullptr ) q->push( roots->child );
         return iterator( roots, q );
     }
 
@@ -489,7 +489,7 @@ namespace spica {
 
         // Walk down the rest of the root list...
         BinomialTreeNode *consider = roots->sibling;
-        while( consider != 0 ) {
+        while( consider != nullptr ) {
 
             // If the node we are considering is "less" than our current min, update our current
             // min.
@@ -513,7 +513,7 @@ namespace spica {
     void BinomialHeap<T, StrictWeakOrdering>::pop( )
     {
         // Add error handling?
-        // if( roots == 0 ) ...
+        // if( roots == nullptr ) ...
 
         // To start, I need to find the item with the minimum key and remove it from the root
         // list. Let's first assume the minimum object is in the first node on the list. We have
@@ -521,12 +521,12 @@ namespace spica {
         // properly remove the minimum node.
         //
         BinomialTreeNode *front_node   = roots;
-        BinomialTreeNode *min_previous = 0;
+        BinomialTreeNode *min_previous = nullptr;
 
         // Walk down the rest of the root list...
         BinomialTreeNode *consider = roots->sibling;
         BinomialTreeNode *previous = roots;
-        while( consider != 0 ) {
+        while( consider != nullptr ) {
 
             // If the node we are considering is "less" than our current min, update our current
             // min. Keep track of the previous node as well.
@@ -542,15 +542,15 @@ namespace spica {
         }
 
         // Now unlink the minimum root node from the root list.
-        if( min_previous == 0 ) roots = front_node->sibling;
+        if( min_previous == nullptr ) roots = front_node->sibling;
             else min_previous->sibling = front_node->sibling;
-        front_node->sibling = 0;
+        front_node->sibling = nullptr;
 
         // Isolate the minimum node from the rest of the binomial tree for which it is (was) a
         // root.
         //
         BinomialTreeNode *leftovers = front_node->child;
-        front_node->child = 0;
+        front_node->child = nullptr;
 
         // Create a temporary heap.
         BinomialHeap<key_type> temp_heap( comp );
@@ -558,7 +558,7 @@ namespace spica {
         // Walk down the sibling list of the leftovers and prepend the nodes to the temp heap's
         // root list. Note that this works fine if the minimum node has no children.
         //
-        while( leftovers != 0 ) {
+        while( leftovers != nullptr ) {
             BinomialTreeNode *temp = leftovers->sibling;
             leftovers->sibling = temp_heap.roots;
             temp_heap.roots = leftovers;
@@ -589,21 +589,21 @@ namespace spica {
         binomial_merge( other );
 
         // If there is nothing in the combined heaps we are done.
-        if( roots == 0 ) return *this;
+        if( roots == nullptr ) return *this;
 
         // Set up three pointers into the merged root list.
-        BinomialTreeNode *previous = 0;
+        BinomialTreeNode *previous = nullptr;
         BinomialTreeNode *current  = roots;
         BinomialTreeNode *next     = current->sibling;
 
         // Keep processing as long as there is something else past current.
-        while( next != 0 ) {
+        while( next != nullptr ) {
 
             // If there are not two in a row with the same degree or if there are three in a row
             // with the same degree, just skip over the current entry in the root list.
             //
             if( current->degree != next->degree ||
-                ( next->sibling != 0 && next->sibling->degree == current->degree ) ) {
+                ( next->sibling != nullptr && next->sibling->degree == current->degree ) ) {
                 previous = current;
                 current  = next;
             }
@@ -623,7 +623,7 @@ namespace spica {
             // correctly skips over the old current root.
             //
             else {
-                if( previous == 0 ) roots = next;
+                if( previous == nullptr ) roots = next;
                     else previous->sibling = next;
                 binomial_link( current, next );
                 current = next;

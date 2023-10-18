@@ -12,6 +12,7 @@
 #include "SingleList.hpp"
 
 using namespace std;
+using namespace spica;
 
 static void print_list(
     const string &header, SingleList<int> &list, const string &expected_list, int expected_size )

@@ -60,7 +60,7 @@ namespace UnitTestManager {
      * recorded by the framework (provided the framework's macros are used), and the result is
      * made available via the `test_status` function.
      * 
-     * If a suite function returns `false` and <BadReturn> element is written to the test
+     * If a suite function returns `false` a <BadReturn> element is written to the test
      * report, but it is otherwise ignored. In particular, no tests are considered to have
      * failed. Is this the right behavior?
      * 

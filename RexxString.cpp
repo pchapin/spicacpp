@@ -12,7 +12,7 @@
  * This version is well behaved in a multi-threaded environment provided the symbol
  * pMULTITHREADED is defined before compilation.
  *
- * TODO
+ * TODO: Consider the following items...
  *
  * + The inserter and extractor operators should honor stream formatting state.
  */
