@@ -5,9 +5,9 @@
  * This file implements a simple string class. It supports a set of operations that allow
  * clients to use string objects in a manner similar to the way strings in Rexx work.
  *
- * The 'rep' member should never be NULL. This is because if an exception is throw during
- * construction (that's the only time rep might become NULL), the object under construction can
- * never be accessed in a well defined manner.
+ * The 'rep' member should never be nullptr. This is because if an exception is throw during
+ * construction (that's the only time rep might become nullptr), the object under construction
+ * can never be accessed in a well defined manner.
  *
  * This version is well behaved in a multi-threaded environment provided the symbol
  * pMULTITHREADED is defined before compilation.
@@ -15,9 +15,11 @@
  * TODO: Consider the following items...
  *
  * + The inserter and extractor operators should honor stream formatting state.
+ *
+ * + Change the thread handling to use C++ 2011 threads. The current implementation was written
+ *   before C++ 2011 was available.
  */
 
-#include "environ.hpp"
 #include <cstring>
 #include <iostream>
 #include <memory>
@@ -47,7 +49,7 @@ using namespace std;
  * Some of the operations in this class cause the string to be changed while many of the others
  * return a new string with the changed value. In the future I may provide both "mutating" and
  * "non-mutating" forms of most operations. For now, the decision to use one form or the other
- * was made based in part on what Rexx does and in part on what seemed most reasonable. I
+ * was made based in part on what Rexx does, and in part on what seemed most reasonable. I
  * considered making these strings fully immutable but that does not seem correct for strings
  * such as these that have value semantics.
  *
@@ -62,7 +64,8 @@ using namespace std;
  * This string class currently uses reference counting to improve the speed of copying strings.
  * With this implementation, passing strings to functions by value, returning them by value, or
  * copying them are all low overhead, O(1) operations. A string's representation is only copied
- * when necessary (on demand).
+ * when necessary (on demand). NOTE: With C++ 2011 move operations, this reference counting
+ * trick is probably wholly unnecessary. I'll have to look into that.
  *
  * These strings are thread safe in the sense that multiple threads can manipulate the same
  * string without causing undefined behavior. If a thread reads a string's value while that
@@ -85,7 +88,7 @@ namespace spica {
     namespace {
 
         #if defined(pMULTITHREADED)
-        // This is the "BSL" (Big RexxString Lock).
+        // This is the "BRSL" (Big RexxString Lock).
         mutex_sem string_lock;
         #endif
 
@@ -191,11 +194,10 @@ namespace spica {
 
     RexxString::RexxString( )
     {
-        std::unique_ptr< string_node > new_node( new string_node );
+        std::unique_ptr<string_node> new_node( new string_node );
         new_node->workspace = new char[1];
         *new_node->workspace = '\0';
-        rep = new_node.get( );
-        new_node.release( );
+        rep = new_node.release( );
     }
 
 
@@ -215,8 +217,7 @@ namespace spica {
         unique_ptr<string_node> new_node( new string_node );
         new_node->workspace = new char[strlen( existing ) + 1];
         strcpy( new_node->workspace, existing );
-        rep = new_node.get( );
-        new_node.release( );
+        rep = new_node.release( );
     }
 
 
@@ -226,8 +227,7 @@ namespace spica {
         new_node->workspace = new char[2];
         new_node->workspace[0] = existing;
         new_node->workspace[1] = '\0';
-        rep = new_node.get( );
-        new_node.release( );
+        rep = new_node.release( );
     }
 
 
@@ -266,14 +266,13 @@ namespace spica {
 
         rep = other.rep;
         rep->count++;
-
         return *this;
     }
 
 
     RexxString &RexxString::operator=( const char *other )
     {
-        if( other == 0 ) return *this;
+        if( other == nullptr ) return *this;
 
         unique_ptr<string_node> new_node( new string_node );
         new_node->workspace = new char[strlen( other ) + 1];
@@ -288,9 +287,7 @@ namespace spica {
             delete [] rep->workspace;
             delete    rep;
         }
-        rep = new_node.get( );
-        new_node.release( );
-
+        rep = new_node.release( );
         return *this;
     }
 
@@ -327,8 +324,7 @@ namespace spica {
             delete [] rep->workspace;
             delete    rep;
         }
-        rep = new_node.get( );
-        new_node.release( );
+        rep = new_node.release( );
         return *this;
     }
 
@@ -351,8 +347,7 @@ namespace spica {
             delete [] rep->workspace;
             delete    rep;
         }
-        rep = new_node.get( );
-        new_node.release( );
+        rep = new_node.release( );
         return *this;
     }
 
@@ -376,8 +371,7 @@ namespace spica {
             delete [] rep->workspace;
             delete    rep;
         }
-        rep = new_node.get( );
-        new_node.release( );
+        rep = new_node.release( );
         return *this;
     }
 
@@ -401,8 +395,7 @@ namespace spica {
             delete [] rep->workspace;
             delete rep;
         }
-        rep = new_node.get( );
-        new_node.release( );
+        rep = new_node.release( );
     }
 
 
@@ -518,8 +511,8 @@ namespace spica {
 
         // Otherwise we have to do real work.
         else {
-            int left_side  = ( length - current_length ) / 2;
-            int right_side = length - current_length - left_side;
+            size_t left_side  = ( length - current_length ) / 2;
+            size_t right_side = length - current_length - left_side;
 
             char *temp = new char[length + 1];
             memset( temp, pad, left_side );
@@ -529,7 +522,6 @@ namespace spica {
             delete [] result.rep->workspace;
             result.rep->workspace = temp;
         }
-
         return result;
     }
 
@@ -629,7 +621,6 @@ namespace spica {
         RexxString result;
 
         size_t offset = starting_position - 1;
-
         size_t current_length = strlen( rep->workspace );
 
         // Verify that there is actual work to do.
@@ -643,7 +634,6 @@ namespace spica {
         // Now do the work.
         char *temp = new char [current_length + count + 1];
         memcpy( temp, rep->workspace, offset );
-        // TODO: Does `memcpy` freak if you copy 0 bytes?
         memcpy( &temp[offset], incoming.rep->workspace, count );
         strcpy( &temp[offset + count], &rep->workspace[offset] );
         delete [] result.rep->workspace;
@@ -679,7 +669,7 @@ namespace spica {
         p = strchr( p, needle );
 
         // If we didn't find it, return error.
-        if( p == 0 ) return 0;
+        if( p == nullptr ) return 0;
 
         // Otherwise return the offset to the character.
         return ( p - rep->workspace ) + 1;
@@ -709,7 +699,7 @@ namespace spica {
         p = strstr( p, needle );
 
         // If we didn't find it, return error.
-        if( p == 0 ) return 0;
+        if( p == nullptr ) return 0;
 
         // Otherwise return the offset to the first character in the substring.
         return ( p - rep->workspace ) + 1;
@@ -813,7 +803,6 @@ namespace spica {
             delete [] result.rep->workspace;
             result.rep->workspace = temp;
         }
-
         return result;
     }
 
@@ -852,7 +841,6 @@ namespace spica {
 
         delete [] result.rep->workspace;
         result.rep->workspace = temp;
-
         return result;
     }
 
@@ -898,7 +886,7 @@ namespace spica {
 
         // Find the beginning of the the offset-th word.
         const char *start = rep->workspace;
-        while( 1 ) {
+        while( true ) {
 
             // Skip leading whitespace.
             while( is_white( *start, white ) ) start++;
@@ -912,7 +900,7 @@ namespace spica {
 
         // Now find the end of the count-th word from start.
         const char *end = start;
-        while( 1 ) {
+        while( true ) {
 
             // Find the end of this word.
             while( !( is_white( *end, white ) || *end == '\0' ) ) end++;
@@ -932,7 +920,6 @@ namespace spica {
 
         delete [] result.rep->workspace;
         result.rep->workspace = temp;
-
         return result;
     }
 
@@ -965,7 +952,6 @@ namespace spica {
                 in_word = 0;
             }
         }
-
         return word_count;
     }
 

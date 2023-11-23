@@ -1,545 +1,280 @@
-/*! \file    str_tests.cpp
+/*! \file    RexxString_tests.cpp
  *  \brief   Exercise spica::RexxString.
  *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
- * This program does not do exhaustive testing, but it does allow the user to exercise the basic
- * functionality of the RexxString class. If all tests pass, you can be somewhat confident that the
- * class works.
+ * This program does not do exhaustive testing, but it does at least try a few basic things.
+ * Each test should involve several test cases, for example defined by an array of structures.
+ * Instead, each test exercises only a single "typical" case. This is not ideal, but it is
+ * better than nothing.
  */
 
-#include "../environ.hpp"
-
-// I need ctype.h for strupr(). I provide my own strupr() on Unix systems.
-#if eOPSYS == ePOSIX
-#include <cctype>
-#endif
-
-#include <iostream>
 #include <cstring>
+#include <sstream>
 
 #include "../RexxString.hpp"
+#include "../u_tests.hpp"
+#include "../UnitTestManager.hpp"
 
+using namespace std;
 using namespace spica;
 
-//--------------------------------------
-//           Helper Functions
-//--------------------------------------
+namespace {
 
-//
-// void wait( )
-//
-// This function waits for the user to type a line (return).
-//
-static void wait( )
-{
-    char ch;
-    while( std::cin.get( ch ) ) if( ch == '\n' ) break;
-}
+    void constructor_test( )
+    {
+        UnitTestManager::UnitTest test( "constructor" );
 
+        RexxString object_1;
+        RexxString object_2( "Hello" );
+        RexxString object_3( object_2 );
 
-//
-// void print_header( char * )
-//
-// This function prints an attractive header at the start of each test.
-//
-static void print_header( const char *message )
-{
-    std::cout << "+++++" << std::endl;
-    std::cout << message << std::endl;
-    std::cout << "+++++" << std::endl;
-}
-
-
-//
-// void print_string( char *caption, RexxString &S )
-//
-// This function prints out a string with delimiter bars so that it will be easy to see where
-// the string starts and stops. This function assumes that the string operator<<() works.
-//
-static void print_string( const char *caption, RexxString &S )
-{
-    std::cout << caption << ": |" << S << "|" << std::endl;
-}
-
-
-#if eOPSYS == ePOSIX
-//
-// void strupr( char *text )
-//
-// Unix systems don't seem to have this function in their libraries. Really that's rather odd.
-//
-static void strupr( char *text )
-{
-    while( *text ) {
-        *text = std::toupper( *text );
-        text++;
+        UNIT_CHECK( object_1.length( ) == 0 );
+        UNIT_CHECK( object_2.length( ) == 5 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( object_2 ), "Hello" ) == 0 );
+        UNIT_CHECK( object_3.length( ) == 5 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( object_3 ), "Hello" ) == 0 );
     }
-}
-#endif
 
 
-//------------------------------------
-//           Test Functions
-//------------------------------------
+    void IO_test( )
+    {
+        UnitTestManager::UnitTest test( "IO" );
 
-//
-// void Constructor_Test( )
-//
-// This function constructs a few strings. The destructor is also tested. When this function
-// return the strings are destroyed. Although there is no check for proper release of memory
-// resources, the lack of a core dump would be a good sign that things went well.
-//
-void Constructor_Test( )
-{
-    print_header( "Constructor tests" );
-    RexxString object_1;
-    RexxString object_2( "Hello" );
-    RexxString object_3( object_2 );
+        RexxString object_1( "Hello" );
 
-    print_string("Result of RexxString::RexxString( ). Expecting \"\"", object_1);
-    print_string("Result of RexxString::RexxString( const char * ). Expecting \"Hello\"", object_2);
-    print_string("Result of RexxString::RexxString( const RexxString & ). Expecting \"Hello\"", object_3);
-}
+        ostringstream output;
+        output << object_1;
+        UNIT_CHECK( output.str( ) == "Hello" );
+
+        istringstream input( "World" );
+        input >> object_1;
+        UNIT_CHECK( strcmp( static_cast<const char *>( object_1 ), "World" ) == 0 );
+    }
 
 
-//
-// void IO_Test( )
-//
-// This function tests the iostream operations on strings.
-//
-void IO_Test( )
-{
-    print_header( "I/O tests" );
+    void append_test( )
+    {
+        UnitTestManager::UnitTest test( "append" );
 
-    RexxString object_1;
+        RexxString junk( "Junk" );
+        RexxString buffer;
+        const int  counter = 5;
+
+        // Try appending one string onto another (several times).
+        for( int i = 0; i < counter; i++ ) {
+            buffer.append( junk );
+        }
+        UNIT_CHECK( buffer.length( ) == 20 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( buffer ), "JunkJunkJunkJunkJunk" ) == 0 );
+
+        buffer.erase( );
+        UNIT_CHECK( buffer.length( ) == 0 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( buffer ), "" ) == 0 );
     
-    std::cout << "Enter a string: " << std::flush;
-    std::cin  >> object_1;
-    print_string( "I got", object_1 );
-}
+        // Now try appending an "old style" string.
+        for( int i = 0; i < counter; i++ ) {
+            buffer.append( "Junk" );
+        }
+        UNIT_CHECK( buffer.length( ) == 20 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( buffer ), "JunkJunkJunkJunkJunk" ) == 0 );
 
+        buffer.erase( );
 
-//
-// void Append_Test( )
-//
-// This function tests the various append functions.
-//
-void Append_Test( )
-{
-    print_header( "Append tests" );
-
-    RexxString junk( "Junk" );
-    RexxString buffer;
-    int    counter;
-    int    i;
-
-    std::cout
-        << "How many times should I concatenate Junk to the buffer? "
-        << std::flush;
-    std::cin >> counter;
-    std::cin.get( );
-
-    // Try appending one string onto another (several times).
-    for( i = 0; i < counter; i++ ) {
-        buffer.append( junk );
+        // And finally append single characters.
+        for( int i = 0; i < counter; i++ ) {
+            buffer.append( 'J' );
+        }
+        UNIT_CHECK( buffer.length( ) == 5 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( buffer ), "JJJJJ" ) == 0 );
     }
-    print_string( "Result of RexxString::append( const RexxString & )", buffer );
 
-    buffer.erase( );
-    print_string( "After erasing", buffer );
 
-    // Now try appending an "old style" string.
-    for( i = 0; i < counter; i++ ) {
-        buffer.append( "Junk" );
+    void assignment_test( )
+    {
+        UnitTestManager::UnitTest test( "assignment" );
+
+        RexxString one;
+        RexxString two;
+        const char *line = "Junk";
+
+        one = line;
+        UNIT_CHECK( one.length( ) == 4 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( one ), "Junk" ) == 0 );
+
+        two = one;
+        UNIT_CHECK( two.length( ) == 4 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( two ), "Junk" ) == 0 );
     }
-    print_string( "Result of RexxString::append( const char * )", buffer );
 
-    buffer.erase( );
-    print_string( "After erasing", buffer );
 
-    // And finally append single characters.
-    for( i = 0; i < counter; i++ ) {
-        buffer.append( 'J' );
+    void left_right_test( )
+    {
+        UnitTestManager::UnitTest test( "left/right" );
+
+        RexxString object_1{ "Junk" };
+        RexxString object_2{ object_1 };
+        const int count = 9;
+
+        object_1 = object_1.left( count, '-' );
+        UNIT_CHECK( object_1.length( ) == 9 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( object_1 ), "Junk-----" ) == 0 );
+
+        object_2 = object_2.right( count, '-' );
+        UNIT_CHECK( object_2.length( ) == 9 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( object_2 ), "-----Junk" ) == 0 );
     }
-    print_string( "Result of RexxString::append( char )", buffer );
-
-    buffer.erase( );
-    print_string( "After erasing", buffer );
-}
 
 
-//
-// void Assignment_Test( )
-//
-// This function checks out operator=( )
-//
-void Assignment_Test( )
-{
-    print_header( "Assignment tests" );
+    void center_test( )
+    {
+        UnitTestManager::UnitTest test( "center" );
 
-    const  int BUFFER_SIZE = 256;
-    RexxString one;
-    RexxString two;
-    char   line[BUFFER_SIZE + 1];
+        RexxString object_1{ "Junk" };
+        const int width = 11;
 
-    std::cout << "Enter a string: " << std::flush;
-    std::cin.getline( line, BUFFER_SIZE + 1 );
-    one = line;
-    two = one;
-    print_string( "After assignment of a char *", one );
-    print_string( "After assignment of a RexxString", two );
-}
+        object_1 = object_1.center( width, '-' );
+        UNIT_CHECK( object_1.length( ) == 11 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( object_1 ), "---Junk----" ) == 0 );
+    }
 
 
-//
-// void Length_Test( )
-//
-// Can we measure the length of a string normally?
-//
-void Length_Test( )
-{
-    print_header( "Length test" );
+    void copy_test( )
+    {
+        UnitTestManager::UnitTest test( "copy" );
 
-    RexxString one;
+        RexxString object_1{ "Junk" };
+        const int count = 5;
 
-    std::cout << "Enter a string: " << std::flush;
-    std::cin  >> one;
-    std::cout << "Length = " << one.length( ) << std::endl;
-}
+        object_1 = object_1.copy( count );
+        UNIT_CHECK( object_1.length( ) == 20 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( object_1 ), "JunkJunkJunkJunkJunk" ) == 0 );
+    }
 
 
-//
-// void LeftRight_Test( )
-//
-// This function checks out the Left/Right operation.
-//
-void LeftRight_Test( )
-{
-    print_header( "Left/Right test" );
+    void erase_test( )
+    {
+        UnitTestManager::UnitTest test( "erase" );
 
-    RexxString object_1;
-    RexxString object_2;
-    int    count;
+        RexxString object_1{ "Junk" };
+        const int starting_position = 2;
+        const int count = 2;
 
-    std::cout << "Enter a test string: " << std::flush;
-    std::cin  >> object_1;
-    object_2 = object_1;
-
-    std::cout << "How many? " << std::flush;
-    std::cin  >> count;
-    std::cin.get( );
-
-    object_1 = object_1.left( count, '-' );
-    print_string( "After left( count, '-' )", object_1 );
-
-    object_2 = object_2.right( count, '-' );
-    print_string( "After right( count, '-' )", object_2 );
-}
+        object_1 = object_1.erase( starting_position, count );
+        UNIT_CHECK( object_1.length( ) == 2 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( object_1 ), "Jk" ) == 0 );
+    }
 
 
-//
-// void Center_Test( )
-//
-// This function tests the centering feature.
-//
-void Center_Test( )
-{
-    print_header( "Center test" );
+    void insert_test( )
+    {
+        UnitTestManager::UnitTest test( "insert" );
 
-    RexxString object_1;
-    int    width;
+        RexxString object_1{ "Junk" };
+        RexxString object_2{ "xxxx" };
+        const int starting_position = 2;
+        const int count = 3;
 
-    std::cout << "Enter a string: " << std::flush;
-    std::cin  >> object_1;
-    std::cout << "Enter a width: " << std::flush;
-    std::cin  >> width;
-    std::cin.get( );
-
-    object_1 = object_1.center( width, '-' );
-    print_string( "Result after center( width, '-' )", object_1 );
-}
+        object_1 = object_1.insert( object_2, starting_position, count );
+        UNIT_CHECK( object_1.length( ) == 7 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( object_1 ), "Jxxxunk" ) == 0 );
+    }
 
 
-//
-// void Copy_Test( )
-//
-// This function tests the copy feature.
-//
-void Copy_Test( )
-{
-    print_header( "Copy test" );
+    void pos_test( )
+    {
+        UnitTestManager::UnitTest test( "pos" );
 
-    RexxString object_1;
-    int    count;
+        RexxString object_1{ "Junk" };
+        const int starting_position = 2;
+        const char needle_1 = 'n';
+        RexxString needle_2{ "nk" };
 
-    std::cout << "Enter a string: " << std::flush;
-    std::cin  >> object_1;
-    std::cout << "Enter a count: " << std::flush;
-    std::cin  >> count;
-    std::cin.get( );
+        size_t pos = object_1.pos( needle_1, starting_position );
+        UNIT_CHECK( pos == 3 );
 
-    object_1 = object_1.copy( count );
-    print_string( "Result after copy( count )", object_1 );
-}
-
-
-//
-// void Erase_Test( )
-//
-// This function tests the erase substring feature.
-//
-void Erase_Test( )
-{
-    print_header( "Erase test" );
-
-    RexxString object_1;
-    int    offset;
-    int    count;
-
-    std::cout << "Enter a string: " << std::flush;
-    std::cin  >> object_1;
-    std::cout << "Enter an offset: " << std::flush;
-    std::cin  >> offset;
-    std::cin.get( );
-    std::cout << "Enter a count: " << std::flush;
-    std::cin  >> count;
-    std::cin.get( );
-
-    object_1 = object_1.erase( offset, count );
-    print_string( "Result after erase( offset, count )", object_1 );
-}
-
-
-//
-// void Insert_Test( )
-//
-// This function tests the insert substring feature.
-//
-void Insert_Test( )
-{
-    print_header( "Insert test" );
-
-    RexxString object_1;
-    RexxString object_2;
-    int    offset;
-    int    count;
-
-    std::cout << "Enter a string to use as a base: " << std::flush;
-    std::cin  >> object_1;
-    std::cout << "Enter a string to insert into the base: " << std::flush;
-    std::cin  >> object_2;
-    std::cout << "Enter an offset: " << std::flush;
-    std::cin  >> offset;
-    std::cin.get( );
-    std::cout << "Enter a count: " << std::flush;
-    std::cin  >> count;
-    std::cin.get( );
-
-    object_1 = object_1.insert( object_2, offset, count );
-    print_string( "Result after insert( object_2, offset, count )", object_1 );
-}
-
-
-//
-// void Pos_Test( )
-//
-// This function tests the insert pos functions.
-//
-void Pos_Test( )
-{
-    print_header( "Position test" );
-
-    RexxString object_1;
-    int    offset;
-    char   needle_1;
-    RexxString needle_2;
-
-    std::cout << "Enter a string to search: " << std::flush;
-    std::cin  >> object_1;
-    std::cout << "Enter a needle (char): " << std::flush;
-    std::cin  >> needle_1;
-    std::cin.get( );
-    std::cout << "Enter a needle (string): " << std::flush;
-    std::cin  >> needle_2;
-    std::cout << "Enter an offset: " << std::flush;
-    std::cin  >> offset;
-    std::cin.get( );
-
-    int pos = object_1.pos( needle_1, offset );
-    std::cout << "I found '" << needle_1 << "' at Position: " << pos << std::endl;
+        size_t last_pos = object_1.last_pos( needle_1 );
+        UNIT_CHECK( last_pos == 3 );
     
-    int last_pos = object_1.last_pos( needle_1, offset );
-    std::cout << "I found '" << needle_1 << "' at Last Position: " << last_pos << std::endl;
+        size_t string_pos = object_1.pos( static_cast<const char *>( needle_2 ), starting_position );
+        UNIT_CHECK( string_pos == 3 );
+    }
+
+
+    void strip_test( )
+    {
+        UnitTestManager::UnitTest test( "strip" );
+
+        RexxString object_1{ "###Junk###" };
+        const char kill_char = '#';
+
+        object_1 = object_1.strip( 'B', kill_char );
+        UNIT_CHECK( object_1.length( ) == 4 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( object_1 ), "Junk" ) == 0 );
+    }
+
+
+    void substr_test( )
+    {
+        UnitTestManager::UnitTest test( "substr" );
+
+        RexxString object_1{ "Junk" };
+        const int starting_position = 2;
+        const int count = 2;
+
+        object_1 = object_1.substr( starting_position, count );
+        UNIT_CHECK( object_1.length( ) == 2 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( object_1 ), "un" ) == 0 );
+    }
+
+
+    void words_test( )
+    {
+        UnitTestManager::UnitTest test( "words" );
+
+        RexxString object_1{ "I love my junk" };
+        RexxString delimiters = " ";
+
+        int count =
+            object_1.words(delimiters.length( ) == 0 ? 0 : static_cast<const char *>( delimiters ) );
+        UNIT_CHECK( count == 4 );
+    }
+
+
+    void subword_test( )
+    {
+        UnitTestManager::UnitTest test( "subword" );
+
+        RexxString object_1{ "I love my junk" };
+        RexxString delimiters = " ";
+        const int starting_position= 2;
+        const int count = 2;
+
+        object_1 =
+            object_1.subword(
+                starting_position,
+                count,
+                delimiters.length( ) == 0 ? 0 : static_cast<const char *>( delimiters ) );
+        UNIT_CHECK( object_1.length( ) == 7 );
+        UNIT_CHECK( strcmp( static_cast<const char *>( object_1 ), "love my" ) == 0 );
+    }
     
-    int string_pos = object_1.pos( needle_2, offset );
-    std::cout << "I found '" << needle_2 << "' at Position: " << string_pos << std::endl;
 }
-
-
-//
-// void Strip_Test( )
-//
-// This function tests the strip function.
-//
-void Strip_Test( )
-{
-    print_header( "Strip test" );
-
-    RexxString object_1;
-    char   kill_char;
-
-    std::cout << "Enter a string: " << std::flush;
-    std::cin  >> object_1;
-    std::cout << "Enter a kill char: " << std::flush;
-    std::cin  >> kill_char;
-    std::cin.get( );
-
-    object_1 = object_1.strip( 'B', kill_char );
-    print_string( "Result after strip( 'B', kill_char )", object_1 );
-}
-
-
-//
-// void Substr_Test( )
-//
-// This function tests the Substr function.
-//
-void Substr_Test( )
-{
-    print_header( "Substr test" );
-
-    RexxString object_1;
-    int    offset;
-    int    count;
-
-    std::cout << "Enter a string: " << std::flush;
-    std::cin  >> object_1;
-    std::cout << "Enter an offset: " << std::flush;
-    std::cin  >> offset;
-    std::cin.get( );
-    std::cout << "Enter a count: " << std::flush;
-    std::cin  >> count;
-    std::cin.get( );
-
-    object_1 = object_1.substr( offset, count );
-    print_string( "Result after substr( offset, count )", object_1 );
-}
-
-
-//
-// void Words_Test( )
-//
-// This function tests the Words function.
-//
-void Words_Test( )
-{
-    print_header( "Words test" );
-
-    RexxString object_1;
-    RexxString delimiters;
-
-    std::cout << "Enter a string: " << std::flush;
-    std::cin  >> object_1;
-    std::cout << "Enter a delimiter string: " << std::flush;
-    std::cin  >> delimiters;
-
-    int count =
-        object_1.words(delimiters.length( ) == 0 ? 0 : static_cast<const char *>( delimiters ) );
-    std::cout << "I found " << count << " words in that string." << std::endl;
-}
-
-
-//
-// void Subword_Test( )
-//
-// This function tests the Subword function.
-//
-void Subword_Test( )
-{
-    print_header( "Subword test" );
-
-    RexxString object_1;
-    RexxString delimiters;
-    int    offset;
-    int    count;
-
-    std::cout << "Enter a string: " << std::flush;
-    std::cin  >> object_1;
-    std::cout << "Enter a delimiter string: " << std::flush;
-    std::cin  >> delimiters;
-    std::cout << "Enter an offset: " << std::flush;
-    std::cin  >> offset;
-    std::cin.get( );
-    std::cout << "Enter a count: " << std::flush;
-    std::cin  >> count;
-    std::cin.get( );
-
-    object_1 =
-        object_1.subword(
-            offset,
-            count,
-            delimiters.length( ) == 0 ? 0 : static_cast<const char *>( delimiters ) );
-    print_string( "Result after subword( offset, count, delimiters )", object_1 );
-}
-
-
-//----------------------------------
-//           Main Program
-//----------------------------------
 
 bool RexxString_tests( )
 {
-    const int BUFFER_SIZE = 256;
-    char line_buffer[BUFFER_SIZE+1];
-
-    std::cout << "RexxString_tests: Program to exercise class spica::RexxString.\n"
-              << "(C) Copyright 2001 by Peter Chapin.\n"
-              << std::endl;
-
-    while( 1 ) {
-        std::cout << "0. Exit\n"
-                  << "1. Constructor Test\n"
-                  << "2. I/O Test\n"
-                  << "3. Append Test\n"
-                  << "4. Assignment Test\n"
-                  << "5. Length Test\n"
-                  << "6. Left/Right Test\n"
-                  << "7. Center Test\n"
-                  << "8. Copy Test\n"
-                  << "9. Erase Test\n"
-                  << "A. Insert Test\n"
-                  << "B. Position Test\n"
-                  << "C. Strip Test\n"
-                  << "D. Substr Test\n"
-                  << "E. Words Test\n"
-                  << "F. Subword Test\n"
-                  << std::endl;
-
-        std::cin.getline( line_buffer, BUFFER_SIZE+1 );
-        strupr( line_buffer );
-        if( line_buffer[0] == '0' ) break;
-
-        switch( line_buffer[0] ) {
-        case '1': Constructor_Test( ); break;
-        case '2': IO_Test( );          break;
-        case '3': Append_Test( );      break;
-        case '4': Assignment_Test( );  break;
-        case '5': Length_Test( );      break;
-        case '6': LeftRight_Test( );   break;
-        case '7': Center_Test( );      break;
-        case '8': Copy_Test( );        break;
-        case '9': Erase_Test( );       break;
-        case 'A': Insert_Test( );      break;
-        case 'B': Pos_Test( );         break;
-        case 'C': Strip_Test( );       break;
-        case 'D': Substr_Test( );      break;
-        case 'E': Words_Test( );       break;
-        case 'F': Subword_Test( );     break;
-        }
-
-        std::cout << std::endl;
-        wait( );
-    }
-    
+    constructor_test( );
+    IO_test( );
+    append_test( );
+    assignment_test( );
+    left_right_test( );
+    center_test( );
+    copy_test( );
+    erase_test( );
+    insert_test( );
+    pos_test( );
+    strip_test( );
+    substr_test( );
+    words_test( );
+    subword_test( );
     return true;
 }

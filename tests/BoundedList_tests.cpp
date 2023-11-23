@@ -3,8 +3,6 @@
  *  \author  Peter Chapin <spicacality@kelseymountain.org>
  */
 
-#include <exception>
-#include <iostream>
 #include <stdexcept>
 
 #include "../BoundedList.hpp"
@@ -32,10 +30,10 @@ static void constructor_test( )
     BoundedList<int> list_2( 100 );
     BoundedList<int> list_3 = { 1, 2, 3, 4, 5 };
 
-    UNIT_CHECK( list_d.size( ) == 0 );
-    UNIT_CHECK( list_0.size( ) == 0 );
-    UNIT_CHECK( list_1.size( ) == 0 );
-    UNIT_CHECK( list_2.size( ) == 0 );
+    UNIT_CHECK( list_d.empty( ) );
+    UNIT_CHECK( list_0.empty( ) );
+    UNIT_CHECK( list_1.empty( ) );
+    UNIT_CHECK( list_2.empty( ) );
     UNIT_CHECK( list_3.size( ) == 5 );
 
     try {
@@ -61,7 +59,7 @@ static void constructor_test( )
 
 static void push_back_test( )
 {
-    UnitTestManager::UnitTest( "push_back" );
+    UnitTestManager::UnitTest test( "push_back" );
 
     BoundedList<int> my_list( 100 );
 
@@ -77,7 +75,7 @@ static void push_back_test( )
 
 static void pop_back_test( )
 {
-    UnitTestManager::UnitTest( "pop_back" );
+    UnitTestManager::UnitTest test( "pop_back" );
 
     int i;
     BoundedList<int> my_list( 100 );
@@ -90,12 +88,12 @@ static void pop_back_test( )
         UNIT_CHECK( my_list.back( ) == i );
         my_list.pop_back( );
     } while( i > 0 );
-    UNIT_CHECK( my_list.size( ) == 0 );
+    UNIT_CHECK( my_list.empty( ) );
 }
 
 static void iterator_test( )
 {
-    UnitTestManager::UnitTest( "iterator" );
+    UnitTestManager::UnitTest test( "iterator" );
 
     int i;
     BoundedList<int> my_list( 100 );
@@ -125,7 +123,7 @@ static void iterator_test( )
 
 static void insert_test( )
 {
-    UnitTestManager::UnitTest( "insert" );
+    UnitTestManager::UnitTest test( "insert" );
 
     BoundedList<int> my_list( 103 );
     BoundedList<int>::iterator p1, p2;
@@ -166,8 +164,8 @@ static void insert_test( )
 
 static void erase_test( )
 {
-    UnitTestManager::UnitTest( "erase" );
-    
+    UnitTestManager::UnitTest test( "erase" );
+
     BoundedList<int> my_list( 100 );
     BoundedList<int>::iterator p1, p2;
     int i;

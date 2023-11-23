@@ -33,7 +33,7 @@ EXECUTABLE=u_tests
 
 %.o:	%.cpp
 	$(CXX) $(CXXFLAGS) $< -o $@
-	
+
 all:	$(EXECUTABLE)
 
 $(LIBRARY):	$(OBJECTS)
@@ -47,44 +47,44 @@ $(EXECUTABLE):	u_tests.o $(LIBRARY)
 
 # Module dependencies -- Produced with 'depend' on Wed Oct 18 14:32:14 2023
 
-base64.o:	base64.cpp base64.hpp 
+base64.o:	base64.cpp base64.hpp
 
-BitFile.o:	BitFile.cpp BitFile.hpp 
+BitFile.o:	BitFile.cpp BitFile.hpp
 
-config.o:	config.cpp config.hpp 
+config.o:	config.cpp config.hpp
 
-crc.o:	crc.cpp crc.hpp 
+crc.o:	crc.cpp crc.hpp
 
-Date.o:	Date.cpp Date.hpp 
+Date.o:	Date.cpp Date.hpp
 
-get_switch.o:	get_switch.cpp get_switch.hpp 
+get_switch.o:	get_switch.cpp get_switch.hpp
 
-RexxString.o:	RexxString.cpp environ.hpp RexxString.hpp synchronize.hpp 
+RexxString.o:	RexxString.cpp RexxString.hpp synchronize.hpp
 
-string_utilities.o:	string_utilities.cpp string_utilities.hpp 
+string_utilities.o:	string_utilities.cpp string_utilities.hpp
 
-Timer.o:	Timer.cpp Timer.hpp environ.hpp 
+Timer.o:	Timer.cpp Timer.hpp environ.hpp
 
-UnitTestManager.o:	UnitTestManager.cpp UnitTestManager.hpp 
+UnitTestManager.o:	UnitTestManager.cpp UnitTestManager.hpp
 
-VeryLong.o:	VeryLong.cpp VeryLong.hpp 
+VeryLong.o:	VeryLong.cpp VeryLong.hpp
 
 #####
 # Dependencies below are managed by hand.
 
-tests/BinomialHeap_tests.o:	tests/BinomialHeap_tests.cpp BinomialHeap.hpp
+tests/BinomialHeap_tests.o:	tests/BinomialHeap_tests.cpp BinomialHeap.hpp u_tests.hpp UnitTestManager.hpp
 
-tests/BoundedList_tests.o:	tests/BoundedList_tests.cpp BoundedList.hpp
+tests/BoundedList_tests.o:	tests/BoundedList_tests.cpp BoundedList.hpp u_tests.hpp UnitTestManager.hpp
 
-tests/Graph_tests.o:	tests/Graph_tests.cpp Graph.hpp
+tests/Graph_tests.o:	tests/Graph_tests.cpp Graph.hpp u_tests.hpp UnitTestManager.hpp
 
-tests/RexxString_tests.o:	tests/RexxString_tests.cpp RexxString.hpp
+tests/RexxString_tests.o:	tests/RexxString_tests.cpp RexxString.hpp u_tests.hpp UnitTestManager.hpp
 
-tests/sort_tests.o:	tests/sort_tests.cpp sorters.hpp
+tests/sort_tests.o:	tests/sort_tests.cpp sorters.hpp u_tests.hpp UnitTestManager.hpp
 
-tests/Timer_tests.o:	tests/Timer_tests.cpp Timer.hpp
+tests/Timer_tests.o:	tests/Timer_tests.cpp Timer.hpp u_tests.hpp UnitTestManager.hpp
 
-tests/VeryLong_tests.o:	tests/VeryLong_tests.cpp VeryLong.hpp
+tests/VeryLong_tests.o:	tests/VeryLong_tests.cpp VeryLong.hpp u_tests.hpp UnitTestManager.hpp
 
 u_tests.o:	u_tests.cpp u_tests.hpp UnitTestManager.hpp
 

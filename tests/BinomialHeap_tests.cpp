@@ -18,7 +18,7 @@
 std::vector<int> make_numbers( int count )
 {
     std::vector<int> result;
-    std::srand( std::time( 0 ) );
+    std::srand( std::time( nullptr ) );
     for( int i = 0; i < count; ++i ) {
         result.push_back( std::rand( ) );
     }
@@ -41,7 +41,7 @@ void check_heap( spica::BinomialHeap<int> &my_heap, std::vector<int> &numbers )
         UNIT_CHECK( value == *p_vec );
         my_heap.pop( );
     }
-    UNIT_CHECK( my_heap.size( ) == 0 );
+    UNIT_CHECK( my_heap.empty( ) );
 }
 
 
@@ -64,7 +64,7 @@ bool BinomialHeap_tests( )
         spica::BinomialHeap<int> heap1( numbers1.begin( ), numbers1.end( ) );
         spica::BinomialHeap<int> heap2( numbers2.begin( ), numbers2.end( ) );
         heap1.merge( heap2 );
-        
+
         numbers1.insert( numbers1.end( ), numbers2.begin( ), numbers2.end( ) );
         UNIT_CHECK( heap1.size( ) == 2 * N );
         check_heap( heap1, numbers1 );
