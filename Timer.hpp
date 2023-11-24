@@ -89,7 +89,8 @@ namespace spica {
         //! Resets the timer.
         /*!
          * Resets the timer and erases the accumulated time. After a reset operation the timer
-         * is in the same state as it is after construction.
+         * is in the same state as it is after construction. If the timer was running when
+         * `reset` is called, it is stopped.
          */
         void reset( );
 
