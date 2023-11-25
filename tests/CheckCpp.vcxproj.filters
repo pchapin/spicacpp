@@ -18,9 +18,6 @@
     <ClCompile Include="sort_tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="u_tests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="BinomialHeap_tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -45,9 +42,12 @@
     <ClCompile Include="RexxString_testsMT.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\u_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="u_tests.hpp">
+    <ClInclude Include="..\u_tests.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
