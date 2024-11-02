@@ -12,10 +12,15 @@
  *
  * TODO:
  *
- * + This version only supports Win32. It could be generalized to any system that supports
+ * + This version only supports Windows. It could be generalized to any system that supports
  *   memory mapped files.
  *
- * + Reverse iterators are not implemented, but should be.
+ * + The current implementation limits the size of the file being memory mapped to 4 GB so that
+ *   32-bit Windows is supported. However, that restriction is being applied (unnecessarily) to
+ *   64-bit Windows as well. The code needs to be reviewed for proper operation with a 64-bit
+ *   size_t (currently it relies on the "fact" that size_t wraps around at 4 GB!).
+ *
+ * + Reverse iterators are not implemented.
  *
  * + Under some circumstances there is a conflict between some of the methods. For example,
  *   `insert` that takes a size and a value will take two integers for the case of
@@ -40,21 +45,23 @@
  *   also use the assignment operator to move objects around in the vector instead of using
  *   `memmove` as is currently done).
  *
- * + Several of the standard vector methods are unimplemented.
-*/
+ * + Several of the standard vector methods are unimplemented. The relational operations `==`
+ *   and `<` are declared, but not implemented.
+ */
 
 #ifndef FILEVECTOR_HPP
 #define FILEVECTOR_HPP
 
 #include "environ.hpp"
 
-#if eOPSYS != eWIN32
-#error File vectors currently only support the Win32 system.
+#if eOPSYS != eWINDOWS
+#error File vectors currently only support Windows.
 #endif
 
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <type_traits>
 
 #define NOMINMAX
 #include <windows.h>
@@ -64,7 +71,15 @@
 
 namespace spica {
 
-    template< typename T >
+    // The POD concept is used to restrict the types that can be used in a FileVector. The
+    // restrictions are necessary because the FileVector implementation uses `memmove` to move
+    // objects around in the vector. This is only safe if the objects are trivially copyable and
+    // have a standard layout.
+    //
+    template<typename T>
+    concept POD = std::is_trivial_v<T> && std::is_standard_layout_v<T>;
+
+    template<POD T>
     class FileVector {
     public:
 
@@ -100,7 +115,7 @@ namespace spica {
             { return item_capacity; }
 
         bool empty( ) const
-            { if( item_count == 0 ) return true; else return false; }
+            { return ( item_count == 0 ) ? true : false; }
 
         reference operator[]( size_type offset )
             { return raw[offset]; }
@@ -129,93 +144,100 @@ namespace spica {
 
         void insert( iterator Position, size_type n, const T &fill );
 
-        template< class InputIterator >
-        void insert( iterator Position, InputIterator F, InputIterator L );
+        template<class InputIterator>
+        void insert( iterator Position, InputIterator first, InputIterator last );
 
         void erase( iterator Position );
-        void erase( iterator F, iterator L );
+        void erase( iterator first, iterator last );
         void clear( )
             { item_count = 0 };
         void resize( size_type n, const T &fill = T( ) );
         void assign( size_type n, const T &new_item );
 
-        template< class InputIterator >
-        void assign( InputIterator F, InputIterator L );
+        template<class InputIterator>
+        void assign( InputIterator first, InputIterator last );
 
+        /*!
+         * Creates an empty vector if the file does not exist, otherwise creates a vector
+         * containing the contents of the file.
+         */
         explicit FileVector( const char *file_name );
-        // Creates an empty vector if the file does not exist, otherwise creates a vector
-        // containing the contents of the file.
 
+        /*!
+         * If the file exists it is overwritten. If it does not exist, it is created. The vector
+         * contains n copies of initial.
+         */
         FileVector( const char *file_name, size_type n, const T &initial = T( ) );
-        // If the file exists it is overwritten. If it does not exist, it is created. The vector
-        // contains n copies of initial.
 
-        FileVector( const char *file_name, const FileVector &existing );
         // Copies existing.
+        FileVector( const char *file_name, const FileVector &existing );
 
-        template< class InputIterator >
-        FileVector( const char *file_name, InputIterator F, InputIterator L );
-        // If the file exists it is overwritten. If it does not exist, it is created. The vector
-        // contains a copy of the range [F, L).
+        /*!
+         * If the file exists it is overwritten. If it does not exist, it is created. The vector
+         * contains a copy of the range [first, last).
+         */
+        template<class InputIterator>
+        FileVector( const char *file_name, InputIterator first, InputIterator last );
 
-        ~FileVector( );
         // Cleans up.
+        ~FileVector( );
 
-        FileVector< T > &operator=(const FileVector< T > &other );
         // Copies other.
+        FileVector<T> &operator=( const FileVector<T> &other );
 
-        void swap( FileVector< T > &other );
         // Swaps *this with other.
+        void swap( FileVector<T> &other );
 
-        void reserve( size_type new_capacity );
         // Increases the item_capacity without changing the item_count.
+        void reserve( size_type new_capacity );
         
     private:
 
-        FileVector( const FileVector< T > & );
-        // This class doesn't *really* have a copy constructor. To prevent the compiler from
-        // generating one that makes no sense, I'm declaring the copy constructor here.
+        // No copy constructor (for now).
+        FileVector( const FileVector<T> & ) = delete;
 
         // The internal representation.
-        HANDLE    file_handle;     // Handle from CreateFile().
+        HANDLE    file_handle;     // Handle from CreateFile( ).
         HANDLE    mapping_handle;  // The result of the file mapping operation.
         T        *raw;             // Points at the first element of the mapped file.
 
         size_type item_count;      // The number of elements in the vector.
         size_type item_capacity;   // Total number of reserved elements.
 
+        /*!
+         * This function can be used to expand the capacity as necessary. In this implementation
+         * the capacity will never shrink. The parameter is how much more space than item_count
+         * is needed. This function might not do anything if the existing capacity is
+         * sufficient.
+         */
         void reallocate( size_type more );
-        // This function can be used to expand the capacity as necessary. In this implementation
-        // the capacity will never shrink. The parameter is how much more space than item_count
-        // is needed. This function might not do anything if the existing capacity is
-        // sufficient.
     };
 
 
     // These operator functions are not class members.
-    template< typename T >
-    bool operator==( const FileVector< T > &, const FileVector< T > & );
+    template<typename T>
+    bool operator==( const FileVector<T> &, const FileVector<T> & );
 
-    template< typename T >
-    bool operator<( const FileVector< T > &, const FileVector< T > & );
+    template<typename T>
+    bool operator<( const FileVector<T> &, const FileVector<T> & );
 
 } // End of namespace scope.
 
 
 
 //
-// Implementation of FileVector's members below.
+// The implementation of FileVector's members.
 //
 
 namespace spica {
 
     //
-    // FileVector<T>::reserve(size_type)
+    // FileVector<T>::reserve( size_type )
     //
     // Causes the vector's capacity to be at least as great as the argument.
     //
-    template< typename T >
-    void FileVector< T >::reserve( size_type new_capacity )
+    template<typename T>
+    void FileVector<T>::reserve( size_type new_capacity )
     {
         if( new_capacity < item_capacity ) return;
 
@@ -225,12 +247,12 @@ namespace spica {
 
 
     //
-    // FileVector<T>::push_back(const T &)
+    // FileVector<T>::push_back( const T & )
     //
     // Adds a new item to the end of the vector.
     //
-    template< typename T >
-    void FileVector< T >::push_back( const T &new_item )
+    template<typename T>
+    void FileVector<T>::push_back( const T &new_item )
     {
         reallocate( 1 );
 
@@ -241,13 +263,13 @@ namespace spica {
 
 
     //
-    // FileVector<T>::insert(iterator position, const T &new_item)
+    // FileVector<T>::insert( iterator position, const T &new_item )
     //
     // Inserts the new item before position.
     //
-    template< typename T >
+    template<typename T>
     typename FileVector<T>::iterator
-        FileVector< T >::insert( iterator position, const T &new_item )
+        FileVector<T>::insert( iterator position, const T &new_item )
     {
         reallocate( 1 );
 
@@ -259,12 +281,12 @@ namespace spica {
 
 
     //
-    // FileVector<T>::insert(iterator position, size_type n, const T &Fill)
+    // FileVector<T>::insert( iterator position, size_type n, const T &Fill )
     //
     // Inserts n copies of Fill before position.
     //
-    template< typename T >
-    void FileVector< T >::insert( iterator position, size_type n, const T &fill )
+    template<typename T>
+    void FileVector<T>::insert( iterator position, size_type n, const T &fill )
     {
         reallocate( n );
 
@@ -278,32 +300,32 @@ namespace spica {
 
     //
     // template< typename InputIterator >
-    // FileVector<T>::insert( iterator position, InputIterator F, InputIterator L )
+    // FileVector<T>::insert( iterator position, InputIterator first, InputIterator last )
     //
     // Inserts the given sequence before position. The annoying thing about this is that I can't
-    // compute ahead of time the distance between F and L. Thus I pretty much have to insert one
-    // item at a time.
+    // compute ahead of time the distance between `first` and `last`. Thus I pretty much have to
+    // insert one item at a time.
     //
     // Note that this will cause the run-time performance of this function to be O(n*m) where n
     // is related to the item_count of the FileVector and m is the number of elements in the
     // input range. This is a violation of the standard when the iterator type parameter is
-    // actually something more powerful than merely InputIterator. Eventually I should fix this
-    // by detecting and handling the different iterator types.
+    // something more powerful than merely InputIterator. Eventually I should fix this by
+    // detecting and handling the different iterator types.
     //
-    // template< typename T >
+    // template<typename T>
     // template< typename InputIterator >
-    // void FileVector< T >::insert( iterator position, InputIterator F, InputIterator L )
+    // void FileVector<T>::insert( iterator position, InputIterator first, InputIterator last )
     // {
     // }
 
 
     //
-    // FileVector<T>::erase(iterator)
+    // FileVector<T>::erase( iterator )
     //
     // Erases one item from the vector. No checks are done on the iterator's validity.
     //
-    template< typename T >
-    void FileVector< T >::erase( iterator position )
+    template<typename T>
+    void FileVector<T>::erase( iterator position )
     {
         std::memmove(
             position, position + 1, sizeof( T )*( ( raw + item_count ) - ( position + 1 ) ) );
@@ -312,25 +334,25 @@ namespace spica {
 
 
     //
-    // FileVector<T>::erase(iterator F, iterator L)
+    // FileVector<T>::erase( iterator first, iterator last )
     //
     // Erases a range from the vector. No checks are done on the range's validity.
     //
-    template< typename T >
-    void FileVector< T >::erase( iterator F, iterator L )
+    template<typename T>
+    void FileVector<T>::erase( iterator first, iterator last )
     {
-        std::memmove( F, L, sizeof( T )*( ( raw + item_count ) - L ) );
-        item_count -= ( L - F );
+        std::memmove( first, last, sizeof( T )*( ( raw + item_count ) - last ) );
+        item_count -= ( last - first );
     }
 
 
     //
-    // FileVector<T>::FileVector(const char *file_name);
+    // FileVector<T>::FileVector( const char *file_name );
     //
     // The constructor opens and maps the file.
     //
-    template< typename T >
-    FileVector< T >::FileVector( const char *file_name )
+    template<typename T>
+    FileVector<T>::FileVector( const char *file_name )
     {
         // Open the file.
         file_handle = CreateFile(
@@ -343,19 +365,23 @@ namespace spica {
             0                            // No template file.
         );
         if( file_handle == INVALID_HANDLE_VALUE )
-            throw Win32::API_Error( "Can't open the backing file for a FileVector" );
+            throw Windows::APIError( "Can't open the backing file for a FileVector" );
 
         // Learn the file's size. I check to make sure the file is not too large so that I can
-        // represent its byte count in size_type. In addition, I will start off with the
-        // vector's item_capacity equal to its item_count (unless its item_count is zero -- it's
-        // important that item_capacity never be zero).
+        // represent its byte count in size_type. This is mostly only relevant for 32-bit
+        // Windows where size_type is limited to 4 GB and yet files might be larger than that.
+        // The current implementation works by limiting the file size to 4 GB, which is
+        // unnecessarily restrictive on 64-bit Windows.
+        //
+        // In addition, I will start off with the vector's item_capacity equal to its item_count
+        // (unless its item_count is zero -- it's important that item_capacity never be zero).
         //
         DWORD high_word;
         DWORD low_word;
         low_word = GetFileSize( file_handle, &high_word );
         if( high_word != 0 ) {
             CloseHandle( file_handle );
-            throw std::bad_alloc( );
+            throw std::bad_alloc( );   // Is this the best choice to throw here?
         }
         item_count     = low_word;
         item_count    /= sizeof( T );
@@ -373,11 +399,11 @@ namespace spica {
         );
         if( mapping_handle == 0 ) {
             CloseHandle( file_handle );
-            throw Win32::API_Error( "Can't map the backing file for an FileVector" );
+            throw Windows::APIError( "Can't map the backing file for an FileVector" );
         }
 
         // Create a view into the mapped file.
-        raw = static_cast< T * >( MapViewOfFile(
+        raw = static_cast<T *>( MapViewOfFile(
             mapping_handle,       // The mapped file from which we create the view.
             FILE_MAP_ALL_ACCESS,  // Read/Write through this view.
             0,                    // Offset into file where view starts.
@@ -385,20 +411,20 @@ namespace spica {
             0                     // Map entire file.
         ) );
         if( raw == 0 ) {
-            CloseHandle(mapping_handle);
-            CloseHandle(file_handle);
-            throw Win32::API_Error(
+            CloseHandle( mapping_handle );
+            CloseHandle( file_handle );
+            throw Windows::APIError(
                 "Can't create a file view of the backing file for an FileVector" );
         }
     }
 
 
     //
-    // FileVector<T>::FileVector(const char *file_name, size_type n, const T &initial);
+    // FileVector<T>::FileVector( const char *file_name, size_type n, const T &initial );
     //
     // The constructor opens and maps the file.
     //
-    template< typename T >
+    template<typename T>
     FileVector< T >::FileVector( const char *file_name, size_type n, const T &initial )
     {
         // Open the file.
@@ -412,7 +438,7 @@ namespace spica {
             0                            // No template file.
         );
         if( file_handle == INVALID_HANDLE_VALUE )
-            throw Win32::API_Error( "Can't open the backing file for a FileVector" );
+            throw Windows::APIError( "Can't open the backing file for a FileVector" );
 
         // The item_count is a parameter.
         item_count    = n;
@@ -430,11 +456,11 @@ namespace spica {
         );
         if( mapping_handle == 0 ) {
             CloseHandle( file_handle );
-            throw Win32::API_Error( "Can't map the backing file for an FileVector" );
+            throw Windows::APIError( "Can't map the backing file for an FileVector" );
         }
 
         // Create a view into the mapped file.
-        raw = static_cast< T * >( MapViewOfFile(
+        raw = static_cast<T *>( MapViewOfFile(
             mapping_handle,       // The mapped file from which we create the view.
             FILE_MAP_ALL_ACCESS,  // Read/Write through this view.
             0,                    // Offset into file where view starts.
@@ -444,7 +470,7 @@ namespace spica {
         if( raw == 0 ) {
             CloseHandle( mapping_handle );
             CloseHandle( file_handle );
-            throw Win32::API_Error(
+            throw Windows::APIError(
                 "Can't create a file view of the backing file for an FileVector" );
         }
 
@@ -456,12 +482,12 @@ namespace spica {
 
 
     //
-    // FileVector<T>::~FileVector()
+    // FileVector<T>::~FileVector( )
     //
     // The destructor closes things down in an orderly manner.
     //
-    template< typename T >
-    FileVector< T >::~FileVector( )
+    template<typename T>
+    FileVector<T>::~FileVector( )
     {
         UnmapViewOfFile( raw );
         CloseHandle( mapping_handle );
@@ -478,12 +504,12 @@ namespace spica {
 
 
     //
-    // FileVector<T>::swap(FileVector<T> &)
+    // FileVector<T>::swap( FileVector<T> & )
     //
     // Swaps two FileVector objects in constant time.
     //
-    template< typename T >
-    void FileVector< T >::swap( FileVector< T > &other )
+    template<typename T>
+    void FileVector<T>::swap( FileVector<T> &other )
     {
         using std::swap;
 
@@ -496,14 +522,14 @@ namespace spica {
 
 
     //
-    // FileVector<T>::reallocate(size_type more)
+    // FileVector<T>::reallocate( size_type more )
     //
     // This function arranges so that there is at least "more" reserved space than the current
     // item_count. If the item_capacity is already sufficient, nothing is done. Otherwise the
     // file is remapped as necessary.
     //
-    template< typename T >
-    void FileVector< T >::reallocate( size_type more )
+    template<typename T>
+    void FileVector<T>::reallocate( size_type more )
     {
         // Check for overflow in the index variables. This code takes advantage of the fact that
         // size_type is unsigned and thus modular.
@@ -545,11 +571,11 @@ namespace spica {
         );
         if( mapping_handle == 0 ) {
             CloseHandle( file_handle );
-            throw Win32::API_Error( "Can't remap the backing file for an FileVector" );
+            throw Windows::APIError( "Can't remap the backing file for an FileVector" );
         }
 
         // Create a view into the mapped file.
-        raw = static_cast< T * >( MapViewOfFile(
+        raw = static_cast<T *>( MapViewOfFile(
             mapping_handle,       // The mapped file from which we create the view.
             FILE_MAP_ALL_ACCESS,  // Read/Write through this view.
             0,                    // Offset into file where view starts.
@@ -559,7 +585,7 @@ namespace spica {
         if( raw == 0 ) {
             CloseHandle( mapping_handle );
             CloseHandle( file_handle );
-            throw Win32::API_Error(
+            throw Windows::APIError(
                 "Can't recreate a file view of the backing file for an FileVector" );
         }
         item_capacity = new_capacity;

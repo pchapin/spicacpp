@@ -90,6 +90,7 @@
 #define ePOSIX   5  // POSIX is intended to support all Unix flavors.
 #define eVMS     6  // DEC's VMS operating system.
 #define eWIN32   7  // Windows NT+ only. Win95/98/Me are obsolete.
+#define eWINDOWS 7  // Same as "eWIN32" for compatibility. The older name is deprecated.
 
 // Choose your operating system! In most cases this file can autodetect the operating system
 // from the compiler that is being used. If that is not the case, you will have to specify the
@@ -117,7 +118,7 @@
 #if defined(__TOS_OS2__)
 #define eOPSYS eOS2
 #elif defined(__TOS_WIN__)
-#define eOPSYS eWIN32
+#define eOPSYS eWINDOWS
 #endif
 #endif
 
@@ -127,7 +128,7 @@
 #if defined(macintosh)
 #define eOPSYS eMAC
 #elif defined(__INTEL__)
-#define eOPSYS eWIN32
+#define eOPSYS eWINDOWS
 #endif
 #endif
 
@@ -147,7 +148,7 @@
 #elif defined(__OS2__)
 #define eOPSYS eOS2
 #elif defined(__NT__)
-#define eOPSYS eWIN32
+#define eOPSYS eWINDOWS
 #elif defined(__NETWARE__)
 #define eOPSYS eNETWARE
 #elif defined(__LINUX__)
@@ -162,7 +163,7 @@
 // The following are the allowed values of eGUI.
 #define eNONE   1   // Text mode application.
 #define ePM     2   // The OS/2 graphical interface. This also implies WPS.
-#define eWIN    3   // Windows NT+ only.
+#define eWIN    3   // Windows NT+ only. (Consider renaming; too similar to eWINDOWS)
 #define eXWIN   4   // X Windows.
 
 // Choose your GUI. This file does not currently autodetect any GUI. The default GUI is eNONE.
@@ -173,8 +174,8 @@
 
 // Do a few checks to make sure the GUI selection makes sense.
 
-#if eGUI == eWIN && eOPSYS != eWIN32
-#error Can not specify the Windows GUI without the Win32 operating system!
+#if eGUI == eWIN && eOPSYS != eWINDOWS
+#error Can not specify the Windows GUI without the Windows operating system!
 #endif
 
 #if eGUI == ePM && eOPSYS != eOS2
