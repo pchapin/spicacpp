@@ -1,6 +1,6 @@
 /*! \file    FileVector.hpp
- *   \brief   Vector-like container backed by a file.
- *   \author  Peter Chapin <spicacality@kelseymountain.org>
+ *  \brief   Vector-like container backed by a file.
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
  * A file vector looks and acts like a normal library vector except that it stores its data in a
  * regular, named file. File vectors provide random access iterators that act appropriately
@@ -236,7 +236,7 @@ namespace spica {
     //
     // Causes the vector's capacity to be at least as great as the argument.
     //
-    template<typename T>
+    template<POD T>
     void FileVector<T>::reserve( size_type new_capacity )
     {
         if( new_capacity < item_capacity ) return;
@@ -251,7 +251,7 @@ namespace spica {
     //
     // Adds a new item to the end of the vector.
     //
-    template<typename T>
+    template<POD T>
     void FileVector<T>::push_back( const T &new_item )
     {
         reallocate( 1 );
@@ -267,7 +267,7 @@ namespace spica {
     //
     // Inserts the new item before position.
     //
-    template<typename T>
+    template<POD T>
     typename FileVector<T>::iterator
         FileVector<T>::insert( iterator position, const T &new_item )
     {
@@ -285,7 +285,7 @@ namespace spica {
     //
     // Inserts n copies of Fill before position.
     //
-    template<typename T>
+    template<POD T>
     void FileVector<T>::insert( iterator position, size_type n, const T &fill )
     {
         reallocate( n );
@@ -312,8 +312,8 @@ namespace spica {
     // something more powerful than merely InputIterator. Eventually I should fix this by
     // detecting and handling the different iterator types.
     //
-    // template<typename T>
-    // template< typename InputIterator >
+    // template<POD T>
+    // template<typename InputIterator>
     // void FileVector<T>::insert( iterator position, InputIterator first, InputIterator last )
     // {
     // }
@@ -324,7 +324,7 @@ namespace spica {
     //
     // Erases one item from the vector. No checks are done on the iterator's validity.
     //
-    template<typename T>
+    template<POD T>
     void FileVector<T>::erase( iterator position )
     {
         std::memmove(
@@ -338,7 +338,7 @@ namespace spica {
     //
     // Erases a range from the vector. No checks are done on the range's validity.
     //
-    template<typename T>
+    template<POD T>
     void FileVector<T>::erase( iterator first, iterator last )
     {
         std::memmove( first, last, sizeof( T )*( ( raw + item_count ) - last ) );
@@ -351,7 +351,7 @@ namespace spica {
     //
     // The constructor opens and maps the file.
     //
-    template<typename T>
+    template<POD T>
     FileVector<T>::FileVector( const char *file_name )
     {
         // Open the file.
@@ -424,7 +424,7 @@ namespace spica {
     //
     // The constructor opens and maps the file.
     //
-    template<typename T>
+    template<POD T>
     FileVector< T >::FileVector( const char *file_name, size_type n, const T &initial )
     {
         // Open the file.
@@ -486,7 +486,7 @@ namespace spica {
     //
     // The destructor closes things down in an orderly manner.
     //
-    template<typename T>
+    template<POD T>
     FileVector<T>::~FileVector( )
     {
         UnmapViewOfFile( raw );
@@ -508,7 +508,7 @@ namespace spica {
     //
     // Swaps two FileVector objects in constant time.
     //
-    template<typename T>
+    template<POD T>
     void FileVector<T>::swap( FileVector<T> &other )
     {
         using std::swap;
@@ -528,7 +528,7 @@ namespace spica {
     // item_count. If the item_capacity is already sufficient, nothing is done. Otherwise the
     // file is remapped as necessary.
     //
-    template<typename T>
+    template<POD T>
     void FileVector<T>::reallocate( size_type more )
     {
         // Check for overflow in the index variables. This code takes advantage of the fact that
