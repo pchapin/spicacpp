@@ -115,10 +115,6 @@
     <ClCompile Include="VeryLong_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\C\SpicaC.vcxproj">
-      <Project>{bfa5ab23-1f5b-4431-b938-33b5c0bea722}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\SpicaCpp.vcxproj">
       <Project>{73ba8a8d-d8e5-4435-8947-fa40f2e450ca}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

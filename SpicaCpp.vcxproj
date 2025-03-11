@@ -131,6 +131,12 @@
     <ClInclude Include="winexcept.hpp" />
     <ClInclude Include="WorkQueue.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="windebug.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="windebug.ico" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

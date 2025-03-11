@@ -1,21 +1,16 @@
 <!DOCTYPE html>
-
-<!-- FILE   : index.html
-     AUTHOR : Peter Chapin
-     SUBJECT: Index of Spica C++ library components. -->
-
 <html lang="en-US">
 
 <head>
-  <title>C++ Components</title>
+  <title>Spica C++ Components</title>
 
-  <meta name="Author" content="Peter C. Chapin"/>
-  <meta name="ROBOTS" content="NOARCHIVE"/>
-  <link rel="stylesheet" href="default.css" type="text/css"/>
+  <meta charset="UTF-8">
+  <meta name="Author" content="Peter Chapin">
+  <link rel="stylesheet" href="default.css" type="text/css">
 </head>
 
 <body>
-<h1>C++ Components</h1>
+<h1>Spica C++ Components</h1>
 <hr/>
 
 <p>Please read the <a href="overview.html">overview document</a> for general information about the
@@ -30,13 +25,13 @@
   component. Each component has an associated list of required files. To use a component, you only
   need the files mentioned in the list.</p>
 
-<p>Some of the components use platform-specific code. The library detects various platforms at
-  compile time using preprocessor macros in <b>environ.hpp</b>. Then, depending on what is found,
-  various macros specific to the library are set to appropriate values. Any component that uses
+<p>Some components use platform-specific code. The library detects various platforms at compile
+  time using preprocessor macros in <b>environ.hpp</b>. Then, depending on what is found, various
+  macros specific to the library are set to appropriate values. Any component that uses
   platform-specific techniques includes environ.hpp and uses these macros to verify the platform
   or conditionally compile the proper code. By using this approach, all platform-specific macros
-  are managed in a single file. Should the library come to support a new platform it might only be
-  necessary, in some cases, to edit environ.h.</p>
+  are managed in a single file. Should the library come to support a new platform, it might only
+  be necessary, in some cases, to edit <kbd>environ.h</kbd>.</p>
 
 <hr/>
 <h2>Table of Contents</h2>
@@ -50,8 +45,8 @@
 <h2 id="containers">Containers</h2>
 
 <p>It is my intention for all containers to have a style that is consistent with the containers in
-  the C++ standard library to the greatest degree feasible. This will make the Spica containers
-  easier to learn and use in combination with standard library algorithms and other "well known"
+  the C++ standard library to the greatest degree possible. This will make the Spica containers
+  easier to learn and use in combination with standard library algorithms and other "well-known"
   techniques. Alas, not all the containers are equally evolved in this regard.</p>
 
 <ul>
@@ -62,8 +57,8 @@
     <p>A binomial heap is a data structure that offers fast insertion, lookup of the minimum item,
       <em>and</em> fast merging of two heaps. See the documentation for more information.</p>
 
-    <p>Files: BinomialHeap.hpp. A very minimal test program is in BinomialHeap_tests.cpp. This
-      test program is in need of much enhancement.</p>
+    <p>Files: <kbd>BinomialHeap.hpp</kbd>. A very minimal test program is in <kbd>BinomialHeap_tests.cpp</kbd>.
+      This test program is in need of much enhancement.</p>
   </li>
 
   <li>
@@ -71,30 +66,31 @@
 
     <p>A FileVector is a vector-like object that allows you to treat the contents of a file like a
       vector. This implementation is a template so that file vector elements can be of various
-      types (with some restrictions). The current implementation only works for Win32, but it
+      types (with some restrictions). The current implementation only works for Windows, but it
       should be possible to implement this template on any system that supports memory-mapped
       files.</p>
 
-    <p>Files: FileVector.hpp. A very simple demonstration program is in FileVector_tests.cpp. It
-      should be enhanced into a general purpose vector testing template.</p>
+    <p>Files: <kbd>FileVector.hpp</kbd>. A simple demonstration program is in <kbd>FileVector_tests.cpp</kbd>.
+      It should be enhanced into a general purpose vector testing template.</p>
 
   </li>
 
   <li>
-    <p><b>class String</b></p>
+    <p><b>class RexxString</b></p>
 
     <p>The Spica string class implements strings in a manner similar to that supported by the Rexx
       programming language. The implementation uses reference counting (copy on demand) to support
       fast effective copying. This class is exception safe in the sense that an operation either
-      works correctly or leaves its String operands unchanged. This class is also thread safe in
-      the sense described in the documentation (see the comments in the source file).</p>
+      works correctly or leaves its RexxString operands unchanged. This class is also thread safe
+      in the sense described in the documentation (see the comments in the source file).</p>
 
-    <p>Files: str.hpp and str.cpp. If you need to use this component in a multithreaded program,
-      you will also need synchronize.hpp, synchronize.cpp, and environ.hpp. I have created a test
-      program named str_tests.cpp that you can use to exercise this class. I suggest at least
-      compiling the test program and running all the tests before trying to use this class in your
-      own programs. The file str_testsMT.cpp attempts to exercise this class in a multithreaded
-      environment. The multithreaded testing that is done is currently quite minimal.</p>
+    <p>Files: <kbd>RexxString.hpp</kbd> and <kbd>RexxString.cpp</kbd>. If you need to use this
+      component in a multithreaded program, you will also need <kbd>synchronize.hpp</kbd>, <kbd>synchronize.cpp</kbd>,
+      and <kbd>environ.hpp</kbd>. I have created a test program named str_tests.cpp that you can
+      use to exercise this class. I suggest at least compiling the test program and running all
+      the tests before trying to use this class in your own programs. The file str_testsMT.cpp
+      attempts to exercise this class in a multithreaded environment. The multithreaded testing
+      that is done is currently quite minimal.</p>
 
   </li>
 
@@ -111,7 +107,8 @@
 
     <p>This template supports all platforms supported by the synchronize component.</p>
 
-    <p>Files: WorkQueue.hpp, synchronize.hpp, synchronize.cpp, and environ.hpp.</p>
+    <p>Files: <kbd>WorkQueue.hpp</kbd>, <kbd>synchronize.hpp</kbd>, <kbd>synchronize.cpp</kbd>,
+      and <kbd>environ.hpp</kbd>.</p>
 
   </li>
 
@@ -122,7 +119,7 @@
 
 <p>I define an abstract type as a class that is intended to model something from the real world or
   an encapsulation of a common software concept. Some of these abstract types use
-  platform-specific functions, but they attempt to offer a platform independent interface and can
+  platform-specific functions, but they attempt to offer a platform-independent interface and can
   thus be considered "general purpose" classes. In fact, the very point of some of these classes
   is to hide system dependency behind a uniform interface.</p>
 
@@ -131,12 +128,14 @@
     <p><b>Semaphore Classes</b></p>
 
     <p>These classes implement several different semaphore types with an interface that is uniform
-      across Win32, OS/2, and POSIX. Currently only the classes mutex_sem and counting_sem are
-      implemented. I use the word "semaphore" loosely in this context to refer to a variety of
-      flag-like objects that can be used for thread synchronization. There is no formal
-      documentation at this time, but the comments in sem.h and sem.cpp are reasonably good.</p>
+      across Windows, OS/2, and POSIX. Currently, only the classes <code>mutex_sem</code> and
+      <code>counting_sem</code> are implemented. I use the word "semaphore" loosely in this
+      context to refer to a variety of flag-like objects that can be used for thread
+      synchronization. There is no formal documentation at this time, but the comments in sem.h
+      and sem.cpp are reasonably good.</p>
 
-    <p>Files: synchronize.hpp, synchronize.cpp, and environ.hpp.</p>
+    <p>Files: <kbd>synchronize.hpp</kbd>, <kbd>synchronize.cpp</kbd>, and <kbd>environ.hpp</kbd>.
+    </p>
 
   </li>
 
@@ -144,21 +143,21 @@
     <p><b>class Timer</b></p>
 
     <p>This class implements a simple timer object that can be used to keep track of elapsed clock
-      time. It is implemented for DOS, Win32 and Posix. It offers subsecond resolution; the exact
-      resolution depends on the abilities of the platform.</p>
+      time. It is implemented for DOS, Windows, and POSIX. It offers subsecond resolution; the
+      exact resolution depends on the abilities of the platform.</p>
 
-    <p>Files: Timer.hpp, Timer.cpp, and environ.hpp. I have created a test program named
-      Timer_tests.cpp that you can use to exercise this class. I suggest at least compiling the
-      test program and running all the tests before trying to use this class in your own
-      programs.</p>
+    <p>Files: <kbd>Timer.hpp</kbd>, <kbd>Timer.cpp</kbd>, and <kbd>environ.hpp</kbd>. I have
+      created a test program named Timer_tests.cpp that you can use to exercise this class. I
+      suggest at least compiling the test program and running all the tests before trying to use
+      this class in your own programs.</p>
   </li>
 
 </ul>
 
 <!-- BEGIN signature block -->
 <hr/>
-<p>&copy; Copyright 2023 by Peter Chapin &lt;spicacality@kelseymountain.org&gt;<br/>
-Last Revised: <b>July 5, 2023</b></p>
+<p>&copy; Copyright 2025 by Peter Chapin &lt;spicacality@kelseymountain.org&gt;<br/> Last Revised:
+  <b>March 11, 2025</b></p>
 <!-- END signature block -->
 </body>
 

@@ -3,6 +3,8 @@ Debug
 Release
 Spica.sdf
 .vs
+*.aps
+*.user
 
 # Code::Blocks generated files.
 bin
