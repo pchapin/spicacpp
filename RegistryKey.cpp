@@ -6,7 +6,7 @@
 
 #include <string>
 #include <windows.h>
-#include "regkey.hpp"
+#include "RegistryKey.hpp"
 
 namespace spica {
     namespace Windows {
@@ -18,7 +18,7 @@ namespace spica {
         // as many things as possible to default values in order to make life simple for the
         // caller.
         //
-        RegistryKey::RegistryKey( HKEY topLevel_key, const char *key_name )
+        RegistryKey::RegistryKey( HKEY topLevel_key, const char *key_name ) noexcept
         {
             error = true;
 
@@ -70,7 +70,7 @@ namespace spica {
                     name,                     // Name of the value.
                     0,                        // Reserved. Must be zero.
                     REG_SZ,                   // This value has type "string."
-                    reinterpret_cast<CONST BYTE *>(value.c_str()),
+                    reinterpret_cast<CONST BYTE *>( value.c_str( ) ),
                     value.size()+1            // Number of bytes.
                 ); 
             }
@@ -102,7 +102,7 @@ namespace spica {
                      name,                  // Name of the value.
                      0,                     // Reserved. Must be NULL.
                     &type,                  // The value's type.
-                     reinterpret_cast<LPBYTE>(buffer),
+                     reinterpret_cast<LPBYTE>( buffer ),
                     &buffer_size            // Size of buffer. Modified by call.
                 ) == ERROR_SUCCESS ) {
                 value = buffer;
@@ -125,7 +125,7 @@ namespace spica {
                     name,                     // Name of the value.
                     0,                        // Reserved. Must be zero.
                     REG_DWORD,                // This value has type "DWORD."
-                    reinterpret_cast<CONST BYTE *>(&value),
+                    reinterpret_cast<CONST BYTE *>( &value ),
                     sizeof(DWORD)             // Number of bytes.
                 );
             }
@@ -156,7 +156,7 @@ namespace spica {
                     name,                  // Name of value.
                     0,                     // Reserved. Must be NULL.
                    &type,                  // Value's type.
-                    reinterpret_cast<LPBYTE>(&buffer),
+                    reinterpret_cast<LPBYTE>( &buffer ),
                    &buffer_size            // Size of buffer.
                 ) == ERROR_SUCCESS ) {
                 value = buffer;

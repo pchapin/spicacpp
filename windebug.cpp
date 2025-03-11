@@ -140,7 +140,7 @@ namespace spica {
         static void display_debugText(const std::string &line)
         {
 #if defined(eMULTITHREADED)
-            Critical_Grabber critical(&debugMessages_mutex);
+            CriticalGrabber critical(&debugMessages_mutex);
 #endif
 
             if (logging) log_file << line << std::endl;
@@ -249,7 +249,7 @@ namespace spica {
             int longest_line = 0;
 
 #if defined(eMULTITHREADED)
-            Critical_Grabber critical(&debugMessages_mutex);
+            CriticalGrabber critical(&debugMessages_mutex);
 #endif
 
             // Set up the font the drawing attributes.
@@ -326,7 +326,7 @@ namespace spica {
                                      )
         {
 #if defined(eMULTITHREADED)
-            Critical_Grabber critical(&debugMessages_mutex);
+            CriticalGrabber critical(&debugMessages_mutex);
 #endif
 
             switch (LOWORD(wParam)) {
@@ -379,7 +379,7 @@ namespace spica {
                                      )
         {
 #if defined(eMULTITHREADED)
-            Critical_Grabber critical(&debugMessages_mutex);
+            CriticalGrabber critical(&debugMessages_mutex);
 #endif
 
             switch (LOWORD(wParam)) {
@@ -426,7 +426,7 @@ namespace spica {
         static void size_function(HWND window_handle)
         {
 #if defined(eMULTITHREADED)
-            Critical_Grabber critical(&debugMessages_mutex);
+            CriticalGrabber critical(&debugMessages_mutex);
 #endif
 
             // How big is the current window?
@@ -465,7 +465,7 @@ namespace spica {
             
             {
 #if defined(eMULTITHREADED)
-                Critical_Grabber critical(&lineNumber_mutex);
+                CriticalGrabber critical(&lineNumber_mutex);
 #endif
                 
                 message_text << std::setw(4) << L_number++
@@ -487,7 +487,7 @@ namespace spica {
 
             {
 #if defined(eMULTITHREADED)
-                Critical_Grabber critical(&lineNumber_mutex);
+                CriticalGrabber critical(&lineNumber_mutex);
 #endif
       
                 message_text << std::setw(4) << L_number++
@@ -514,7 +514,7 @@ namespace spica {
             
             {
 #if defined(eMULTITHREADED)
-                Critical_Grabber critical(&lineNumber_mutex);
+                CriticalGrabber critical(&lineNumber_mutex);
 #endif
       
                 message_text << std::setw(4) << L_number++ << " EX: (0) " << str();
@@ -683,7 +683,7 @@ namespace spica {
                                            );
                             else {
 #if defined(eMULTITHREADED)
-                                Critical_Grabber critical(&debugMessages_mutex);
+                                CriticalGrabber critical(&debugMessages_mutex);
 #endif
                   
                                 std::deque<std::string>::iterator p(debug_messages.begin());

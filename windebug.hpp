@@ -13,6 +13,12 @@
 #ifndef WINDEBUG_H
 #define WINDEBUG_H
 
+#include "environ.hpp"
+
+#if !defined(eWINDOWS)
+#error WinDebug only supports the Windows operating system!
+#endif
+
 #include <sstream>
 
 namespace spica {
@@ -54,8 +60,8 @@ namespace spica {
         // appropriate. Default arguments can't be used in the constructor otherwise every
         // Tracer will have a file and line location that points to this header file!
         //
-#define Tracer(level, message)                                  \
-        spica::Win32::Tracer(level, message, __FILE__, __LINE__);
+#define Tracer(level, message) \
+        spica::Windows::Tracer(level, message, __FILE__, __LINE__);
 
 
         //

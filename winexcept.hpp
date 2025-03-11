@@ -9,6 +9,12 @@
 #ifndef WINEXCEPT_H
 #define WINEXCEPT_H
 
+#include "environ.hpp"
+
+#if !defined(eWINDOWS)
+#error WinDebug only supports the Windows operating system.
+#endif
+
 #include <stdexcept>
 #include <string>
 

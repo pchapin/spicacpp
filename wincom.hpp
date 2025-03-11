@@ -9,13 +9,17 @@
 
 #include "environ.hpp"
 
-#include <string>
-#include "winexcept.hpp"
-#include "WorkQueue.hpp"
+#if !defined(eWINDOWS)
+#error WinCom only supports the Windows operating system!
+#endif
 
 #if !defined(eMULTITHREADED)
 #error WinCom requires multiple threads and multithread support not active!
 #endif
+
+#include <string>
+#include "winexcept.hpp"
+#include "WorkQueue.hpp"
 
 namespace spica {
     namespace Windows {

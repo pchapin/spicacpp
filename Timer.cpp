@@ -18,7 +18,7 @@ static void get_time_as_integer( mytimer_t &result )
     _dos_gettime( &result );
     #endif
 
-    #if eOPSYS == eWIN32
+    #if eOPSYS == eWINDOWS
     SYSTEMTIME raw;
     FILETIME   cooked;
 
@@ -55,7 +55,7 @@ static long get_adjusted_time( const mytimer_t &the_time )
     return temp;
     #endif
 
-    #if eOPSYS == eWIN32
+    #if eOPSYS == eWINDOWS
     long long temp = the_time.QuadPart;
     temp /= 10000;
     return static_cast< long >( temp );
@@ -101,7 +101,7 @@ static mytimer_t operator+( const mytimer_t &left, const mytimer_t &right )
     }
     #endif
 
-    #if eOPSYS == eWIN32
+    #if eOPSYS == eWINDOWS
     result.QuadPart = left.QuadPart + right.QuadPart;
     #endif
 
@@ -137,7 +137,7 @@ static mytimer_t operator-( const mytimer_t &left, const mytimer_t &right )
     result.hour = static_cast< unsigned char >( difference );
     #endif
 
-    #if eOPSYS == eWIN32
+    #if eOPSYS == eWINDOWS
     result.QuadPart = left.QuadPart - right.QuadPart;
     #endif
 
@@ -177,7 +177,7 @@ namespace spica {
         accumulated.hsecond = 0;
         #endif
 
-        #if eOPSYS == eWIN32
+        #if eOPSYS == eWINDOWS
         accumulated.LowPart  = 0;
         accumulated.HighPart = 0;
         #endif
@@ -207,7 +207,7 @@ namespace spica {
         accumulated.hsecond = 0;
         #endif
 
-        #if eOPSYS == eWIN32
+        #if eOPSYS == eWINDOWS
         accumulated.LowPart = 0;
         accumulated.HighPart = 0;
         #endif

@@ -19,6 +19,12 @@
 #ifndef REGKEY_HPP
 #define REGKEY_HPP
 
+#include "environ.hpp"
+
+#if !defined(eWINDOWS)
+#error RegistryKey only supports the Windows operating system!
+#endif
+
 #include <string>
 #include <windows.h>
 
@@ -31,7 +37,7 @@ namespace spica {
             bool  error;      // =true if we couldn't create (or open) the key.
 
         public:
-            RegistryKey( HKEY topLevel_key, const char *key_name );
+            RegistryKey( HKEY topLevel_key, const char *key_name ) noexcept;
            ~RegistryKey( );
 
             // This function adds the (name, value) pair to the key. Notice that this function

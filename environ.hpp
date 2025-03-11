@@ -30,14 +30,14 @@
 //-----------------------------
 
 // The following are the allowed values of eCOMPILER.
-#define eVANILLA     1  // Generic, Standard C++ only
+#define eVANILLA     1  // Generic, Standard C++ 2020 only
 #define eCLANG       2  // clang++
-#define eCOMPAQ      3  // Compaq C++
+#define eCOMPAQ      3  // Compaq C++ (remove?)
 #define eGCC         4  // g++
-#define eIBM         5  // IBM's Visual Age C++
-#define eMETROWERKS  6  // Metrowerks CodeWarrior
+#define eIBM         5  // IBM's Visual Age C++ (remove?)
+#define eMETROWERKS  6  // Metrowerks CodeWarrior (remove?)
 #define eMICROSOFT   7  // Microsoft Visual C++
-#define eOPENWATCOM  8  // Open Watcom
+#define eOPENWATCOM  8  // Open Watcom C++
 // TODO: What about Intel's compiler?
 
 // Choose your compiler! This file can autodetect all of the compilers mentioned above. If the
@@ -76,7 +76,7 @@
 #define eCOMPILER eVANILLA
 #endif
 
-// It might make sense to encode the compiler version also.
+// TODO: It might make sense to encode the compiler version also.
 
 //-------------------------------------
 //           Operating System
@@ -87,10 +87,10 @@
 #define eMAC     2  // macOS (modern system).
 #define eNETWARE 3  // NetWare NLM. Assume v4.x or higher (NDS support).
 #define eOS2     4  // OS/2 (32 bit only).
-#define ePOSIX   5  // POSIX is intended to support all Unix flavors.
+#define ePOSIX   5  // POSIX is intended to support all Unix flavors including macOS.
 #define eVMS     6  // DEC's VMS operating system.
-#define eWIN32   7  // Windows NT+ only. Win95/98/Me are obsolete.
-#define eWINDOWS 7  // Same as "eWIN32" for compatibility. The older name is deprecated.
+#define eWINDOWS 7  // Windows NT+ only. Win95/98/Me are obsolete.
+#define eWIN32   7  // Same as "eWINDOWS". This macro is for compatibility. It is deprecated.
 
 // Choose your operating system! In most cases this file can autodetect the operating system
 // from the compiler that is being used. If that is not the case, you will have to specify the
@@ -122,7 +122,7 @@
 #endif
 #endif
 
-// CodeWarrior supports Mac and Win32 programming.
+// CodeWarrior supports macOS and Win32 programming.
 // TODO: CodeWarrior no longer supports either of the above platforms. What now?
 #if eCOMPILER == eMETROWERKS
 #if defined(macintosh)
@@ -132,12 +132,11 @@
 #endif
 #endif
 
-// Visual C++ supports Win32 and Mac(?!) programming.
+// Visual C++ supports Windows programming.
+// TODO: What about 32 vs 64-bit?
 #if eCOMPILER == eMICROSOFT
 #if defined(_WIN32)
-#define eOPSYS eWIN32
-#elif defined(_MAC)
-#define eOPSYS eMAC
+#define eOPSYS eWINDOWS
 #endif
 #endif
 

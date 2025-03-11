@@ -55,7 +55,7 @@
 #include "environ.hpp"
 
 #if eOPSYS != eWINDOWS
-#error File vectors currently only support Windows.
+#error FileVector only supports the Windows operating system.
 #endif
 
 #include <algorithm>

@@ -12,7 +12,7 @@
 #include <dos.h>
 #endif
 
-#if eOPSYS == eWIN32
+#if eOPSYS == eWINDOWS
 #include <windows.h>
 #endif
 
@@ -55,7 +55,7 @@ namespace spica {
         typedef struct dostime_t timer_t;
         #endif
 
-        #if eOPSYS == eWIN32
+        #if eOPSYS == eWINDOWS
         typedef LARGE_INTEGER timer_t;
         #endif
 
