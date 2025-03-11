@@ -31,7 +31,7 @@
   // so that we can write the definition below!
 
 namespace spica {
-    namespace Win32 {
+    namespace Windows {
 
         extern LRESULT CALLBACK debug_callback(HWND, UINT, WPARAM, LPARAM);
 
@@ -192,7 +192,7 @@ namespace spica {
                 the_class.lpszClassName = class_name;
 
                 if (!RegisterClass(&the_class))
-                    throw API_Error("Cannot register debugging window class");
+                    throw APIError("Cannot register debugging window class");
 
                 already_registered = true;
             }
@@ -245,7 +245,7 @@ namespace spica {
         //
         static int paint_function(HWND window_handle)
         {
-            Paint_Context painter(window_handle);
+            PaintContext painter(window_handle);
             int longest_line = 0;
 
 #if defined(eMULTITHREADED)
@@ -254,13 +254,13 @@ namespace spica {
 
             // Set up the font the drawing attributes.
             if (SelectObject(painter, GetStockObject(ANSI_FIXED_FONT)) == 0)
-                throw API_Error("Can't select ANSI_FIXED_FONT in the debug window");
+                throw APIError("Can't select ANSI_FIXED_FONT in the debug window");
 
             if (SetTextColor(painter, GetSysColor(COLOR_WINDOWTEXT)) == CLR_INVALID)
-                throw API_Error("Can't set the text color in the debug window");
+                throw APIError("Can't set the text color in the debug window");
 
             if (SetBkColor(painter, GetSysColor(COLOR_WINDOW)) == CLR_INVALID)
-                throw API_Error("Can't set the background color in the debug window");
+                throw APIError("Can't set the background color in the debug window");
 
             // Create a string of spaces to use to erase parts of the screen.
             std::string spaces(X_size + 1, ' ');
@@ -546,7 +546,7 @@ namespace spica {
 
             if (window_exists) {
                 if (SetFocus(handle) == 0)
-                    throw API_Error("Unable to set focus to existing debugging window");
+                    throw APIError("Unable to set focus to existing debugging window");
                 return;
             }
 
@@ -573,7 +573,7 @@ namespace spica {
                                   );
 
             if (handle == 0)
-                throw API_Error("Unable to create debugging window");
+                throw APIError("Unable to create debugging window");
 
             // Display the window we just created.
             ShowWindow(handle, SW_SHOW);
@@ -768,7 +768,7 @@ namespace spica {
                 message.say(window_handle);
                 return 0;
             }
-            catch (API_Error We) {
+            catch (APIError We) {
                 notifystream message;
                 message << "Unexpected API error in debugging window\r"
                         << We.what() << "\r"

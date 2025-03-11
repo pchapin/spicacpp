@@ -9,7 +9,7 @@
 #include "regkey.hpp"
 
 namespace spica {
-    namespace Win32 {
+    namespace Windows {
 
         //
         // RegistryKey::RegistryKey( HKEY, const char * )

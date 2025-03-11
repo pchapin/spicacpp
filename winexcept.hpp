@@ -62,10 +62,10 @@ namespace spica {
         //
         class Handle {
         public:
-            Handle( ) :          the_handle( INVALID_HANDLE_VALUE ) { }
-            Handle( HANDLE h ) : the_handle( h )                    { }
-            operator HANDLE( ) const   { return the_handle; }
-            void operator=( HANDLE h ) { the_handle = h;    }
+            Handle( ) noexcept :          the_handle( INVALID_HANDLE_VALUE ) { }
+            Handle( HANDLE h ) noexcept : the_handle( h )                    { }
+            operator HANDLE( ) const noexcept      { return the_handle; }
+            Handle &operator=( HANDLE h ) noexcept { the_handle = h; return *this; }
 
             ~Handle( )
                 { if( the_handle != INVALID_HANDLE_VALUE ) CloseHandle( the_handle ); }
@@ -93,7 +93,7 @@ namespace spica {
         //
         class CriticalGrabber {
         public:
-            CriticalGrabber( CRITICAL_SECTION *p ) : cs( p ) { EnterCriticalSection( cs ); }
+            CriticalGrabber( CRITICAL_SECTION *p ) noexcept : cs( p ) { EnterCriticalSection( cs ); }
             ~CriticalGrabber( ) { LeaveCriticalSection( cs ); }
 
             // Make copying illegal.
@@ -113,10 +113,10 @@ namespace spica {
         //
         class PaintContext {
         public:
-            PaintContext( HWND Handle ) : window_handle( Handle )
+            PaintContext( HWND Handle ) noexcept : window_handle( Handle )
                 { context_handle = BeginPaint( window_handle, &paint_info ); }
 
-            operator HDC( ) const
+            operator HDC( ) const noexcept
                 { return context_handle; }
 
             ~PaintContext( )
@@ -141,10 +141,10 @@ namespace spica {
         //
         class DeviceContext {
         public:
-            DeviceContext( HWND Handle ) : window_handle( Handle )
+            DeviceContext( HWND Handle ) noexcept : window_handle( Handle )
                 { context_handle = GetDC( window_handle ); }
 
-            operator HDC( ) const
+            operator HDC( ) const noexcept
                 { return context_handle; }
 
             ~DeviceContext( )
@@ -155,8 +155,8 @@ namespace spica {
             DeviceContext &operator=( const DeviceContext & ) = delete;
 
         private:
-            HWND   window_handle;
-            HDC    context_handle;
+            HWND window_handle;
+            HDC  context_handle;
         };
 
     }

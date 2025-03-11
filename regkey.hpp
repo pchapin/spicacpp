@@ -23,7 +23,7 @@
 #include <windows.h>
 
 namespace spica {
-    namespace Win32 {
+    namespace Windows {
 
         class RegistryKey {
         private:

@@ -16,14 +16,14 @@
 #include <sstream>
 
 namespace spica {
-    namespace Win32 {
+    namespace Windows {
 
         // Displays the debugging window to the user. It is safe to call this function even if
         // the window is already displayed. You can "display" debugging text even if the
         // debugging window is not currently being displayed. Such text is stored and displayed
         // later.
         //
-        void create_debugWindow();
+        void create_debugWindow( );
         
         // This class is useful for tracing program execution. Construction sends a message to
         // the debug window. Destruction does not send a message. We can't fully control when an
@@ -67,7 +67,7 @@ namespace spica {
         //
         class debugstream : public std::ostringstream {
         public:
-            void say(int level = 1);
+            void say( int level = 1 );
         };
 
 
@@ -83,7 +83,7 @@ namespace spica {
         class notifystream : public std::ostringstream {
         public:
             // window_handle is the handle of the window that will own the message box.
-            void say(HWND window_handle = 0);
+            void say( HWND window_handle = 0 );
         };
 
 

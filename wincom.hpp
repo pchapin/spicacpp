@@ -18,17 +18,17 @@
 #endif
 
 namespace spica {
-    namespace Win32 {
+    namespace Windows {
 
         //
-        // class Com_Port
+        // class ComPort
         //
-        // Objects of type Com_Port represent a serial port on a Win32 machine. This class is a
+        // Objects of type CommPort represent a serial port on a Windows machine. This class is a
         // bit rough. It is only a first cut.
         //
-        class Com_Port : public Handle {
+        class CommPort : public Handle {
 
-            friend unsigned int __stdcall comPort_reader(void *Port_Object);
+            friend unsigned int __stdcall commPort_reader( void *port_object );
 
         private:
             const char   *name;             // The "file" name for this port.
@@ -46,8 +46,8 @@ namespace spica {
             WorkQueue<std::string> input_buffer; // Used to hold simulated input.
 
         public:
-            Com_Port(bool testing = false);
-           ~Com_Port();
+            CommPort( bool testing = false );
+           ~CommPort( );
 
             // Set the parameters of the port and specifies the function that will process each
             // character as it arrives. (This is done by a helper thread). This class configures
@@ -55,28 +55,28 @@ namespace spica {
             // timeout intervals for both reading and writing. Future versions of this class
             // might allow the user to specify more of these things.
             //
-            void set(const char *given_name, int baud, void (*read)(char));
+            void set( const char *given_name, int baud, void (*read)( char ) );
 
             // Allows the caller to define a line of simulated input. This is only useful if the
             // port was constructed in testing mode. In that case, an attempt to read the port
             // will return the simulated input.
             //
-            void set_Input(const std::string &input)
-                { input_buffer.push(input); }
+            void set_Input( const std::string &input )
+                { input_buffer.push( input ); }
 
             // Start the thread that processes incoming characters.
-            void start_reading();
+            void start_reading( );
 
             // Send data out this port. Data arriving at the port is handled by the read
             // processor function.
             //
-            void write(const char *outgoing);
+            void write( const char *outgoing );
 
             // Kill the thread that is processing incoming characters.
-            void stop_reading();
+            void stop_reading( );
 
             // Put the port into the state it was in before it was constructed.
-            void unset();
+            void unset( );
         };
 
     }  // End of namespace scopes.
