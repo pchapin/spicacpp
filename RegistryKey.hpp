@@ -1,11 +1,11 @@
-/*! \file    regkey.hpp
- *   \brief   Interface to a simple registry key object.
- *   \author  Peter Chapin <spicacality@kelseymountain.org>
+/*! \file    RegistryKey.hpp
+ *  \brief   Interface to a simple registry key object.
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
- * This class provides a rather simple-minded interface to the registry. Construction opens the
- * key specified to the constructor while destruction closes the key. When a key is open, new
- * values can be added and existing values can be queried. This class currently only supports
- * string and DWORD values.
+ * This class provides a simple interface to the registry. Construction opens the key specified
+ * to the constructor while destruction closes the key. When a key is open, new values can be
+ * added and existing values can be queried. This class currently only supports string and DWORD
+ * values.
  *
  * The constructor takes two parameters. The first is intended to be one of the special symbols
  * HKEY_CURRENT_USER or HKEY_LOCAL_MACHINE. The second parameter is the path to the desired key
@@ -16,8 +16,8 @@
  * improved.
  */
 
-#ifndef REGKEY_HPP
-#define REGKEY_HPP
+#ifndef REGISTRYKEY_HPP
+#define REGISTRYKEY_HPP
 
 #include "environ.hpp"
 
@@ -37,21 +37,55 @@ namespace spica {
             bool  error;      // =true if we couldn't create (or open) the key.
 
         public:
-            RegistryKey( HKEY topLevel_key, const char *key_name ) noexcept;
+            
+            /*!
+             * Open or create the specified registry key. This function tries to set as many
+             * things as possible to default values in order to make life simple for the caller.
+             *
+             * \param top_level_key Either HKEY_CURRENT_USER or HKEY_LOCAL_MACHINE.
+             * \param key_name The path, relative to the top level, to the key of interest.
+             */
+            RegistryKey( HKEY top_level_key, const char *key_name ) noexcept;
+            
+            /*!
+             * Close the key if it was opened successfully.
+             */
            ~RegistryKey( );
 
-            // This function adds the (name, value) pair to the key. Notice that this function
-            // only allows string values.
-            //
+            /*!
+             * Add the (name, value) pair to the key. This function only allows string values.
+             *
+             * \param name The name of the value.
+             * \param value The value of the value.
+             */
             void set_value( const char *name, const std::string &value );
             
-            // This function retrieves the value associated with the given name. It returns true
-            // if the name was found and false otherwise.
-            //
+            /*!
+             * Retrieve the value associated with the given name. This function only retrieves
+             * string values.
+             *
+             * \param name The name of the value.
+             * \param value A reference to a std::string to receive the value of the value.
+             * \return true if successful; false otherwise.
+             */
             bool get_value( const char *name, std::string &value );
 
-            // Same as above except for DWORD type entries.
+            /*!
+             * Add the (name, value) pair to the key. This function only allows DWORD values.
+             *
+             * \param name The name of the value.
+             * \param value The value of the value.
+             */
             void set_value( const char *name, DWORD  value );
+
+            /*!
+             * Retrieve the value associated with the given name. This function only retrieves
+             * DWORD values.
+             *
+             * \param name The name of the value.
+             * \param value A reference to a DWORD to receive the value of the value.
+             * \return true if successful; false otherwise.
+             */
             bool get_value( const char *name, DWORD &value );
         };
     }

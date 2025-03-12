@@ -6,8 +6,8 @@
  * Windows programs that throw exceptions.
  */
 
-#ifndef WINEXCEPT_H
-#define WINEXCEPT_H
+#ifndef WINEXCEPT_HPP
+#define WINEXCEPT_HPP
 
 #include "environ.hpp"
 

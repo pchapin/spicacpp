@@ -1,14 +1,14 @@
 /*! \file    wincom.cpp
- *  \brief   Implementation of a serial port class for Win32
+ *  \brief   Implementation of a serial port class for Windows.
  *  \author  Peter Chapin <spicacality@kelseymountain.org>
  */
 
+#include <stdexcept>
 #include <string>
-#include <process.h>
-#include <windows.h>
 
-#undef min
-#undef max
+#include <process.h>
+#define NOMINMAX
+#include <windows.h>
 
 #include "wincom.hpp"
 #include "windebug.hpp"
@@ -17,61 +17,57 @@
 namespace spica {
     namespace Windows {
 
-        //-------------------------------------------------
-        //           Internally Linked Functions
-        //-------------------------------------------------
+        namespace {
 
-        //
-        // void display_DCB(const char *header, const DCB &the_DCB)
-        //
-        // This function is for debugging purposes. It displays "interesting" fields of the
-        // given DCB into the debugging window.
-        //
-        static void display_DCB( const char *header, const DCB &the_DCB )
-        {
-            debugstream message;
+            //-------------------------------------------------
+            //           Internally Linked Functions
+            //-------------------------------------------------
 
-            message << header << ": ";
-            message
-                << "Baud="     << the_DCB.BaudRate                               << ' '
-                << "CTSFlow="  << ((the_DCB.fOutxCtsFlow == TRUE) ? "ON" : "OFF")<< ' '
-                << "RTSFlow="  <<
-                ((the_DCB.fRtsControl == RTS_CONTROL_HANDSHAKE) ? "ON" : "OFF")<< ' '
-                << "Parity="   << ((the_DCB.fParity == TRUE) ? "ON" : "OFF")     << ' '
-                << "DataBits=" << the_DCB.ByteSize                               << ' '
-                << "StopBits=";
+            // This function is for debugging purposes. It displays "interesting" fields of the
+            // given DCB into the debugging window.
+            //
+            void display_DCB( const char *header, const DCB &the_DCB )
+            {
+                debugstream message;
 
-            const char *stop_message = "?";
-            switch( the_DCB.StopBits ) {
-            case ONESTOPBIT  : stop_message = "1";   break;
-            case ONE5STOPBITS: stop_message = "1.5"; break;
-            case TWOSTOPBITS : stop_message = "2";   break;
+                message << header << ": ";
+                message
+                    << "Baud="     << the_DCB.BaudRate                               << ' '
+                    << "CTSFlow="  << ((the_DCB.fOutxCtsFlow == TRUE) ? "ON" : "OFF")<< ' '
+                    << "RTSFlow="  <<
+                    ((the_DCB.fRtsControl == RTS_CONTROL_HANDSHAKE) ? "ON" : "OFF")<< ' '
+                    << "Parity="   << ((the_DCB.fParity == TRUE) ? "ON" : "OFF")     << ' '
+                    << "DataBits=" << the_DCB.ByteSize                               << ' '
+                    << "StopBits=";
+
+                const char *stop_message = "?";
+                switch( the_DCB.StopBits ) {
+                case ONESTOPBIT  : stop_message = "1";   break;
+                case ONE5STOPBITS: stop_message = "1.5"; break;
+                case TWOSTOPBITS : stop_message = "2";   break;
+                }
+                message << stop_message;
+                message.say( );
             }
-            message << stop_message;
-            message.say( );
-        }
 
 
-        //
-        // void display_COMMTIMEOUTS(
-        //   const char *header, const COMMTIMEOUTS &the_TIMEOUTS
-        // )
-        //
-        // This function is for debugging purposes. It displays "interesting" fields of the
-        // given COMMTIMEOUTS into the debugging window.
-        //
-        static void display_COMMTIMEOUTS( const char *header, const COMMTIMEOUTS &the_TIMEOUTS )
-        {
-            debugstream message;
+            // This function is for debugging purposes. It displays "interesting" fields of the
+            // given COMMTIMEOUTS into the debugging window.
+            //
+            void display_COMMTIMEOUTS( const char *header, const COMMTIMEOUTS &the_TIMEOUTS )
+            {
+                debugstream message;
 
-            message << header << ":";
-            message << " ReadIntervalTimeout="
-                    << the_TIMEOUTS.ReadIntervalTimeout
-                    << " WriteTotalTimeoutConstant="
-                    << the_TIMEOUTS.WriteTotalTimeoutConstant
-                    << " WriteTotalTimeoutMultiplier="
-                    << the_TIMEOUTS.WriteTotalTimeoutMultiplier;
-            message.say( );
+                message << header << ":";
+                message << " ReadIntervalTimeout="
+                        << the_TIMEOUTS.ReadIntervalTimeout
+                        << " WriteTotalTimeoutConstant="
+                        << the_TIMEOUTS.WriteTotalTimeoutConstant
+                        << " WriteTotalTimeoutMultiplier="
+                        << the_TIMEOUTS.WriteTotalTimeoutMultiplier;
+                message.say( );
+            }
+            
         }
 
 
@@ -79,17 +75,14 @@ namespace spica {
         //           Externally Linked Functions
         //-------------------------------------------------
 
-        //
-        // unsigned int __stdcall comPort_reader(void *port_object)
-        //
-        // This function is executed by the port's helper thread. It basically just waits for an
-        // incoming character and then calls the port's reader function for each character that
-        // arrives. If there are many port objects in the program, then there will be many
-        // different threads in this function (all with different port_object pointers). This
-        // function must be externally linked because it is declared as a friend in the class
-        // definition.
-        //
-        unsigned int __stdcall commPort_reader( void *port_object )
+        /*!
+         * This function is executed by the port's helper thread. It waits for an incoming
+         * character and then calls the port's reader function for each character that arrives.
+         * If there are many port objects in the program, then there will be many different
+         * threads in this function (all with different port_object pointers). This function
+         * must be externally linked because it is declared as a friend in the class definition.
+         */
+        unsigned int __stdcall comPort_reader( void *port_object )
         {
             const int BUFFER_SIZE = 256;
 
@@ -100,7 +93,7 @@ namespace spica {
             DWORD byte_count;     // The number of bytes read from the port.
 
             // The parameter is really a pointer to a Com_Port object.
-            CommPort *the_port = reinterpret_cast<CommPort *>(port_object);
+            ComPort *the_port = reinterpret_cast<ComPort *>(port_object);
 
             // Just loop forever.
             while( true ) {
@@ -208,15 +201,7 @@ namespace spica {
         //           Member Functions
         //--------------------------------------
 
-        //
-        // CommPort::CommPort( bool )
-        //
-        // The constructor initializes the object's many members into something sensible. Note
-        // that the constructor does not configure the port. That is done in the set function.
-        // This way port objects can be constructed before the desired port parameters are
-        // known.
-        // 
-        CommPort::CommPort( bool testing ) :
+        ComPort::ComPort( bool testing ) :
             name               ( 0 ),
             port_set           ( false ),
             outer_usage        ( false ),
@@ -231,15 +216,7 @@ namespace spica {
         }
 
 
-        //
-        // CommPort::~CommPort( )
-        //
-        // The destructor stops the helper thread (if it's running) and then resets the port
-        // parameters to the way they were before. Should I also cancel any asynchronous I/O
-        // that might be pending (for example before closing the event handles that I/O is
-        // trying to use)? Probably.
-        //
-        CommPort::~CommPort( )
+        ComPort::~ComPort( )
         {
             outer_usage = true;
 
@@ -261,20 +238,9 @@ namespace spica {
         }
 
 
-        //
-        // void CommPort::set( const char *, int, void (*)( char ) )
-        //
-        // This function sets the port's parameters. This is not done in the constructor because
-        // at construction time the parameters are not necessarily known. I'm assuming that many
-        // Com_Port objects will be global, but port parameters may not be known until well
-        // after the program starts executing.
-        //
-        // This function accepts the name of the "file" to open, the baud rate, and a pointer to
-        // a function that will process each character read from the port.
-        //
-        void CommPort::set( const char *given_name, int baud, void (*read)( char ) )
+        void ComPort::set( const char *given_name, int baud, void (*read)( char ) )
         {
-            // For now, don't allow a Com_Port object to be set more than once.
+            // For now, don't allow a CommPort object to be set more than once.
             if( port_set ) return;
             
             read_processor = read;
@@ -292,7 +258,7 @@ namespace spica {
 
             // Can I open the port?
             the_handle =
-                CreateFile( given_name,         // Name of port.
+                CreateFile( given_name,                  // Name of port.
                             GENERIC_READ|GENERIC_WRITE,  // Read and write the port.
                             0,                           // Sharing mode.
                             0,                           // Security attributes.
@@ -362,20 +328,13 @@ namespace spica {
         }
 
 
-        //
-        // void CommPort::start_reading( )
-        //
-        // This function starts the helper thread that waits for characters to appear at the
-        // port. It is not an error to call this function more than once. If the helper thread
-        // was already running, additional calls to this function are ignored.
-        //
-        void CommPort::start_reading( )
+        void ComPort::start_reading( )
         {
             unsigned int thread_ID;
     
             if( ( port_set || testing_mode ) && helperThread_handle == INVALID_HANDLE_VALUE ) {
                 helperThread_handle = reinterpret_cast<HANDLE>(
-                    _beginthreadex( 0, 0, commPort_reader, this, 0, &thread_ID ) );
+                    _beginthreadex( 0, 0, comPort_reader, this, 0, &thread_ID ) );
         
                 debugstream message;
                 message << "Serial port helper thread started";
@@ -384,21 +343,21 @@ namespace spica {
         }
 
 
-        //
-        // void CommPort::write( const char * )
-        //
-        // This function writes the given null terminated character string out the port. It will
-        // throw an exception if it can't write the data as expected.
-        //
-        void CommPort::write( const char *outgoing )
+       void ComPort::write( const char *outgoing )
         {
             // Writes to the port are just ignored. (Port? What port?)
             if( testing_mode ) return;
             
-            DWORD      bytes_written;
-            BOOL       write_result;
-            int        string_length = strlen( outgoing );
-            OVERLAPPED overlapped;
+            DWORD       bytes_written;
+            BOOL        write_result;
+            DWORD       string_length;
+            OVERLAPPED  overlapped;
+
+            // Check length of incoming string.
+            const size_t incoming_length = strlen( outgoing );
+            if( incoming_length > MAXDWORD )
+                throw std::length_error( "Outgoing string too long to write to serial port" );
+            string_length = static_cast<DWORD>( incoming_length );
 
             // Set up the overlapped structure.
             std::memset( &overlapped, 0, sizeof(overlapped) );
@@ -425,16 +384,7 @@ namespace spica {
         }
 
 
-        //
-        // void CommPort::stop_reading( )
-        //
-        // This function stops the helper thread if it was running. It is not an error to call
-        // this function if the helper thread isn't running. In that case, the call is ignored.
-        // This function should probably not resort to TerminateThread() as that is a pretty
-        // gross way to kill a thread. (What if the helper thread is in the middle of processing
-        // some input and holds some resources?). For now it will be acceptable.
-        //
-        void CommPort::stop_reading( )
+        void ComPort::stop_reading( ) noexcept
         {
             if( helperThread_handle != INVALID_HANDLE_VALUE ) {
                 TerminateThread( helperThread_handle, 0 );
@@ -448,14 +398,7 @@ namespace spica {
         }
 
 
-        //
-        // void CommPort::unset( )
-        //
-        // This function undoes set( ). It leaves the port in a state where
-        // set( ) can be called again. It's useful for changing port
-        // parameters on the fly.
-        //
-        void CommPort::unset( )
+        void ComPort::unset( )
         {
             if( port_set ) {
                 // Blow the helper thread away.
@@ -484,5 +427,5 @@ namespace spica {
             name = 0;
         }
 
-    }  // End of namespace scopes.
+    }
 }

@@ -1,6 +1,6 @@
 /*! \file    WorkQueue.hpp
- *   \brief   Interface to a queue class for use in multithreaded programs.
- *   \author  Peter Chapin <spicacality@kelseymountain.org>
+ *  \brief   Interface to a queue class for use in multithreaded programs.
+ *  \author  Peter Chapin <spicacality@kelseymountain.org>
  *
  * This class facilitates thread communication. One thread can add entities to the queue while
  * another takes entities off the queue. This is the classic producer/consumer problem. This
@@ -15,17 +15,23 @@
  * functions that it uses. This is an area where it could be improved.
  */
 
-#ifndef WORKQUEUE_H
-#define WORKQUEUE_H
+#ifndef WORKQUEUE_HPP
+#define WORKQUEUE_HPP
 
 #include "environ.hpp"
+
 #include <list>
 #include <queue>
 #include "synchronize.hpp"
 
 namespace spica {
 
-    template< typename T > class WorkQueue {
+    template<typename T> class WorkQueue {
+
+        // Make copying WorkQueues illegal.
+        WorkQueue( const WorkQueue<T> & ) = delete;
+        WorkQueue<T> &operator=( const WorkQueue<T> & ) = delete;
+
     public:
         WorkQueue( int max_size );
         // Although the queue grows and shrinks dynamically, max_size sets an upper bound on the
@@ -51,16 +57,12 @@ namespace spica {
         // Returns true if there is nothing in the queue.
 
     private:
-        typedef std::list< T > supporting_container;
+        typedef std::list<T> supporting_container;
 
-        std::queue< T, supporting_container > the_queue;
+        std::queue<T, supporting_container> the_queue;
         mutex_sem     mutex;
         counting_sem  free_slots;
         counting_sem  used_slots;
-
-        // Make copying WorkQueues illegal.
-        WorkQueue( const WorkQueue< T > & );
-        WorkQueue< T > &operator=( const WorkQueue< T > & );
     };
 
 
@@ -70,7 +72,8 @@ namespace spica {
     // This function initializes the syncronization primitives needed to make this work. Do not
     // attempt to use a WorkQueue object until the thread calling its constructor has returned.
     //
-    template< typename T > inline WorkQueue< T >::WorkQueue( int max_size ) :
+    template<typename T>
+    inline WorkQueue<T>::WorkQueue( int max_size ) :
         free_slots( max_size ), used_slots( 0 )
     { }
 
@@ -88,7 +91,8 @@ namespace spica {
     // queue in some sort of partially copied state. How true this is will depend on the
     // exception safety of the library queue class.
     //
-    template< typename T > void WorkQueue< T >::push( const T &incoming )
+    template<typename T>
+    void WorkQueue<T>::push( const T &incoming )
     {
         free_slots.down( );
         {
@@ -113,7 +117,8 @@ namespace spica {
     // In that case, the queue is properly unlocked and the counting semaphores are set to
     // appropriate states.
     //
-    template< typename T > void WorkQueue< T >::pop( T &outgoing )
+    template<typename T>
+    void WorkQueue<T>::pop( T &outgoing )
     {
         used_slots.down( );
         {
@@ -137,7 +142,8 @@ namespace spica {
     //
     // Returns the number of items waiting in the queue.
     //
-    template< typename T > inline int WorkQueue< T >::size( )
+    template<typename T>
+    inline int WorkQueue<T>::size( )
     {
         mutex_sem::grabber critical( mutex );
         return the_queue.size( );
@@ -149,13 +155,13 @@ namespace spica {
     //
     // Returns true if the queue is empty; false otherwise.
     //
-    template< typename T > inline bool WorkQueue< T >::empty( )
+    template<typename T>
+    inline bool WorkQueue<T>::empty( )
     {
         mutex_sem::grabber critical( mutex );
         return the_queue.empty( );
     }
 
-
-} // End of namespace scope.
+}
 
 #endif

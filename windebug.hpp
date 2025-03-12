@@ -10,8 +10,8 @@
  * reproduced on the development station.
  */
 
-#ifndef WINDEBUG_H
-#define WINDEBUG_H
+#ifndef WINDEBUG_HPP
+#define WINDEBUG_HPP
 
 #include "environ.hpp"
 
