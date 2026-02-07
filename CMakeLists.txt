@@ -25,7 +25,11 @@ if(MSVC)
         /wd4668  # Disable undefined macro warnings.
         /wd4865  # Disable the enum underlying type warning.
         /wd5039  # potentially throwing function in extern "C".
+        /wd5045  # Disable Spectre mitigation warnings.
     )
+    # Suppress Microsoft's warnings about standard C functions (fopen, strcpy, etc.).
+    # TODO: Consider replacing C-isms with C++ alternatives during future refactoring.
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
 else()
     add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
