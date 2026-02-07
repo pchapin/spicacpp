@@ -14,19 +14,19 @@ using namespace std;
 
 namespace spica {
 
-    map<string, string> read_configuration( const string &file_name )
+    map<string, string> read_configuration(const string& file_name)
     {
         map<string, string> configuration;
-        ifstream            input_file( file_name.c_str( ) );
-        regex               pattern( R"(\s*(.*)\s*=\s*(.*)\s*)" );
-        string              line;
+        ifstream input_file(file_name.c_str());
+        regex pattern(R"(\s*(.*)\s*=\s*(.*)\s*)");
+        string line;
 
         // If the file opened correctly...
-        if( input_file ) {
-            while( getline( input_file, line ) ) {
+        if (input_file) {
+            while (getline(input_file, line)) {
                 smatch matches;
-                if( regex_match( line, matches, pattern ) ) {
-                    configuration[ matches[1] ] = matches[2];
+                if (regex_match(line, matches, pattern)) {
+                    configuration[matches[1]] = matches[2];
                 }
             }
         }
@@ -34,4 +34,4 @@ namespace spica {
         return configuration;
     }
 
-}
+} // namespace spica

@@ -5,86 +5,83 @@
  * This program shows off some features of class Date. It is not a detailed test program!
  */
 
+#include "Date.hpp"
 #include <cstdlib>
 #include <iostream>
 #include <string>
 #include <vector>
-#include "Date.hpp"
 
 using namespace std;
 using namespace spica;
 
-void date_subtraction( )
+void date_subtraction()
 {
     Date birth_date;
     Date today;
 
     cout << "What is your birth date (yyyy-mm-dd)? ";
-    cin  >> birth_date;
+    cin >> birth_date;
     cout << "What is today's date? ";
-    cin  >> today;
+    cin >> today;
     cout << "You are " << today - birth_date << " days old!\n";
-    cout << workday_difference( today, birth_date ) << " workdays have elapsed in your life.\n";
+    cout << workday_difference(today, birth_date) << " workdays have elapsed in your life.\n";
 }
 
-
-void date_loops( )
+void date_loops()
 {
     Date start_date;
     Date end_date;
-    const vector<string> day_names {
-        "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+    const vector<string> day_names{"Sunday",   "Monday", "Tuesday", "Wednesday",
+                                   "Thursday", "Friday", "Saturday"};
 
     cout << "What start date? ";
-    cin  >> start_date;
+    cin >> start_date;
     cout << "What end date? ";
-    cin  >> end_date;
+    cin >> end_date;
 
-    if( start_date > end_date ) {
+    if (start_date > end_date) {
         cout << "The end date must be the same or later than the start date!\n";
     }
     else {
-        for( Date current = start_date; current <= end_date; current.advance( ) ) {
-            cout << current << ": " << day_names.at( current.day_of_week( ) ) << "\n";
+        for (Date current = start_date; current <= end_date; current.advance()) {
+            cout << current << ": " << day_names.at(current.day_of_week()) << "\n";
         }
     }
 }
 
-
-void date_skipping( )
+void date_skipping()
 {
     Date start_date;
-    int  skip_interval;
-    int  skip_count;
+    int skip_interval;
+    int skip_count;
 
     cout << "What start date? ";
-    cin  >> start_date;
+    cin >> start_date;
     cout << "What skip interval? ";
-    cin  >> skip_interval;
+    cin >> skip_interval;
     cout << "How many skips? ";
-    cin  >> skip_count;
+    cin >> skip_count;
 
     // Compute all the dates.
-    vector<Date> stepping_stones { start_date };
-    for( int i = 0; i < skip_count; ++i ) {
-        Date latest = stepping_stones.back( );
-        latest.advance( skip_interval );
-        stepping_stones.push_back( latest );
+    vector<Date> stepping_stones{start_date};
+    for (int i = 0; i < skip_count; ++i) {
+        Date latest = stepping_stones.back();
+        latest.advance(skip_interval);
+        stepping_stones.push_back(latest);
     }
 
     // Display the results.
-    for( auto stone : stepping_stones ) {
+    for (auto stone : stepping_stones) {
         cout << stone << "\n";
     }
 }
 
-
-int main( )
+int main()
 {
-    int  choice;
+    int choice;
     bool done = false;
 
-    while( !done ) {
+    while (!done) {
         cout << "\n"
                 "0) Quit\n"
                 "1) Date subtraction\n"
@@ -94,18 +91,18 @@ int main( )
                 "choice: ";
 
         cin >> choice;
-        switch( choice ) {
+        switch (choice) {
         case 0:
             done = true;
             break;
         case 1:
-            date_subtraction( );
+            date_subtraction();
             break;
         case 2:
-            date_loops( );
+            date_loops();
             break;
         case 3:
-            date_skipping( );
+            date_skipping();
             break;
         default:
             cout << "Unknown choice!\n";

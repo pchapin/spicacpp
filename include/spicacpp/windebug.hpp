@@ -29,8 +29,8 @@ namespace spica {
         // debugging window is not currently being displayed. Such text is stored and displayed
         // later.
         //
-        void create_debugWindow( );
-        
+        void create_debugWindow();
+
         // This class is useful for tracing program execution. Construction sends a message to
         // the debug window. Destruction does not send a message. We can't fully control when an
         // object gets destroyed, so such messages would be potentially very misleading. For the
@@ -39,30 +39,23 @@ namespace spica {
         // experience with Tracer objects first.
         //
         class Tracer {
-        private:
-            int   level;          // Trace level. Deep traces might be disabled.
-            const char *message;  // The programmer defined message.
-            const char *file;     // The name of the file where the Tracer object is located.
-            int   line;           // The line number where the Tracer object is located.
+          private:
+            int level;           // Trace level. Deep traces might be disabled.
+            const char* message; // The programmer defined message.
+            const char* file;    // The name of the file where the Tracer object is located.
+            int line;            // The line number where the Tracer object is located.
 
-        public:
-            Tracer(
-                   int   trace_level,
-                   const char *trace_message,
-                   const char *file_name,
-                   int   line_number
-                   );
+          public:
+            Tracer(int trace_level, const char* trace_message, const char* file_name,
+                   int line_number);
         };
-
 
         // This macro makes it easier (possible!) to use Tracer objects. You provide the
         // message, and let the preprocessor fill in the file name and line number as
         // appropriate. Default arguments can't be used in the constructor otherwise every
         // Tracer will have a file and line location that points to this header file!
         //
-#define Tracer(level, message) \
-        spica::Windows::Tracer(level, message, __FILE__, __LINE__);
-
+#define Tracer(level, message) spica::Windows::Tracer(level, message, __FILE__, __LINE__);
 
         //
         // class debugstream
@@ -72,10 +65,9 @@ namespace spica {
         // window, just use the member function say().
         //
         class debugstream : public std::ostringstream {
-        public:
-            void say( int level = 1 );
+          public:
+            void say(int level = 1);
         };
-
 
         //
         // class notifystream
@@ -87,13 +79,12 @@ namespace spica {
         // exception notifications are at debugging level zero.
         //
         class notifystream : public std::ostringstream {
-        public:
+          public:
             // window_handle is the handle of the window that will own the message box.
-            void say( HWND window_handle = 0 );
+            void say(HWND window_handle = 0);
         };
 
-
-    } // End of namespace scopes.
-}
+    } // namespace Windows
+} // namespace spica
 
 #endif

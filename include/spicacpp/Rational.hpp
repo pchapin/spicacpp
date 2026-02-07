@@ -20,61 +20,63 @@ namespace spica {
      * certain integer literals (such as "0" and "1") be assignable to an object of type
      * integer_type.
      */
-    template<typename integer_type>
-    class Rational {
+    template <typename integer_type> class Rational {
 
         //! Writes a Rational to an output stream.
-        template<typename T>
-        friend std::ostream &operator<<( std::ostream &output, const Rational<T> &number );
+        template <typename T>
+        friend std::ostream& operator<<(std::ostream& output, const Rational<T>& number);
 
         //! Reads a Rational from an input stream.
-        template<typename T>
-        friend std::istream &operator>>( std::istream &input, Rational<T> &number );
+        template <typename T>
+        friend std::istream& operator>>(std::istream& input, Rational<T>& number);
 
-    public:
+      public:
         //! Constructs a Rational from two integers.
         /*!
          * An attempt to construct a Rational with a denominator of zero is undefined.
          */
-        Rational( const integer_type &num = 0, const integer_type &denom = 1 );
+        Rational(const integer_type& num = 0, const integer_type& denom = 1);
 
         //! Return the numerator of this Rational.
-        const integer_type &get_numerator( ) const
-            { return numerator; }
+        const integer_type& get_numerator() const
+        {
+            return numerator;
+        }
 
         //! Return the denominator of this Rational.
-        const integer_type &get_denominator( ) const
-            { return denominator; }
+        const integer_type& get_denominator() const
+        {
+            return denominator;
+        }
 
         //! Adds a Rational into 'this.'
-        void operator+=( const Rational &right );
+        void operator+=(const Rational& right);
 
         //! Subtracts a Rational from 'this.'
-        void operator-=( const Rational &right );
+        void operator-=(const Rational& right);
 
         //! Multiples a Rational by 'this.'
-        void operator*=( const Rational &right );
+        void operator*=(const Rational& right);
 
         //! Divides a Rational into 'this.' Division by zero is undefined.
-        void operator/=( const Rational &right );
+        void operator/=(const Rational& right);
 
-    private:
+      private:
         integer_type numerator;
         integer_type denominator;
 
-        void reduce( );
+        void reduce();
         // Reduce number as much as possible.
     };
-
 
     //--------------------------------------
     //           Friend Functions
     //--------------------------------------
 
-    template<typename integer_type>
-    std::ostream &operator<<( std::ostream &output, const Rational<integer_type> &number )
+    template <typename integer_type>
+    std::ostream& operator<<(std::ostream& output, const Rational<integer_type>& number)
     {
-        if( number.denominator == 1 ) {
+        if (number.denominator == 1) {
             output << number.numerator;
         }
         else {
@@ -83,23 +85,21 @@ namespace spica {
         return output;
     }
 
-
-    template<typename integer_type>
-    std::istream &operator>>( std::istream &input, Rational<integer_type> &number )
+    template <typename integer_type>
+    std::istream& operator>>(std::istream& input, Rational<integer_type>& number)
     {
         integer_type numerator;
         integer_type denominator = 1;
 
         input >> numerator;
-        if( input.peek( ) == '/' ) {
+        if (input.peek() == '/') {
             char dummy;
-            input.get( dummy );  // Throw away the slash.
+            input.get(dummy); // Throw away the slash.
             input >> denominator;
         }
-        number = Rational<integer_type>( numerator, denominator );
+        number = Rational<integer_type>(numerator, denominator);
         return input;
     }
-
 
     //------------------------------------------------
     //           Inline Non-Member Functions
@@ -110,86 +110,94 @@ namespace spica {
     // that they are also not friends).
     //
 
-    template<typename T>
-    bool operator==( const Rational<T> &left, const Rational<T> &right );
+    template <typename T> bool operator==(const Rational<T>& left, const Rational<T>& right);
 
-    template<typename T>
-    bool operator< ( const Rational<T> &left, const Rational<T> &right );
+    template <typename T> bool operator<(const Rational<T>& left, const Rational<T>& right);
 
-    template<typename T>
-    inline
-    bool operator!=( const Rational<T> &left, const Rational<T> &right )
-        {  return !( left == right ); }
+    template <typename T> inline bool operator!=(const Rational<T>& left, const Rational<T>& right)
+    {
+        return !(left == right);
+    }
 
-    template<typename T>
-    inline
-    bool operator>=( const Rational<T> &left, const Rational<T> &right )
-        {  return !( left < right ); }
+    template <typename T> inline bool operator>=(const Rational<T>& left, const Rational<T>& right)
+    {
+        return !(left < right);
+    }
 
-    template<typename T>
-    inline
-    bool operator<=( const Rational<T> &left, const Rational<T> &right )
-        {  return ( right >= left ); }
+    template <typename T> inline bool operator<=(const Rational<T>& left, const Rational<T>& right)
+    {
+        return (right >= left);
+    }
 
-    template<typename T>
-    inline
-    bool operator>( const Rational<T> &left, const Rational<T> &right )
-        {  return ( right < left ); }
-
+    template <typename T> inline bool operator>(const Rational<T>& left, const Rational<T>& right)
+    {
+        return (right < left);
+    }
 
     //
     // The following infix math operations can be easily defined in terms of the math operations
     // defined in the class template.
     //
 
-    template<typename T>
-    inline
-    Rational<T> operator+( const Rational<T> &left, const Rational<T> &right )
-        { Rational<T> temp( left ); temp += right; return temp; }
+    template <typename T>
+    inline Rational<T> operator+(const Rational<T>& left, const Rational<T>& right)
+    {
+        Rational<T> temp(left);
+        temp += right;
+        return temp;
+    }
 
-    template<typename T>
-    inline
-    Rational<T> operator-( const Rational<T> &left, const Rational<T> &right )
-        { Rational<T> temp( left ); temp -= right; return temp; }
+    template <typename T>
+    inline Rational<T> operator-(const Rational<T>& left, const Rational<T>& right)
+    {
+        Rational<T> temp(left);
+        temp -= right;
+        return temp;
+    }
 
-    template<typename T>
-    inline
-    Rational<T> operator*( const Rational<T> &left, const Rational<T> &right )
-        { Rational<T> temp( left ); temp *= right; return temp; }
+    template <typename T>
+    inline Rational<T> operator*(const Rational<T>& left, const Rational<T>& right)
+    {
+        Rational<T> temp(left);
+        temp *= right;
+        return temp;
+    }
 
-    template<typename T>
-    inline
-    Rational<T> operator/( const Rational<T> &left, const Rational<T> &right )
-        { Rational<T> temp( left ); temp /= right; return temp; }
+    template <typename T>
+    inline Rational<T> operator/(const Rational<T>& left, const Rational<T>& right)
+    {
+        Rational<T> temp(left);
+        temp /= right;
+        return temp;
+    }
 
-    template<typename T>
-    inline
-    Rational<T> operator%( const Rational<T> &left, const Rational<T> &right )
-        { Rational<T> temp( left ); temp %= right; return temp; }
-
+    template <typename T>
+    inline Rational<T> operator%(const Rational<T>& left, const Rational<T>& right)
+    {
+        Rational<T> temp(left);
+        temp %= right;
+        return temp;
+    }
 
     //-----------------------------------------------
     //           Other Non-Member Functions
     //-----------------------------------------------
 
-    template<typename T>
-    Rational<T> inverse( const Rational<T> &rat )
+    template <typename T> Rational<T> inverse(const Rational<T>& rat)
     {
-        T numerator   = rat.get_numerator( );
-        T denominator = rat.get_denominator( );
+        T numerator = rat.get_numerator();
+        T denominator = rat.get_denominator();
 
-        if( denominator < 0 ) {
+        if (denominator < 0) {
             numerator *= -1;
             denominator *= -1;
         }
-        return Rational<T>( denominator, numerator );
+        return Rational<T>(denominator, numerator);
     }
 
-    
     //-------------------------------------
     //           Member Functions
     //-------------------------------------
-    
 
     //
     // void Rational::reduce( );
@@ -198,15 +206,14 @@ namespace spica {
     // 4/2 becomes 2/1, etc. This function is used after each operation on Rational numbers to
     // insure that they stay in as "small" a form as possible.
     //
-    template<typename integer_type>
-    void Rational<integer_type>::reduce( )
+    template <typename integer_type> void Rational<integer_type>::reduce()
     {
         // Deal with negative values. We can't allow a negative numerator to participate in
         // Euclid's algorithm below.
         //
         bool negative = false;
-        if( numerator < 0 ) {
-            negative  = true;
+        if (numerator < 0) {
+            negative = true;
             numerator = -numerator;
         }
 
@@ -216,38 +223,37 @@ namespace spica {
         integer_type zero = 0;
 
         // Find the GCD of the numerator and the denominator (using Euclid's algorithm).
-        while( v != zero ) {
-            temp  = u;
+        while (v != zero) {
+            temp = u;
             temp %= v;
-            u     = v;
-            v     = temp;
+            u = v;
+            v = temp;
         }
 
         // Divide both numerator and denominator by the GCD.
-        numerator   /= u;
+        numerator /= u;
         denominator /= u;
 
         // If the numerator was negative, put the sign back.
-        if( negative ) numerator = -numerator;
+        if (negative)
+            numerator = -numerator;
     }
-
 
     // The constructor allows a Rational to be initialized with two integer_type objects. Notice
     // that if the resulting Rational is negative the numerator holds the sign. Note that the
     // compiler generated copy constructor, assignment operator, and destructor should all be
     // satisfactory.
     //
-    template<typename integer_type>
-    Rational<integer_type>::Rational( const integer_type &num, const integer_type &denom ) :
-        numerator( num ), denominator( denom )
+    template <typename integer_type>
+    Rational<integer_type>::Rational(const integer_type& num, const integer_type& denom) :
+        numerator(num), denominator(denom)
     {
-        if( denominator < 0 ) {
-            numerator   = -numerator;
+        if (denominator < 0) {
+            numerator = -numerator;
             denominator = -denominator;
         }
-        reduce( );
+        reduce();
     }
-
 
     //
     // void Rational::operator+=( const Rational &right );
@@ -257,97 +263,97 @@ namespace spica {
     //
     // These functions perform the basic operations on Rational numbers.
     //
-    template<typename integer_type>
-    void Rational<integer_type>::operator+=( const Rational<integer_type> &right )
+    template <typename integer_type>
+    void Rational<integer_type>::operator+=(const Rational<integer_type>& right)
     {
         // Compute the new denominator.
         integer_type new_denominator = denominator;
         new_denominator *= right.denominator;
 
         // Compute the new numerator.
-        integer_type new_numerator  = numerator;
+        integer_type new_numerator = numerator;
         integer_type temp_numerator = right.numerator;
-        new_numerator  *= right.denominator;
+        new_numerator *= right.denominator;
         temp_numerator *= denominator;
-        new_numerator  += temp_numerator;
+        new_numerator += temp_numerator;
 
         // Make 'this' number the new number.
-        numerator   = new_numerator;
+        numerator = new_numerator;
         denominator = new_denominator;
 
-        reduce( );
+        reduce();
     }
 
-    template<typename integer_type>
-    void Rational<integer_type>::operator-=( const Rational<integer_type> &right )
+    template <typename integer_type>
+    void Rational<integer_type>::operator-=(const Rational<integer_type>& right)
     {
         // Compute the new denominator.
         integer_type new_denominator = denominator;
         new_denominator *= right.denominator;
 
         // Compute the new numerator.
-        integer_type new_numerator  = numerator;
+        integer_type new_numerator = numerator;
         integer_type temp_numerator = right.numerator;
-        new_numerator  *= right.denominator;
+        new_numerator *= right.denominator;
         temp_numerator *= denominator;
-        new_numerator  -= temp_numerator;
+        new_numerator -= temp_numerator;
 
         // Make 'this' number the new number.
-        numerator   = new_numerator;
+        numerator = new_numerator;
         denominator = new_denominator;
 
-        reduce( );
+        reduce();
     }
 
-    template<typename integer_type>
-    void Rational<integer_type>::operator*=( const Rational<integer_type> &right )
+    template <typename integer_type>
+    void Rational<integer_type>::operator*=(const Rational<integer_type>& right)
     {
-        numerator   *= right.numerator;
+        numerator *= right.numerator;
         denominator *= right.denominator;
 
-        reduce( );
+        reduce();
     }
 
-    template<typename integer_type>
-    void Rational<integer_type>::operator/=( const Rational<integer_type> &right )
+    template <typename integer_type>
+    void Rational<integer_type>::operator/=(const Rational<integer_type>& right)
     {
-        if( right.numerator != 0 ) {
-            numerator   *= right.denominator;
+        if (right.numerator != 0) {
+            numerator *= right.denominator;
             denominator *= right.numerator;
 
             // If a negative shows up in the denominator, move it to the numerator.
-            if( denominator < 0 ) {
-                numerator   = -numerator;
+            if (denominator < 0) {
+                numerator = -numerator;
                 denominator = -denominator;
             }
-            reduce( );
+            reduce();
         }
     }
 
-    template<typename integer_type>
-    bool operator<( const Rational<integer_type> &left, const Rational<integer_type> &right )
+    template <typename integer_type>
+    bool operator<(const Rational<integer_type>& left, const Rational<integer_type>& right)
     {
-        integer_type top_left  = left.get_numerator( );
-        integer_type top_right = right.get_numerator( );
-        
-        top_left  *= right.get_denominator( );
-        top_right *= left.get_denominator( );
+        integer_type top_left = left.get_numerator();
+        integer_type top_right = right.get_numerator();
+
+        top_left *= right.get_denominator();
+        top_right *= left.get_denominator();
 
         return top_left < top_right;
     }
 
-    template<typename integer_type>
-    bool operator==( const Rational<integer_type> &left, const Rational<integer_type> &right )
+    template <typename integer_type>
+    bool operator==(const Rational<integer_type>& left, const Rational<integer_type>& right)
     {
-        integer_type top_left  = left.get_numerator( );
-        integer_type top_right = right.get_numerator( );
+        integer_type top_left = left.get_numerator();
+        integer_type top_right = right.get_numerator();
 
-        top_left  *= right.get_denominator( );
-        top_right *= left.get_denominator( );
+        top_left *= right.get_denominator();
+        top_right *= left.get_denominator();
 
         return top_left == top_right;
     }
 
-}
+} // namespace spica
 
 #endif

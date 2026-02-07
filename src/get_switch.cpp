@@ -13,8 +13,8 @@
  */
 
 #include <cctype>
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
 #include <spicacpp/get_switch.hpp>
 
 using namespace std;
@@ -25,18 +25,18 @@ const char switch_character = '-';
 /*           Function Prototypes           */
 /*=========================================*/
 
-static const char *get_value( SwitchInfo *, const char * );
-static SwitchInfo *find_switch( char, SwitchInfo *, int );
+static const char* get_value(SwitchInfo*, const char*);
+static SwitchInfo* find_switch(char, SwitchInfo*, int);
 
-
-static const char *get_value( SwitchInfo *switch_info, const char *line )
+static const char* get_value(SwitchInfo* switch_info, const char* line)
 {
     ++line;
-    switch( switch_info->type ) {
+    switch (switch_info->type) {
 
     case int_switch:
-        *switch_info->value = atoi( line );
-        while( isdigit( *line ) ) line++;
+        *switch_info->value = atoi(line);
+        while (isdigit(*line))
+            line++;
         break;
 
     case bin_switch:
@@ -44,11 +44,11 @@ static const char *get_value( SwitchInfo *switch_info, const char *line )
         break;
 
     case chr_switch:
-        *switch_info->value = static_cast< int >( *line++ );
+        *switch_info->value = static_cast<int>(*line++);
         break;
 
     case str_switch:
-        *( switch_info->pvalue ) = line;
+        *(switch_info->pvalue) = line;
         line = "";
         break;
 
@@ -59,39 +59,37 @@ static const char *get_value( SwitchInfo *switch_info, const char *line )
     return line;
 }
 
-
-static SwitchInfo *find_switch( char c, SwitchInfo *switch_table, int table_size )
+static SwitchInfo* find_switch(char c, SwitchInfo* switch_table, int table_size)
 {
-    for( ; --table_size >= 0; switch_table++ )
-        if( switch_table->name == c )
+    for (; --table_size >= 0; switch_table++)
+        if (switch_table->name == c)
             return switch_table;
     return NULL;
 }
 
-
-void print_usage( SwitchInfo *switch_table, int table_size, std::ostream &output_file )
+void print_usage(SwitchInfo* switch_table, int table_size, std::ostream& output_file)
 {
-    for( ; --table_size >= 0; switch_table++ ) {
-        switch( switch_table->type ) {
+    for (; --table_size >= 0; switch_table++) {
+        switch (switch_table->type) {
 
         case int_switch:
-            output_file << "-" << switch_table->name
-                        << "<num> " << switch_table->help_message << endl;
+            output_file << "-" << switch_table->name << "<num> " << switch_table->help_message
+                        << endl;
             break;
 
         case bin_switch:
-            output_file << "-" << switch_table->name
-                        << "      " << switch_table->help_message << endl;
+            output_file << "-" << switch_table->name << "      " << switch_table->help_message
+                        << endl;
             break;
 
         case chr_switch:
-            output_file << "-" << switch_table->name
-                        << "<c>   " << switch_table->help_message << endl;
+            output_file << "-" << switch_table->name << "<c>   " << switch_table->help_message
+                        << endl;
             break;
 
         case str_switch:
-            output_file << "-" << switch_table->name
-                        << "<str> " << switch_table->help_message << endl;
+            output_file << "-" << switch_table->name << "<str> " << switch_table->help_message
+                        << endl;
             break;
 
         default:
@@ -102,29 +100,28 @@ void print_usage( SwitchInfo *switch_table, int table_size, std::ostream &output
     return;
 }
 
-
-int get_switchs( int argc, char **argv, SwitchInfo *switch_table, int table_size )
+int get_switchs(int argc, char** argv, SwitchInfo* switch_table, int table_size)
 {
-    int        new_argc;
-    char     **new_argv;
-    const char *p;
-    SwitchInfo *switch_info;
+    int new_argc;
+    char** new_argv;
+    const char* p;
+    SwitchInfo* switch_info;
 
     new_argc = 1;
-    for( new_argv = ++argv; --argc > 0; argv++ ) {
-        if( **argv != switch_character ) {
+    for (new_argv = ++argv; --argc > 0; argv++) {
+        if (**argv != switch_character) {
             *new_argv++ = *argv;
             new_argc++;
         }
         else {
             p = *argv + 1;
-            while( *p ) {
-                if( ( switch_info = find_switch( *p, switch_table, table_size ) ) != NULL )
-                    p = get_value( switch_info, p );
+            while (*p) {
+                if ((switch_info = find_switch(*p, switch_table, table_size)) != NULL)
+                    p = get_value(switch_info, p);
                 else {
                     cerr << "Illegal switch <" << *p << ">. Legal switchs are:\n\n";
-                    print_usage( switch_table, table_size, cerr );
-                    exit( bad_switch );
+                    print_usage(switch_table, table_size, cerr);
+                    exit(bad_switch);
                 }
             }
         }

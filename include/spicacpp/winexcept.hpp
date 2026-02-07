@@ -22,7 +22,7 @@
 
 namespace spica {
     namespace Windows {
-  
+
         //
         // class API_Error
         //
@@ -33,32 +33,41 @@ namespace spica {
         // class to facilitate consistent error handling in applications.
         //
         class APIError : public std::runtime_error {
-        public:
+          public:
             // The message M is intended to make sense to the user.
-            explicit APIError( const std::string &M ) noexcept : std::runtime_error( M )
-                { raw_error = GetLastError( ); }
+            explicit APIError(const std::string& M) noexcept : std::runtime_error(M)
+            {
+                raw_error = GetLastError();
+            }
 
-            // Returns the 16 bit error code associated with this error.
-            DWORD error_code( ) const noexcept
-                { return raw_error & 0x0000FFFF; }
+            // Returns the 16-bit error code associated with this error.
+            DWORD error_code() const noexcept
+            {
+                return raw_error & 0x0000FFFF;
+            }
 
             // Returns the 12 bit facility code associated with this error.
-            DWORD facility_code( ) const noexcept
-                { return ( raw_error & 0x0FFF0000 ) >> 16; }
+            DWORD facility_code() const noexcept
+            {
+                return (raw_error & 0x0FFF0000) >> 16;
+            }
 
             // Returns true if this is an application-defined error.
-            bool application_defined( ) const noexcept
-                { return ( raw_error & 0x20000000 ) ? true : false; }
+            bool application_defined() const noexcept
+            {
+                return (raw_error & 0x20000000) ? true : false;
+            }
 
             // Returns the severity of this error as reported by GetLastError().
             //   0 => Success, 1 => Informational, 2 => Warning, 3 => Error.
-            int severity_level( ) const noexcept
-                { return ( raw_error & 0xC0000000 ) >> 30; }
+            int severity_level() const noexcept
+            {
+                return (raw_error & 0xC0000000) >> 30;
+            }
 
-        private:
-            DWORD  raw_error;
+          private:
+            DWORD raw_error;
         };
-
 
         //
         // class Handle
@@ -67,26 +76,39 @@ namespace spica {
         // properly closed even when an exception is thrown.
         //
         class Handle {
-        public:
-            Handle( ) noexcept :          the_handle( INVALID_HANDLE_VALUE ) { }
-            Handle( HANDLE h ) noexcept : the_handle( h )                    { }
-            operator HANDLE( ) const noexcept      { return the_handle; }
-            Handle &operator=( HANDLE h ) noexcept { the_handle = h; return *this; }
+          public:
+            Handle() noexcept : the_handle(INVALID_HANDLE_VALUE)
+            {
+            }
+            Handle(HANDLE h) noexcept : the_handle(h)
+            {
+            }
+            operator HANDLE() const noexcept
+            {
+                return the_handle;
+            }
+            Handle& operator=(HANDLE h) noexcept
+            {
+                the_handle = h;
+                return *this;
+            }
 
-            ~Handle( )
-                { if( the_handle != INVALID_HANDLE_VALUE ) CloseHandle( the_handle ); }
+            ~Handle()
+            {
+                if (the_handle != INVALID_HANDLE_VALUE)
+                    CloseHandle(the_handle);
+            }
 
             // Make copying illegal.
-            Handle( const Handle & ) = delete;
-            Handle &operator=( const Handle & ) = delete;
+            Handle(const Handle&) = delete;
+            Handle& operator=(const Handle&) = delete;
 
-        protected:
+          protected:
             // Give access to derived classes so that specialized versions of Handle can easily
             // be created for various kernel object types.
             //
             HANDLE the_handle;
         };
-
 
         //
         // class CriticalGrabber
@@ -98,18 +120,23 @@ namespace spica {
         // class.
         //
         class CriticalGrabber {
-        public:
-            CriticalGrabber( CRITICAL_SECTION *p ) noexcept : cs( p ) { EnterCriticalSection( cs ); }
-            ~CriticalGrabber( ) { LeaveCriticalSection( cs ); }
+          public:
+            CriticalGrabber(CRITICAL_SECTION* p) noexcept : cs(p)
+            {
+                EnterCriticalSection(cs);
+            }
+            ~CriticalGrabber()
+            {
+                LeaveCriticalSection(cs);
+            }
 
             // Make copying illegal.
-            CriticalGrabber( const CriticalGrabber & ) = delete;
-            CriticalGrabber &operator=( const CriticalGrabber & ) = delete;
+            CriticalGrabber(const CriticalGrabber&) = delete;
+            CriticalGrabber& operator=(const CriticalGrabber&) = delete;
 
-        private:
-            CRITICAL_SECTION *cs;
+          private:
+            CRITICAL_SECTION* cs;
         };
-
 
         //
         // class PaintContext
@@ -118,26 +145,31 @@ namespace spica {
         // released with EndPaint() even when an exception is thrown.
         //
         class PaintContext {
-        public:
-            PaintContext( HWND Handle ) noexcept : window_handle( Handle )
-                { context_handle = BeginPaint( window_handle, &paint_info ); }
+          public:
+            PaintContext(HWND Handle) noexcept : window_handle(Handle)
+            {
+                context_handle = BeginPaint(window_handle, &paint_info);
+            }
 
-            operator HDC( ) const noexcept
-                { return context_handle; }
+            operator HDC() const noexcept
+            {
+                return context_handle;
+            }
 
-            ~PaintContext( )
-                { EndPaint( window_handle, &paint_info ); }
+            ~PaintContext()
+            {
+                EndPaint(window_handle, &paint_info);
+            }
 
             // Make copying illegal.
-            PaintContext( const PaintContext & ) = delete;
-            PaintContext &operator=( const PaintContext & ) = delete;
+            PaintContext(const PaintContext&) = delete;
+            PaintContext& operator=(const PaintContext&) = delete;
 
-        private:
+          private:
             PAINTSTRUCT paint_info;
-            HWND        window_handle;
-            HDC         context_handle;
+            HWND window_handle;
+            HDC context_handle;
         };
-
 
         //
         // class DeviceContext
@@ -146,26 +178,32 @@ namespace spica {
         // with ReleaseDC() even when an exception is thrown.
         //
         class DeviceContext {
-        public:
-            DeviceContext( HWND Handle ) noexcept : window_handle( Handle )
-                { context_handle = GetDC( window_handle ); }
+          public:
+            DeviceContext(HWND Handle) noexcept : window_handle(Handle)
+            {
+                context_handle = GetDC(window_handle);
+            }
 
-            operator HDC( ) const noexcept
-                { return context_handle; }
+            operator HDC() const noexcept
+            {
+                return context_handle;
+            }
 
-            ~DeviceContext( )
-                { ReleaseDC( window_handle, context_handle ); }
+            ~DeviceContext()
+            {
+                ReleaseDC(window_handle, context_handle);
+            }
 
             // Make copying illegal.
-            DeviceContext( const DeviceContext & ) = delete;
-            DeviceContext &operator=( const DeviceContext & ) = delete;
+            DeviceContext(const DeviceContext&) = delete;
+            DeviceContext& operator=(const DeviceContext&) = delete;
 
-        private:
+          private:
             HWND window_handle;
-            HDC  context_handle;
+            HDC context_handle;
         };
 
-    }
-}
+    } // namespace Windows
+} // namespace spica
 
 #endif

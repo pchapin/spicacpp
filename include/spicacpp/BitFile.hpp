@@ -21,23 +21,22 @@ namespace spica {
      *  order when read with get_bit( ).
      */
     class BitFile {
-    public:
-        int         open_bit( char *the_name, BitFileMode the_mode = BitFileMode::In );
-        std::size_t read_bitheader( void *buffer, std::size_t number_of_bytes );
-        int         get_bit( );
-        std::size_t write_bitheader( void *buffer, std::size_t number_of_bytes );
-        int         put_bit( int bit_value );
-        int         close_bit( );
+      public:
+        int open_bit(char* the_name, BitFileMode the_mode = BitFileMode::In);
+        std::size_t read_bitheader(void* buffer, std::size_t number_of_bytes);
+        int get_bit();
+        std::size_t write_bitheader(void* buffer, std::size_t number_of_bytes);
+        int put_bit(int bit_value);
+        int close_bit();
 
-    private:
-        std::FILE *the_file;     //!< The actual file.
-        int   bit_number;        //!< The current position in workspace.
-        int   workspace;         //!< One partially filled byte.
-        int   workspace_active;  //!< =1 if there are interesting bits in workspace.
-        BitFileMode mode;        //!< Is the file an input or an output file?
+      private:
+        std::FILE* the_file;  //!< The actual file.
+        int bit_number;       //!< The current position in workspace.
+        int workspace;        //!< One partially filled byte.
+        int workspace_active; //!< =1 if there are interesting bits in workspace.
+        BitFileMode mode;     //!< Is the file an input or an output file?
     };
 
-}
+} // namespace spica
 
 #endif
-

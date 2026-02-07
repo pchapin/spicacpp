@@ -16,9 +16,9 @@
 #error WinCom requires multiple threads and multithread support not active!
 #endif
 
-#include <string>
-#include "winexcept.hpp"
 #include "WorkQueue.hpp"
+#include "winexcept.hpp"
+#include <string>
 
 namespace spica {
     namespace Windows {
@@ -28,24 +28,24 @@ namespace spica {
          */
         class ComPort : public Handle {
 
-            friend unsigned int __stdcall comPort_reader( void *port_object );
+            friend unsigned int __stdcall comPort_reader(void* port_object);
 
-        private:
-            const char   *name;             // The "file" name for this port.
-            DCB           oldComm_state;    // Old settings of the port.
-            DCB           newComm_state;    // Our settings.
-            COMMTIMEOUTS  oldComm_timeouts; // Old timeouts on the port.
-            COMMTIMEOUTS  newComm_timeouts; // Our timeouts.
-            bool          port_set;         // =true if the port initialized.
-            bool          outer_usage;      // =true if constructing or destroying.
-            bool          testing_mode;     // =true when we simulate port input.
-            void        (*read_processor)(char); // Function that handles input.
-            HANDLE        helperThread_handle;   // Handle of reading thread.
-            HANDLE        read_event;       // Event object used during reads.
-            HANDLE        write_event;      // Event object used during writes.
+          private:
+            const char* name;                    // The "file" name for this port.
+            DCB oldComm_state;                   // Old settings of the port.
+            DCB newComm_state;                   // Our settings.
+            COMMTIMEOUTS oldComm_timeouts;       // Old timeouts on the port.
+            COMMTIMEOUTS newComm_timeouts;       // Our timeouts.
+            bool port_set;                       // =true if the port initialized.
+            bool outer_usage;                    // =true if constructing or destroying.
+            bool testing_mode;                   // =true when we simulate port input.
+            void (*read_processor)(char);        // Function that handles input.
+            HANDLE helperThread_handle;          // Handle of reading thread.
+            HANDLE read_event;                   // Event object used during reads.
+            HANDLE write_event;                  // Event object used during writes.
             WorkQueue<std::string> input_buffer; // Used to hold simulated input.
 
-        public:
+          public:
             /*!
              * Open the COM port in an uninitialized state. The constructor initializes the
              * object's many members into something sensible. Note that the constructor does not
@@ -55,7 +55,7 @@ namespace spica {
              * \param testing If `true`, the port is put in "testing" mode. In this mode, all
              * input is simulated and no output is sent to the actual hardware port.
              */
-            ComPort( bool testing = false );
+            ComPort(bool testing = false);
 
             /*!
              * Close the COM port. The destructor stops the helper thread (if it's running) and
@@ -64,7 +64,7 @@ namespace spica {
              * Should the destructor also cancel any asynchronous I/O that might be pending (for
              * example before closing the event handles that I/O is trying to use)? Probably.
              */
-           ~ComPort( );
+            ~ComPort();
 
             /*!
              * Set the parameters of the port and specify the function that will process each
@@ -78,7 +78,7 @@ namespace spica {
              * \param baud The desired baud rate.
              * \param read A pointer to a function that processes incoming characters.
              */
-            void set( const char *given_name, int baud, void (*read)( char ) );
+            void set(const char* given_name, int baud, void (*read)(char));
 
             /*!
              * Define a line of simulated input. This is only useful if the port was constructed
@@ -87,15 +87,17 @@ namespace spica {
              *
              * \param input The simulated input that will be returned via reading.
              */
-            void set_input( const std::string &input )
-                { input_buffer.push( input ); }
+            void set_input(const std::string& input)
+            {
+                input_buffer.push(input);
+            }
 
             /*!
              * Start the thread that reads the port. It is not an error to call this function
              * more than once. If the helper thread was already running, additional calls to
              * this function are ignored.
              */
-            void start_reading( );
+            void start_reading();
 
             /*!
              * Write data to this port. Data arriving at the port is handled by the read
@@ -105,7 +107,7 @@ namespace spica {
              * \param outgoing The null-terminated string to be written to the port. The null
              * characater is not written.
              */
-            void write( const char *outgoing );
+            void write(const char* outgoing);
 
             /*!
              * Kill the read processing thread if it was running. It is not an error to call
@@ -117,18 +119,17 @@ namespace spica {
              * processing some input and holds some resources?). For now it will be
              * acceptable.
              */
-            void stop_reading( ) noexcept;
+            void stop_reading() noexcept;
 
             /*!
              * Return the port to the same settings it had before construction. This function
              * undoes `set`. It leaves the port in a state where `set` can be called again. It's
              * useful for changing port parameters on the fly.
              */
-            void unset( );
+            void unset();
         };
 
-    }
-}
+    } // namespace Windows
+} // namespace spica
 
 #endif
-

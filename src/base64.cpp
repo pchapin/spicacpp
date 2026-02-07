@@ -111,52 +111,38 @@ up to the caller to resolve that matter before using these functions.
 #include <cstring>
 #include <spicacpp/base64.hpp>
 
-static const char code_table[] =
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+static const char code_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-
-//! Base64 encode
-/*!
- * This function does a base64 encoding of a previously opened input file and writes the result
- * to a previously opened output file. The files should be both opened in binary mode, however
- * the output file can be opened in append mode if desired. This function does not close either
- * file. There is no error indication.
- *
- * \param infile The previously opened input file to encode.
- * \param outfile The previously opened output file.
- */
-void base64_encode( std::FILE *infile, std::FILE *outfile )
+void base64_encode(std::FILE* infile, std::FILE* outfile)
 {
-        std::size_t count;         // Number of bytes read from the input.
-             int    line_length;   // Used to count size of each output line.
-    unsigned char   in_buffer[3];  // Buffer for the decoded data.
-    unsigned char   out_buffer[4]; // Buffer for the encoded data.
-    unsigned int    index;         // Index into the code table.
+    std::size_t count;           // Number of bytes read from the input.
+    int line_length;             // Used to count size of each output line.
+    unsigned char in_buffer[3];  // Buffer for the decoded data.
+    unsigned char out_buffer[4]; // Buffer for the encoded data.
+    unsigned int index;          // Index into the code table.
 
     // Initialize.
     line_length = 0;
-    std::memset( in_buffer, 0, 3 );
-    std::memset( out_buffer, '=', 4 );
+    std::memset(in_buffer, 0, 3);
+    std::memset(out_buffer, '=', 4);
 
     // Process the input file three bytes at a time.
-    while( ( count = std::fread( in_buffer, 1, 3, infile ) ) != 0 ) {
+    while ((count = std::fread(in_buffer, 1, 3, infile)) != 0) {
 
         // Handle the first input byte.
-        index  = ( in_buffer[0] & 0xFC ) >> 2;
+        index = (in_buffer[0] & 0xFC) >> 2;
         out_buffer[0] = code_table[index];
-        index  = ( in_buffer[0] & 0x03 ) << 4;
-        index |= ( in_buffer[1] & 0xF0 ) >> 4;
+        index = (in_buffer[0] & 0x03) << 4;
+        index |= (in_buffer[1] & 0xF0) >> 4;
         out_buffer[1] = code_table[index];
 
-        if( count > 1 ) {
-
+        if (count > 1) {
             // Finish handling the second input byte.
-            index  = ( in_buffer[1] & 0x0F ) << 2;
-            index |= ( in_buffer[2] & 0xC0 ) >> 6;
+            index = (in_buffer[1] & 0x0F) << 2;
+            index |= (in_buffer[2] & 0xC0) >> 6;
             out_buffer[2] = code_table[index];
 
-            if( count > 2 ) {
-
+            if (count > 2) {
                 // Finish handling the last input byte.
                 index = in_buffer[2] & 0x3F;
                 out_buffer[3] = code_table[index];
@@ -164,36 +150,23 @@ void base64_encode( std::FILE *infile, std::FILE *outfile )
         }
 
         // Write the encoded data. If it fills out a line, then go to the next.
-        std::fwrite( out_buffer, 1, 4, outfile );
+        std::fwrite(out_buffer, 1, 4, outfile);
         line_length += 4;
-        if( line_length >= 72 ) {
-            std::fprintf( outfile, "\r\n" );
+        if (line_length >= 72) {
+            std::fprintf(outfile, "\r\n");
             line_length = 0;
         }
 
         // Reset the buffers to their default state.
-        std::memset( in_buffer, 0, 3 );
-        std::memset( out_buffer, '=', 4 );
+        std::memset(in_buffer, 0, 3);
+        std::memset(out_buffer, '=', 4);
     }
 }
 
-
-//! Base64 decode
-/*!
- * This function does a base64 decoding of a previously opened input file and writes the result
- * to a previously opened output file. The files should be both opened in binary mode, however
- * the output file can be opened in append mode if desired. This function does not close either
- * file. There is no error indication.
- *
- * \param infile The previously opened input file to decode.
- * \param outfile The previously opened output file.
- */
-void base64_decode( std::FILE *, std::FILE * )
+void base64_decode(std::FILE*, std::FILE*)
 {
-    std::fprintf( stderr, "base64_decode: Sorry, not implemented!\n" );
+    std::fprintf(stderr, "base64_decode: Sorry, not implemented!\n");
 }
-
-
 
 #ifdef NEVER
 // I wrote the following C++ implementation for CourseSmart. It shouldn't be too hard to
@@ -201,16 +174,15 @@ void base64_decode( std::FILE *, std::FILE * )
 //
 
 // Helper function for read_string (below).
-static bool isBase64( int Ch )
+static bool isBase64(int Ch)
 {
-    if (std::isalpha(Ch) || std::isdigit(Ch) ||
-        Ch == '+' || Ch == '/' || Ch == '=') return true;
+    if (std::isalpha(Ch) || std::isdigit(Ch) || Ch == '+' || Ch == '/' || Ch == '=')
+        return true;
     return false;
 }
 
 // Helper function for FileSystem::decode (below).
-static int read_string(
-  unsigned char *buffer, std::string::size_type desired, std::string &contents)
+static int read_string(unsigned char* buffer, std::string::size_type desired, std::string& contents)
 {
     std::string::size_type count = 0;
     std::string::size_type index = 0;
@@ -226,7 +198,7 @@ static int read_string(
     return count;
 }
 
-void FileSystem::decode(const std::string &name, const std::string &contents)
+void FileSystem::decode(const std::string& name, const std::string& contents)
 {
     // Creating a temp here is probably not great. What if the file is large? However,
     // read_string modifies the string as it reads it (to avoid having to keep track of any
@@ -235,8 +207,9 @@ void FileSystem::decode(const std::string &name, const std::string &contents)
     std::string temp(contents);
 
     std::string path(normalize_path(name));
-    std::FILE *outfile = std::fopen(path.c_str(), "wb");
-    if (outfile == NULL) return;
+    std::FILE* outfile = std::fopen(path.c_str(), "wb");
+    if (outfile == NULL)
+        return;
 
     unsigned char in_buffer[4];
     unsigned char out_buffer[3];
@@ -244,10 +217,11 @@ void FileSystem::decode(const std::string &name, const std::string &contents)
 
     while ((count = read_string(in_buffer, 4, temp)) != 0) {
         // Input base64 is corrupt.
-        if (count != 4 || in_buffer[0] == '=' || in_buffer[1] == '=') break;
+        if (count != 4 || in_buffer[0] == '=' || in_buffer[1] == '=')
+            break;
 
-        const char *p;
-        int   value;
+        const char* p;
+        int value;
 
         p = std::find(code_table, code_table + sizeof(code_table), in_buffer[0]);
         value = p - code_table;
@@ -256,7 +230,7 @@ void FileSystem::decode(const std::string &name, const std::string &contents)
         p = std::find(code_table, code_table + sizeof(code_table), in_buffer[1]);
         value = p - code_table;
         out_buffer[0] |= (value & 0x30) >> 4;
-        out_buffer[1]  = (value & 0x0F) << 4;
+        out_buffer[1] = (value & 0x0F) << 4;
         count = 1;
 
         if (in_buffer[2] != '=') {
@@ -264,7 +238,7 @@ void FileSystem::decode(const std::string &name, const std::string &contents)
             p = std::find(code_table, code_table + sizeof(code_table), in_buffer[2]);
             value = p - code_table;
             out_buffer[1] |= (value & 0x3C) >> 2;
-            out_buffer[2]  = (value & 0x03) << 6;
+            out_buffer[2] = (value & 0x03) << 6;
             count = 2;
 
             if (in_buffer[3] != '=') {

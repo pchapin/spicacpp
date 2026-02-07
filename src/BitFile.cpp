@@ -19,21 +19,20 @@ namespace spica {
      *
      * \return Zero if the file failed to open; non-zero otherwise.
      */
-    int BitFile::open_bit( char *the_name, BitFileMode the_mode )
+    int BitFile::open_bit(char* the_name, BitFileMode the_mode)
     {
-        mode             = the_mode;
-        bit_number       = 0;
-        workspace        = 0;
+        mode = the_mode;
+        bit_number = 0;
+        workspace = 0;
         workspace_active = 0;
 
-        if( the_mode == BitFileMode::In )
-            the_file = std::fopen( the_name, "rb" );
+        if (the_mode == BitFileMode::In)
+            the_file = std::fopen(the_name, "rb");
         else
-            the_file = std::fopen( the_name, "wb" );
+            the_file = std::fopen(the_name, "wb");
 
-        return ( the_file == NULL ) ? 0 : 1;
+        return (the_file == NULL) ? 0 : 1;
     }
-
 
     //! Read a header of raw bytes out of a bit file.
     /*!
@@ -47,14 +46,14 @@ namespace spica {
      * \param nmbr_bytes The number of bytes to read.
      *
      * \return The number of bytes actually read. If this is less than the number of bytes
-     * requested then either an error occurred or the end of the file was encountered.
+     * requested, then either an error occurred or the end of the file was encountered.
      */
-    std::size_t BitFile::read_bitheader( void *buffer, std::size_t nmbr_bytes )
+    std::size_t BitFile::read_bitheader(void* buffer, std::size_t nmbr_bytes)
     {
-        if( the_file == NULL || mode == BitFileMode::Out ) return 0;
-        return std::fread( buffer, 1, nmbr_bytes, the_file );
+        if (the_file == NULL || mode == BitFileMode::Out)
+            return 0;
+        return std::fread(buffer, 1, nmbr_bytes, the_file);
     }
-
 
     //! Read a single bit from a bit_file.
     /*!
@@ -62,25 +61,26 @@ namespace spica {
      *
      * \return The next bit or EOF on end-of-file or error.
      */
-    int BitFile::get_bit( )
+    int BitFile::get_bit()
     {
         int result;
 
-        if( the_file == NULL || mode == BitFileMode::Out ) return EOF;
+        if (the_file == NULL || mode == BitFileMode::Out)
+            return EOF;
 
-        if( workspace_active == 0 ) {
-            workspace        = std::getc( the_file );
+        if (workspace_active == 0) {
+            workspace = std::getc(the_file);
             workspace_active = 1;
-            bit_number       = 0;
+            bit_number = 0;
         }
-        if( workspace == EOF ) return EOF;
-        result = workspace  &  ( 1 << bit_number );
-        if( ++bit_number > 7 )
+        if (workspace == EOF)
+            return EOF;
+        result = workspace & (1 << bit_number);
+        if (++bit_number > 7)
             workspace_active = 0;
 
         return result != 0;
     }
-
 
     //! Write a header into a bit file.
     /*!
@@ -96,12 +96,12 @@ namespace spica {
      * \return The number of bytes actually written. If this is less than the number of bytes
      * requested then an error occurred.
      */
-    std::size_t BitFile::write_bitheader( void *buffer, std::size_t nmbr_bytes )
+    std::size_t BitFile::write_bitheader(void* buffer, std::size_t nmbr_bytes)
     {
-        if( the_file == NULL || mode == BitFileMode::In ) return 0;
-        return std::fwrite( buffer, 1, nmbr_bytes, the_file );
+        if (the_file == NULL || mode == BitFileMode::In)
+            return 0;
+        return std::fwrite(buffer, 1, nmbr_bytes, the_file);
     }
-
 
     //! Write a single bit to a bit file.
     /*!
@@ -111,26 +111,27 @@ namespace spica {
      *
      * \return Zero if the write failed, non-zero otherwise.
      */
-    int BitFile::put_bit( int bit_value )
+    int BitFile::put_bit(int bit_value)
     {
         int worked = 1;
 
-        if( the_file == NULL || mode == BitFileMode::In ) return 0;
-        
-        if( bit_value == 0 )
-            workspace &= ~( 1 << bit_number );
-        else
-            workspace |=  ( 1 << bit_number );
+        if (the_file == NULL || mode == BitFileMode::In)
+            return 0;
 
-        if( ++bit_number > 7 ) {
-            if( std::putc( workspace, the_file ) == EOF ) worked = 0;
-            workspace  = 0;
+        if (bit_value == 0)
+            workspace &= ~(1 << bit_number);
+        else
+            workspace |= (1 << bit_number);
+
+        if (++bit_number > 7) {
+            if (std::putc(workspace, the_file) == EOF)
+                worked = 0;
+            workspace = 0;
             bit_number = 0;
         }
 
         return worked;
     }
-
 
     //! Close a bit file.
     /*!
@@ -141,19 +142,21 @@ namespace spica {
      * \param object The bit file to close.
      * \return Zero if the close failed, non-zero otherwise.
      */
-    int BitFile::close_bit( )
+    int BitFile::close_bit()
     {
         int worked = 1;
 
-        if( mode == BitFileMode::In )
-            return ( std::fclose( the_file ) == 0 );
+        if (mode == BitFileMode::In)
+            return (std::fclose(the_file) == 0);
 
-        if( bit_number > 0 ) {
-            if( std::putc( workspace, the_file ) == EOF ) worked = 0;
+        if (bit_number > 0) {
+            if (std::putc(workspace, the_file) == EOF)
+                worked = 0;
         }
-        if( std::fclose( the_file ) != 0 ) worked = 0;
+        if (std::fclose(the_file) != 0)
+            worked = 0;
 
         return worked;
     }
 
-}
+} // namespace spica

@@ -70,7 +70,7 @@ namespace spica {
          * function currently ignores the settings in the ios part of the given stream. A leading
          * sign is printed only if the number is negative.
          */
-        friend std::ostream &operator<<( std::ostream &, const VeryLong & );
+        friend std::ostream& operator<<(std::ostream&, const VeryLong&);
 
         //! Allows a VeryLong object to be read from an istream.
         /*!
@@ -78,29 +78,28 @@ namespace spica {
          * Conversion stops at the first non-digit character found (which is left on the stream).
          * This function currently ignores the settings on the ios part of the given stream.
          */
-        friend std::istream &operator>>( std::istream &, VeryLong & );
+        friend std::istream& operator>>(std::istream&, VeryLong&);
 
         //! Returns true if the two VeryLong objects are equal.
-        friend bool operator==( const VeryLong &, const VeryLong & );
+        friend bool operator==(const VeryLong&, const VeryLong&);
 
         //! Returns true if the first VeryLong is strictly less than the second.
-        friend bool operator<( const VeryLong &, const VeryLong & );
+        friend bool operator<(const VeryLong&, const VeryLong&);
 
         //! Swaps VeryLongs efficiently (O(1)).
-        friend void swap( VeryLong &, VeryLong & );
+        friend void swap(VeryLong&, VeryLong&);
 
-    private:
-
+      private:
         //-----------------------------------
         //           Private Types
         //-----------------------------------
 
         //! The type used to hold a single "long" digit.
-        typedef unsigned short storage_type;    // Assumed to be 16 bits.
+        typedef unsigned short storage_type; // Assumed to be 16 bits.
 
         //! Used for computations on long digits.
         /*! Must have twice as many bits as storage_type. */
-        typedef unsigned long compute_type;     // Assumed to be 32 bits.
+        typedef unsigned long compute_type; // Assumed to be 32 bits.
 
         //! One more than the largest number used for a long digit.
         static const compute_type DIGIT_RANGE = 65536UL;
@@ -118,8 +117,7 @@ namespace spica {
         // static const int BITS_PER_LONGDIGIT = 32;
         // static const compute_type DIGIT_MASK = 0xFFFFFFFF;
 
-    public:
-
+      public:
         //! Unsigned type to represent the number of long digits and bits.
         typedef std::vector<storage_type>::size_type size_type;
 
@@ -128,10 +126,10 @@ namespace spica {
         //------------------------------------
 
         //! Default constructor creates a VeryLong with a value of zero.
-        VeryLong( );
+        VeryLong();
 
         //! Constructs a VeryLong with the given value.
-        VeryLong( long );
+        VeryLong(long);
 
         //! Constructs a VeryLong from a string of digit characters.
         /*!
@@ -144,19 +142,23 @@ namespace spica {
          * string. For example: "123a" would initialize the VeryLong to 123. The strings "abc" and
          * "" would both initialize the VeryLong to zero.
          */
-        explicit VeryLong( const std::string &digit_string )
-          { initialize( digit_string.c_str( ) ); }
+        explicit VeryLong(const std::string& digit_string)
+        {
+            initialize(digit_string.c_str());
+        }
 
         //! Construct a VeryLong from a string of digits.
-        explicit VeryLong( const char *digit_string )
-          { initialize( digit_string ); }
+        explicit VeryLong(const char* digit_string)
+        {
+            initialize(digit_string);
+        }
 
         //! Returns a long integer version of this VeryLong object.
         /*!
          * If the VeryLong object has a value that is too large to represent in a long, the result
          * is undefined.
          */
-        long to_long( ) const;
+        long to_long() const;
 
         //
         // Compiler generated destructor, assignment operator, and copy constructor are
@@ -171,57 +173,57 @@ namespace spica {
         /*!
          * Leading zeros are not counted. Thus the value 0 has zero bits.
          */
-        size_type number_bits( ) const;
+        size_type number_bits() const;
 
         //! Returns the bit at the indicated position.
         /*!
          * The least significant bit is bit 0. Non-existent bits are zero.
          **/
-        int get_bit( size_type ) const;
+        int get_bit(size_type) const;
 
         //! Sets the bit specified by the first parameter to 1 or 0.
         /*!
          * If the bit does not exist, the number is extended so that it does.
          */
-        void put_bit( size_type, int );
+        void put_bit(size_type, int);
 
         //! Returns the negative of the current object.
-        VeryLong operator-( ) const;
+        VeryLong operator-() const;
 
         //! Prefix increment.
-        VeryLong &operator++( );
+        VeryLong& operator++();
 
         //! Prefix decrement.
-        VeryLong &operator--( );
+        VeryLong& operator--();
 
         //! Postfix increment.
-        VeryLong  operator++( int );
+        VeryLong operator++(int);
 
         //! Postfix decrement.
-        VeryLong  operator--( int );
+        VeryLong operator--(int);
 
         //! Adds the given VeryLong to the current object.
-        void operator+=( const VeryLong & );
+        void operator+=(const VeryLong&);
 
         //! Subtracts the give VeryLong from the current object.
-        void operator-=( const VeryLong & );
+        void operator-=(const VeryLong&);
 
         //! Multiplies the given VeryLong into the current object.
-        void operator*=( const VeryLong & );
+        void operator*=(const VeryLong&);
 
         //! Divides the current object by the given VeryLong.
         /*!
          * This method leaves the quotient in the current object. The result is always truncated
          * toward zero. Division by zero is undefined.
          */
-        void operator/=( const VeryLong & );
+        void operator/=(const VeryLong&);
 
         //! Divides the current object by the given VeryLong.
         /*!
          * This method leaves the remainder in the current object. The sign of the remainder is
          * the sign on *this (the left operand). Division by zero is undefined.
          */
-        void operator%=( const VeryLong & );
+        void operator%=(const VeryLong&);
 
         //------------------------------------
         //           Static Methods
@@ -241,7 +243,7 @@ namespace spica {
          * is so a = (a / b) * b + a % b for all values of 'a' and 'b.' Division by zero is
          * undefined.
          */
-        static void vldiv( const VeryLong &, const VeryLong &, vldiv_t * );
+        static void vldiv(const VeryLong&, const VeryLong&, vldiv_t*);
 
         //----------------------------------------
         //           Public Static Data
@@ -262,19 +264,18 @@ namespace spica {
         //! A preconstructed VeryLong 10.
         static const VeryLong ten;
 
-    private:
-
+      private:
         //----------------------------------
         //           Private Data
         //----------------------------------
 
         // Holds the long digits in memory with the LSD first. There are no leading zero digits
         // stored in memory. The value zero is represented by an empty Digits vector.
-        // 
+        //
         std::vector<storage_type> digits;
 
         // Set to +/- 1 to indicate the sign of the number. Zero is always positive.
-        // 
+        //
         int sign_flag;
 
         //-------------------------------------
@@ -284,23 +285,22 @@ namespace spica {
         // Initializes a VeryLong from the null terminated string of digit characters. Leading
         // white space is skipped and a leading + or - sign is honored. Only base 10 is
         // (currently) supported.
-        // 
-        void initialize( const char *digit_string );
+        //
+        void initialize(const char* digit_string);
 
         // Erase the leading zeros in *this. This is used to ensure that any leading zeros given
         // or computed are removed.
-        // 
-        void trim_zeros( );
+        //
+        void trim_zeros();
 
         // Shifts *this left the given number of long digits.
-        void shift_left( size_type count );
+        void shift_left(size_type count);
 
         // Compares the absolute magnitude of *this with that of the given object. Returns true
         // if *this has a smaller magnitude.
-        // 
-        bool smaller_than( const VeryLong & ) const;
+        //
+        bool smaller_than(const VeryLong&) const;
     };
-
 
     //! Used by the VeryLong::vldiv function.
     //
@@ -312,48 +312,74 @@ namespace spica {
         VeryLong rem;
     };
 
-
     //------------------------------------------------
     //           Inline Non-Member Functions
     //------------------------------------------------
 
     //! Returns true if the two arguments are unequal.
-    inline bool operator!=( const VeryLong &left, const VeryLong &right )
-        { return !( left == right ); }
+    inline bool operator!=(const VeryLong& left, const VeryLong& right)
+    {
+        return !(left == right);
+    }
 
     //! Returns true if the left argument is greater than the right.
-    inline bool operator>( const VeryLong &left, const VeryLong &right )
-        { return right < left; }
+    inline bool operator>(const VeryLong& left, const VeryLong& right)
+    {
+        return right < left;
+    }
 
     //! Returns true if the left argument is greater than or equal to the right.
-    inline bool operator>=( const VeryLong &left, const VeryLong &right )
-        { return !( left < right ); }
+    inline bool operator>=(const VeryLong& left, const VeryLong& right)
+    {
+        return !(left < right);
+    }
 
     //! Returns true if the left argument is less than or equal to the right.
-    inline bool operator<=( const VeryLong &left, const VeryLong &right )
-        { return !( left > right ); }
-
+    inline bool operator<=(const VeryLong& left, const VeryLong& right)
+    {
+        return !(left > right);
+    }
 
     //! Infix add returns the sum of two VeryLongs.
-    inline VeryLong operator+( const VeryLong &left, const VeryLong &right )
-        { VeryLong temp( left ); temp += right; return temp; }
+    inline VeryLong operator+(const VeryLong& left, const VeryLong& right)
+    {
+        VeryLong temp(left);
+        temp += right;
+        return temp;
+    }
 
     //! Infix subtract returns the difference of two VeryLongs.
-    inline VeryLong operator-( const VeryLong &left, const VeryLong &right )
-        { VeryLong temp( left ); temp -= right; return temp; }
+    inline VeryLong operator-(const VeryLong& left, const VeryLong& right)
+    {
+        VeryLong temp(left);
+        temp -= right;
+        return temp;
+    }
 
     //! Infix multiply returns the produce of two VeryLongs.
-    inline VeryLong operator*( const VeryLong &left, const VeryLong &right )
-        { VeryLong temp( left ); temp *= right; return temp; }
+    inline VeryLong operator*(const VeryLong& left, const VeryLong& right)
+    {
+        VeryLong temp(left);
+        temp *= right;
+        return temp;
+    }
 
     //! Infix divide returns the quotient of two VeryLongs.
-    inline VeryLong operator/( const VeryLong &left, const VeryLong &right )
-        { VeryLong temp( left ); temp /= right; return temp; }
+    inline VeryLong operator/(const VeryLong& left, const VeryLong& right)
+    {
+        VeryLong temp(left);
+        temp /= right;
+        return temp;
+    }
 
     //! Infix modulus returns the remainder after division of two VeryLongs.
-    inline VeryLong operator%( const VeryLong &left, const VeryLong &right )
-        { VeryLong temp( left ); temp %= right; return temp; }
+    inline VeryLong operator%(const VeryLong& left, const VeryLong& right)
+    {
+        VeryLong temp(left);
+        temp %= right;
+        return temp;
+    }
 
-}
+} // namespace spica
 
 #endif

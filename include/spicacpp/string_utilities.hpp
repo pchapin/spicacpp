@@ -10,16 +10,11 @@
 
 namespace spica {
 
-    void create_long_string(
-              std::string           &result,
-        const std::string           &search,
-              std::string::size_type size,
-              int                    range = 26,
-              bool                   verbose = false
-    );
+    void create_long_string(std::string& result, const std::string& search,
+                            std::string::size_type size, int range = 26, bool verbose = false);
 
-    void display_partial_matches( const std::string &result, const std::string &search );
+    void display_partial_matches(const std::string& result, const std::string& search);
 
-}
+} // namespace spica
 
 #endif

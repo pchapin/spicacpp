@@ -31,35 +31,32 @@ namespace spica {
      * hold a sentinel node. This node is never initialized but its pointers to the next and
      * previous node are used.
      */
-    template<typename T>
-    class BoundedList {
+    template <typename T> class BoundedList {
 
-        BoundedList( const BoundedList & ) = delete;
-        BoundedList &operator=( const BoundedList & ) = delete;
+        BoundedList(const BoundedList&) = delete;
+        BoundedList& operator=(const BoundedList&) = delete;
 
-    public:
-
+      public:
         // The usual typedef names.
-        typedef       T  value_type;
-        typedef       T *pointer;
-        typedef const T *const_pointer;
-        typedef       T  &reference;
-        typedef const T  &const_reference;
-        typedef std::size_t    size_type;
+        typedef T value_type;
+        typedef T* pointer;
+        typedef const T* const_pointer;
+        typedef T& reference;
+        typedef const T& const_reference;
+        typedef std::size_t size_type;
         typedef std::ptrdiff_t difference_type;
 
-    private:
-        T         *raw;       // Preallocated block of raw memory.
-        size_type *next;      // Array of "next" indices.
-        size_type *previous;  // Array of "previous" indices.
-        size_type  count;     // Number of items in list.
-        size_type  capacity;  // Size of preallocated block.
-        size_type  free;      // Front of the free list.
+      private:
+        T* raw;              // Preallocated block of raw memory.
+        size_type* next;     // Array of "next" indices.
+        size_type* previous; // Array of "previous" indices.
+        size_type count;     // Number of items in list.
+        size_type capacity;  // Size of preallocated block.
+        size_type free;      // Front of the free list.
 
         void do_initialize(size_type max_size);
 
-    public:
-
+      public:
         //! Bounded list iterators.
         /*!
          * The nested class iterator describes objects that know how to step up and down a
@@ -69,16 +66,16 @@ namespace spica {
 
             friend class BoundedList;
 
-        public:
-            typedef std::ptrdiff_t                 difference_type;
-            typedef T                              value_type;
-            typedef T                              *pointer;
-            typedef T                              &reference;
+          public:
+            typedef std::ptrdiff_t difference_type;
+            typedef T value_type;
+            typedef T* pointer;
+            typedef T& reference;
             typedef std::bidirectional_iterator_tag iterator_category;
 
-        private:
-            BoundedList *my_list;                     // BoundedList into which we are pointing.
-            typename BoundedList::size_type my_node;  // Node to which we are pointing.
+          private:
+            BoundedList* my_list;                    // BoundedList into which we are pointing.
+            typename BoundedList::size_type my_node; // Node to which we are pointing.
 
             // Constructs a bounded list iterator.
             /*!
@@ -86,90 +83,125 @@ namespace spica {
              * \param index Index into the storage array used by the list where the target of
              * the iterator is located.
              */
-            iterator( BoundedList *list, size_type index ) noexcept :
-                my_list( list ), my_node( index )
-                { }
+            iterator(BoundedList* list, size_type index) noexcept : my_list(list), my_node(index)
+            {
+            }
 
-        public:
+          public:
             //! Preincrement.
             /*!
              * Advances iterator to next item in the list and returns a reference to itself.
              */
-            iterator &operator++( ) noexcept
-                { my_node = my_list->next[my_node]; return( *this ); }
+            iterator& operator++() noexcept
+            {
+                my_node = my_list->next[my_node];
+                return (*this);
+            }
 
             //! Postincrement.
             /*!
              * Advances iterator to next item in the list and returns original iterator.
              */
-            iterator operator++( int )
-                { iterator temp( *this ); my_node = my_list->next[my_node]; return temp; }
+            iterator operator++(int)
+            {
+                iterator temp(*this);
+                my_node = my_list->next[my_node];
+                return temp;
+            }
 
             //! Predecrement.
             /*!
              * Backs up iterator to previous item in list and returns a reference to itself.
              */
-            iterator &operator--( ) noexcept
-                { my_node = my_list->previous[my_node]; return( *this ); }
+            iterator& operator--() noexcept
+            {
+                my_node = my_list->previous[my_node];
+                return (*this);
+            }
 
             //! Postdecrement.
             /*!
              * Backs up iterator to previous item in the list and returns original iterator.
              */
-            iterator operator--( int )
-                { iterator temp( *this ); my_node = my_list->previous[my_node]; return temp; }
+            iterator operator--(int)
+            {
+                iterator temp(*this);
+                my_node = my_list->previous[my_node];
+                return temp;
+            }
 
             //! Returns true if *this and other point at the same object.
-            bool operator==( const iterator other ) noexcept
-                { return( my_node == other.my_node ); }
+            bool operator==(const iterator other) noexcept
+            {
+                return (my_node == other.my_node);
+            }
 
             //! Returns a reference to the item the iterator is pointing at.
-            reference operator*( ) noexcept
-                { return( my_list->raw[my_node] ); }
+            reference operator*() noexcept
+            {
+                return (my_list->raw[my_node]);
+            }
 
             //! Returns a pointer to the item the iterator is pointing at.
-            pointer operator->( )
-                { return( &my_list->raw[my_node] ); }
+            pointer operator->()
+            {
+                return (&my_list->raw[my_node]);
+            }
 
             //! Default constructor.
-            iterator( ) noexcept : my_list( 0 ), my_node( 0 )
-                { }
+            iterator() noexcept : my_list(0), my_node(0)
+            {
+            }
 
         }; // End of BoundedList<T>::iterator
 
-        //friend class BoundedList::iterator;
+        // friend class BoundedList::iterator;
 
-        BoundedList( size_type max_count );
-        BoundedList(const std::initializer_list<T> &initializer);
-       ~BoundedList( ) noexcept;
+        BoundedList(size_type max_count);
+        BoundedList(const std::initializer_list<T>& initializer);
+        ~BoundedList() noexcept;
 
-        BoundedList( BoundedList &&other ) noexcept;
-        BoundedList<T> &operator=(BoundedList &&other) noexcept;
+        BoundedList(BoundedList&& other) noexcept;
+        BoundedList<T>& operator=(BoundedList&& other) noexcept;
 
         //! Return the number of elements currently on the list. O(1)
-        size_type size( ) const noexcept
-            { return( count ); }
+        size_type size() const noexcept
+        {
+            return (count);
+        }
 
         //! Return true if the list contains no elements.
-        bool empty( ) const noexcept
-            { return( count == 0 ); }
+        bool empty() const noexcept
+        {
+            return (count == 0);
+        }
 
         //! Returns the maximum size the list can be.
-        size_type max_size( ) const noexcept
-            { return( capacity ); }
+        size_type max_size() const noexcept
+        {
+            return (capacity);
+        }
 
-        iterator begin( ) noexcept
-            { return( iterator( this, next[0] ) ); }
+        iterator begin() noexcept
+        {
+            return (iterator(this, next[0]));
+        }
 
-        iterator end( ) noexcept
-            { return( iterator( this, 0 ) ); }
+        iterator end() noexcept
+        {
+            return (iterator(this, 0));
+        }
 
         //! Returns a reference to the first item on the list. O(1)
-        reference front( ) noexcept
-            { return( raw[next[0]] ); }
+        reference front() noexcept
+        {
+            return (raw[next[0]]);
+        }
 
-        const_reference front( ) const noexcept
-            { return( raw[next[0]] ); }
+        const_reference front() const noexcept
+        {
+            return (raw[next[0]]);
+        }
 
         //! Appends item to the end of the list. O(1)
         /*!
@@ -177,20 +209,24 @@ namespace spica {
          * \exception std::length_error if the list is full. In this case, the new item is not
          * copied. Bounded lists never increase in capacity once they are created.
          */
-        void push_back( const T &item );
+        void push_back(const T& item);
 
-        template<typename ForwardIterator>
-        void push_back( ForwardIterator first, ForwardIterator last );
+        template <typename ForwardIterator>
+        void push_back(ForwardIterator first, ForwardIterator last);
 
         //! Returns a reference to the last item on the list. O(1)
-        reference back( ) noexcept
-            { return( raw[previous[0]] ); }
+        reference back() noexcept
+        {
+            return (raw[previous[0]]);
+        }
 
-        const_reference back( ) const noexcept
-            { return( raw[previous[0]] ); }
+        const_reference back() const noexcept
+        {
+            return (raw[previous[0]]);
+        }
 
         //! Removes the last item on the list. O(1)
-        void pop_back( ) noexcept;
+        void pop_back() noexcept;
 
         //! Inserts a new item into the list.
         /*!
@@ -204,7 +240,7 @@ namespace spica {
          * item. In this case, the new item is not copied. Bounded lists never increase in
          * capacity once they are created.
          */
-        iterator insert( iterator pos, const T &item );
+        iterator insert(iterator pos, const T& item);
 
         //! Erase an item from the list.
         /*!
@@ -214,33 +250,32 @@ namespace spica {
          * iterator, the effect is undefined.
          * \return An iterator that points at the element that was just past the element erased.
          */
-        iterator erase( iterator pos ) noexcept;
+        iterator erase(iterator pos) noexcept;
 
-    };  // End of BoundedList<T>
+    }; // End of BoundedList<T>
 
     // ===========================
     // IMPLEMENTATION BEGINS HERE!
     // ===========================
 
-    template<typename T>
-    void BoundedList<T>::do_initialize( size_type max_count )
+    template <typename T> void BoundedList<T>::do_initialize(size_type max_count)
     {
-        std::unique_ptr<char[]> temp_raw( new char[( max_count + 1 ) * sizeof(T)] );
-        std::unique_ptr<size_type[]> temp_next( new size_type[max_count + 1] );
-        std::unique_ptr<size_type[]> temp_previous( new size_type[max_count + 1] );
+        std::unique_ptr<char[]> temp_raw(new char[(max_count + 1) * sizeof(T)]);
+        std::unique_ptr<size_type[]> temp_next(new size_type[max_count + 1]);
+        std::unique_ptr<size_type[]> temp_previous(new size_type[max_count + 1]);
 
-        raw      = reinterpret_cast<T*>( temp_raw.release( ) );
-        next     = temp_next.release( );
-        previous = temp_previous.release( );
-        count    = 0;
+        raw = reinterpret_cast<T*>(temp_raw.release());
+        next = temp_next.release();
+        previous = temp_previous.release();
+        count = 0;
         capacity = max_count;
-        free     = 0;
+        free = 0;
 
         // Prepare the free list.
-        for( size_type i = 1; i <= capacity; ++i ) {
+        for (size_type i = 1; i <= capacity; ++i) {
             next[i] = i + 1;
         }
-        if( capacity > 0 ) {
+        if (capacity > 0) {
             next[capacity] = 0;
             free = 1;
         }
@@ -250,123 +285,109 @@ namespace spica {
         previous[0] = 0;
     }
 
-
-    template<typename T>
-    BoundedList<T>::BoundedList( size_type max_count )
+    template <typename T> BoundedList<T>::BoundedList(size_type max_count)
     {
-        do_initialize( max_count );
+        do_initialize(max_count);
     }
 
-
-    template<typename T>
-    BoundedList<T>::BoundedList( const std::initializer_list<T> &initializer )
+    template <typename T> BoundedList<T>::BoundedList(const std::initializer_list<T>& initializer)
     {
         // Default construct *this so the list is fully functional.
-        do_initialize( initializer.size( ) );
+        do_initialize(initializer.size());
 
         // Append each item from the initializer list onto *this.
-        const iterator it = end( );
-        for( const T &item : initializer ) {
-            insert( it, item );
+        const iterator it = end();
+        for (const T& item : initializer) {
+            insert(it, item);
         }
     }
 
-
-    template<typename T>
-    BoundedList<T>::~BoundedList( ) noexcept
+    template <typename T> BoundedList<T>::~BoundedList() noexcept
     {
-        if( raw == nullptr ) return;
+        if (raw == nullptr)
+            return;
 
         // Destroy all the active items.
         size_type current = next[0];
-        while( current != 0 ) {
-            raw[current].~T( );
+        while (current != 0) {
+            raw[current].~T();
             current = next[current];
         }
 
         // Release the memory.
-        delete [] previous;
-        delete [] next;
-        delete [] reinterpret_cast<char *>( raw );
+        delete[] previous;
+        delete[] next;
+        delete[] reinterpret_cast<char*>(raw);
     }
 
-
-    template<typename T>
-    BoundedList<T>::BoundedList( BoundedList&& other ) noexcept
+    template <typename T> BoundedList<T>::BoundedList(BoundedList&& other) noexcept
     {
-        raw      = other.raw;
-        next     = other.next;
+        raw = other.raw;
+        next = other.next;
         previous = other.previous;
-        count    = other.count;
+        count = other.count;
         capacity = other.capacity;
-        free     = other.free;
+        free = other.free;
 
-        other.raw      = nullptr;
-        other.next     = nullptr;
+        other.raw = nullptr;
+        other.next = nullptr;
         other.previous = nullptr;
     }
 
-
-    template<typename T>
-    BoundedList<T> &BoundedList<T>::operator=( BoundedList&& other ) noexcept
+    template <typename T> BoundedList<T>& BoundedList<T>::operator=(BoundedList&& other) noexcept
     {
-        if( this != &other ) {
-            this->~BoundedList( );
- 
-            raw      = other.raw;
-            next     = other.next;
-            previous = other.previous;
-            count    = other.count;
-            capacity = other.capacity;
-            free     = other.free;
+        if (this != &other) {
+            this->~BoundedList();
 
-            other.raw      = nullptr;
-            other.next     = nullptr;
+            raw = other.raw;
+            next = other.next;
+            previous = other.previous;
+            count = other.count;
+            capacity = other.capacity;
+            free = other.free;
+
+            other.raw = nullptr;
+            other.next = nullptr;
             other.previous = nullptr;
         }
         return *this;
     }
 
-
-    template<typename T>
-    void BoundedList<T>::push_back( const T &item )
+    template <typename T> void BoundedList<T>::push_back(const T& item)
     {
-        if( free == 0 )
-            throw std::length_error( "BoundedList: full; can't increase capacity" );
+        if (free == 0)
+            throw std::length_error("BoundedList: full; can't increase capacity");
 
         // Pull a slot off the free list.
         size_type new_item = free;
 
         // Construct a copy of the item in the desired slot.
-        new ( &raw[new_item] ) T( item );
+        new (&raw[new_item]) T(item);
 
         free = next[free];
-        next[previous[0]]  = new_item;
+        next[previous[0]] = new_item;
         previous[new_item] = previous[0];
-        next[new_item]     = 0;
-        previous[0]        = new_item;
+        next[new_item] = 0;
+        previous[0] = new_item;
 
         ++count;
     }
 
-
-    template<typename T>
-    template<typename ForwardIterator>
-    void BoundedList<T>::push_back( ForwardIterator first, ForwardIterator last )
+    template <typename T>
+    template <typename ForwardIterator>
+    void BoundedList<T>::push_back(ForwardIterator first, ForwardIterator last)
     {
-        while( first != last ) {
-            push_back( *first );
+        while (first != last) {
+            push_back(*first);
             ++first;
         }
     }
 
-
-    template<typename T>
-    void BoundedList<T>::pop_back( ) noexcept
+    template <typename T> void BoundedList<T>::pop_back() noexcept
     {
         // Remove the last item (I assume one is present).
         size_type p = previous[previous[0]];
-        raw[previous[0]].~T( );
+        raw[previous[0]].~T();
         next[previous[0]] = free;
         free = previous[0];
 
@@ -375,20 +396,18 @@ namespace spica {
         count--;
     }
 
-
-    template<typename T>
-    typename BoundedList<T>::iterator
-        BoundedList<T>::insert( iterator pos, const T &item )
+    template <typename T>
+    typename BoundedList<T>::iterator BoundedList<T>::insert(iterator pos, const T& item)
     {
         size_type p;
 
         // If there is no space for the new item, just throw and die.
-        if( count == capacity )
-            throw std::length_error( "BoundedList: full; can't increase capacity" );
+        if (count == capacity)
+            throw std::length_error("BoundedList: full; can't increase capacity");
 
         // Locate a free slot and construct the incoming item into it.
         p = free;
-        new ( &raw[p] ) T( item );
+        new (&raw[p]) T(item);
 
         free = next[free];
         previous[p] = previous[pos.my_node];
@@ -397,25 +416,23 @@ namespace spica {
         previous[pos.my_node] = p;
 
         count++;
-        return( iterator( this, p ) );
+        return (iterator(this, p));
     }
 
-
-    template<typename T>
-    typename BoundedList<T>::iterator
-        BoundedList<T>::erase( iterator pos ) noexcept
+    template <typename T>
+    typename BoundedList<T>::iterator BoundedList<T>::erase(iterator pos) noexcept
     {
         size_type p = pos.my_node;
         size_type temp = next[p];
         next[previous[p]] = next[p];
         previous[next[p]] = previous[p];
 
-        raw[p].~T( );
+        raw[p].~T();
         next[p] = free;
         free = p;
         count--;
-        return( iterator(this, temp) );
+        return (iterator(this, temp));
     }
-}
+} // namespace spica
 
 #endif

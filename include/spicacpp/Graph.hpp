@@ -24,11 +24,10 @@ namespace spica {
      * any "holes." Both vertices and edges are counted with an unsigned integral type named
      * 'count_t.'
      */
-    template<typename Weight>
-    class Graph {
-    public:
+    template <typename Weight> class Graph {
+      public:
         typedef unsigned int count_t;
-        static const count_t nil = static_cast< count_t >( -1 );
+        static const count_t nil = static_cast<count_t>(-1);
 
         //! Stores information about a single edge in the graph.
         /*!
@@ -37,15 +36,14 @@ namespace spica {
          * in an unweighted graph, the edge's weight should be ignored.
          */
         struct EdgeInfo {
-            count_t  remote_vertex;
-            Weight   edge_weight;
+            count_t remote_vertex;
+            Weight edge_weight;
         };
 
-    private:
+      private:
         std::vector<std::vector<EdgeInfo>> adjacency;
 
-    public:
-
+      public:
         //! Provides a way to visit all the edges leaving a vertex.
         /*!
          * Edge iterators are models of forward iterators. They allow you to iterate over all
@@ -53,39 +51,54 @@ namespace spica {
          * edges.
          */
         class edge_iterator {
-        public:
+          public:
             typedef std::forward_iterator_tag iterator_category;
-            typedef EdgeInfo                  value_type;
-            typedef std::ptrdiff_t            difference_type;  
-            typedef EdgeInfo                 *pointer;
-            typedef EdgeInfo                 &reference;
+            typedef EdgeInfo value_type;
+            typedef std::ptrdiff_t difference_type;
+            typedef EdgeInfo* pointer;
+            typedef EdgeInfo& reference;
 
-            edge_iterator( ) : current( ) { }
-            edge_iterator( typename std::vector<EdgeInfo>::iterator p )
-                : current( p ) { }
-
-            EdgeInfo      &operator*( )  { return( *current ); }
-            EdgeInfo      *operator->( ) { return( &*current ); }
-            edge_iterator &operator++( ) { ++current; return( *this ); }
-            edge_iterator  operator++( int )
+            edge_iterator() : current()
             {
-                typename std::vector<EdgeInfo>::iterator temp( current );
-                ++current;
-                return( edge_iterator( temp ) );
+            }
+            edge_iterator(typename std::vector<EdgeInfo>::iterator p) : current(p)
+            {
             }
 
-            bool operator==( const edge_iterator other )
-                { return( current == other.current ); }
+            EdgeInfo& operator*()
+            {
+                return (*current);
+            }
+            EdgeInfo* operator->()
+            {
+                return (&*current);
+            }
+            edge_iterator& operator++()
+            {
+                ++current;
+                return (*this);
+            }
+            edge_iterator operator++(int)
+            {
+                typename std::vector<EdgeInfo>::iterator temp(current);
+                ++current;
+                return (edge_iterator(temp));
+            }
 
-        private:
+            bool operator==(const edge_iterator other)
+            {
+                return (current == other.current);
+            }
+
+          private:
             typename std::vector<EdgeInfo>::iterator current;
         };
 
         //! Return the number of vertices in the graph.
-        count_t num_vertices( ) const;
+        count_t num_vertices() const;
 
         //! Return the number of directed edges in the graph.
-        count_t num_edges( ) const;
+        count_t num_edges() const;
 
         //! Creates a new vertex.
         /*!
@@ -95,7 +108,7 @@ namespace spica {
          *
          *  \exception std::bad_alloc if memory exhausted.
          */
-        void create_vertex( count_t v_number );
+        void create_vertex(count_t v_number);
 
         //! Creates a new edge
         /*!
@@ -107,7 +120,7 @@ namespace spica {
          *
          * \exception std::bad_alloc if memory exhausted.
          */
-        void create_edge( count_t v1, count_t v2, Weight w );
+        void create_edge(count_t v1, count_t v2, Weight w);
 
         //! Start an edge iteration.
         /*!
@@ -121,7 +134,7 @@ namespace spica {
          * there is no such edge, eend(v_number) is returned.
          *
          */
-        edge_iterator ebegin( count_t v_number );
+        edge_iterator ebegin(count_t v_number);
 
         //! Stop an edge iteration.
         /*!
@@ -129,61 +142,50 @@ namespace spica {
          *
          * \return An edge_iterator that points just past the last edge leaving vertex v_number.
          */
-        edge_iterator eend( count_t v_number );
+        edge_iterator eend(count_t v_number);
     };
 
-
-    template<typename Weight>
-    inline
-    typename Graph<Weight>::count_t Graph<Weight>::num_vertices( ) const
+    template <typename Weight>
+    inline typename Graph<Weight>::count_t Graph<Weight>::num_vertices() const
     {
-        return adjacency.size( );
+        return adjacency.size();
     }
 
-
-    template<typename Weight>
-    typename Graph<Weight>::count_t Graph<Weight>::num_edges( ) const
+    template <typename Weight> typename Graph<Weight>::count_t Graph<Weight>::num_edges() const
     {
         count_t total = 0;
-        for( count_t i = 0; i < adjacency.size( ); ++i ) {
-            total += adjacency[i].size( );
+        for (count_t i = 0; i < adjacency.size(); ++i) {
+            total += adjacency[i].size();
         }
-        return( total );
+        return (total);
     }
 
-
-    template<typename Weight>
-    void Graph<Weight>::create_vertex( count_t v_number )
+    template <typename Weight> void Graph<Weight>::create_vertex(count_t v_number)
     {
-        if( v_number < adjacency.size( ) ) return;
-        adjacency.resize( v_number + 1 );
+        if (v_number < adjacency.size())
+            return;
+        adjacency.resize(v_number + 1);
     }
 
-
-    template<typename Weight>
-    void Graph<Weight>::create_edge( count_t v1, count_t v2, Weight w )
+    template <typename Weight> void Graph<Weight>::create_edge(count_t v1, count_t v2, Weight w)
     {
-        create_vertex( v1 );
-        create_vertex( v2 );
-        EdgeInfo new_edge = { v2, w };
-        adjacency[v1].push_back( new_edge );
+        create_vertex(v1);
+        create_vertex(v2);
+        EdgeInfo new_edge = {v2, w};
+        adjacency[v1].push_back(new_edge);
     }
 
-
-    template<typename Weight>
-    inline
-    typename Graph<Weight>::edge_iterator Graph< Weight >::ebegin( count_t v_number )
+    template <typename Weight>
+    inline typename Graph<Weight>::edge_iterator Graph<Weight>::ebegin(count_t v_number)
     {
-        return( edge_iterator( adjacency[v_number].begin( ) ) );
+        return (edge_iterator(adjacency[v_number].begin()));
     }
 
-
-    template<typename Weight>
-    inline
-    typename Graph<Weight>::edge_iterator Graph< Weight >::eend( count_t v_number )
+    template <typename Weight>
+    inline typename Graph<Weight>::edge_iterator Graph<Weight>::eend(count_t v_number)
     {
-        return( edge_iterator( adjacency[v_number].end( ) ) );
+        return (edge_iterator(adjacency[v_number].end()));
     }
-}
+} // namespace spica
 
 #endif

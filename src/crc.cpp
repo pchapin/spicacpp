@@ -8,18 +8,17 @@
 /*
  *   CRC_Clear
  */
-unsigned short CRC_Clear( )
+unsigned short CRC_Clear()
 {
     return 0;
 }
 
-
 /*
  *   CRC_Update
  */
-unsigned short CRC_Update( unsigned short CRC, unsigned char CRC_Char )
+unsigned short CRC_Update(unsigned short CRC, unsigned char CRC_Char)
 {
-    unsigned long  x;
+    unsigned long x;
     unsigned short i;
 
     /* The variable "x" will contain the character to be processed in bits 0-7 and the CRC in
@@ -28,10 +27,10 @@ unsigned short CRC_Update( unsigned short CRC, unsigned char CRC_Char )
        a 32 bit register). */
 
     /* Get the CRC and the character. */
-    x = ( (unsigned long)CRC << 8 ) + CRC_Char;
+    x = ((unsigned long)CRC << 8) + CRC_Char;
 
     /* For each bit in the character... */
-    for( i = 0; i < 8; i++ ) {
+    for (i = 0; i < 8; i++) {
 
         /* Shift the high-order bit of the character into the low-order bit of the CRC, and
            shift the high-order bit of the CRC into bit 24. */
@@ -39,7 +38,7 @@ unsigned short CRC_Update( unsigned short CRC, unsigned char CRC_Char )
         x <<= 1;
 
         /* Test to see if the old high-order bit of the CRC was a 1. */
-        if( x & 0x01000000UL )
+        if (x & 0x01000000UL)
 
             /* If the old high-order bit of the CRC was a 1, exclusive-or it with a one to set
                it to 0, and exclusive-or the CRC with hex 1021 to produce the CCITT-recommended
@@ -52,17 +51,16 @@ unsigned short CRC_Update( unsigned short CRC, unsigned char CRC_Char )
     }
 
     /* Return the CRC we have so far. */
-    return (unsigned short)( ( x & 0x00FFFF00UL ) >> 8 );
+    return (unsigned short)((x & 0x00FFFF00UL) >> 8);
 }
-
 
 /*
  *   CRC_Finish
  */
-unsigned short CRC_Finish( unsigned short CRC )
+unsigned short CRC_Finish(unsigned short CRC)
 {
     /* Call crc_update twice, passing it a character of hex 00 each time, to flush out the last
        16 bits from the CRC calculation, and return the result as the value of this function. */
 
-    return CRC_Update( CRC_Update( CRC,'\0' ),'\0' );
+    return CRC_Update(CRC_Update(CRC, '\0'), '\0');
 }

@@ -18,8 +18,8 @@ namespace spica {
      * Reads the specified file looking for lines of the form "name = value." Returns a map
      * containing all (name, value) pairs found.
      */
-    std::map<std::string, std::string> read_configuration( const std::string &file_name );
+    std::map<std::string, std::string> read_configuration(const std::string& file_name);
 
-}
+} // namespace spica
 
 #endif

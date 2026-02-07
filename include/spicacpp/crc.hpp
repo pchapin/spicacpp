@@ -5,7 +5,7 @@
  * This file contains prototypes for CRC related functions. The functions currently in the
  * package were obtained from the public domain. They produce a 16 bit (short) CRC checksum
  * using the CCITT polynomial. See crc.c for more information.
-*/
+ */
 
 #ifndef CRC_HPP
 #define CRC_HPP
@@ -26,8 +26,7 @@ extern "C" {
  *       unsigned short crc;
  *       crc = CRC_Clear( );
  */
-unsigned short CRC_Clear( );
-
+unsigned short CRC_Clear();
 
 /*
  *   CRC_Update: this function must be called once for each character which is to be included in
@@ -40,8 +39,7 @@ unsigned short CRC_Clear( );
  *
  *       crc = CRC_Update( crc, Next_Char );
  */
-unsigned short CRC_Update( unsigned short crc, unsigned char next_char );
-
+unsigned short CRC_Update(unsigned short crc, unsigned char next_char);
 
 /*
  *   CRC_Finish: This function must be called once after all the characters in a block have been
@@ -55,11 +53,10 @@ unsigned short CRC_Update( unsigned short crc, unsigned char next_char );
  *
  *       crc = CRC_Finish( crc );
  */
-unsigned short CRC_Finish( unsigned short crc );
+unsigned short CRC_Finish(unsigned short crc);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

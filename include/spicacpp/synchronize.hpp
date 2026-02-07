@@ -35,61 +35,77 @@ namespace spica {
     //! Mutex semaphores provide for exclusive access to a shared resource.
     //
     class mutex_sem {
-    public:
+      public:
         //! Constructor puts semaphore into an initially unowned state.
-        mutex_sem( );
+        mutex_sem();
 
         //! Destructor releases semaphore if it is currently owned.
-       ~mutex_sem( );
+        ~mutex_sem();
 
         //! Locks the semaphore (puts it into an owned state).
-        void lock( );
+        void lock();
 
         //! Releases ownership of the semaphore.
-        void unlock( );
+        void unlock();
 
-       //! Provides for locking and unlocking using RAI idiom.
+        //! Provides for locking and unlocking using RAI idiom.
         class grabber {
-        public:
-            grabber( mutex_sem &sem, bool lock_now = true ) : the_sem( sem )
-                { if( lock_now ) the_sem.lock( ); locked = lock_now; }
+          public:
+            grabber(mutex_sem& sem, bool lock_now = true) : the_sem(sem)
+            {
+                if (lock_now)
+                    the_sem.lock();
+                locked = lock_now;
+            }
 
-            void lock( )
-                { if( !locked ) { the_sem.lock( ); locked = true; } }
+            void lock()
+            {
+                if (!locked) {
+                    the_sem.lock();
+                    locked = true;
+                }
+            }
 
-            void unlock( )
-                { if( locked ) { the_sem.unlock( ); locked = false; } }
+            void unlock()
+            {
+                if (locked) {
+                    the_sem.unlock();
+                    locked = false;
+                }
+            }
 
-           ~grabber( )
-                { if ( locked ) the_sem.unlock( ); }
+            ~grabber()
+            {
+                if (locked)
+                    the_sem.unlock();
+            }
 
-        private:
-            mutex_sem &the_sem;
-            bool       locked;
+          private:
+            mutex_sem& the_sem;
+            bool locked;
 
             // Inhibit copying.
-            grabber( const grabber & );
-            grabber &operator=( const grabber & );
+            grabber(const grabber&);
+            grabber& operator=(const grabber&);
         };
 
-    private:
-        #if eOPSYS == ePOSIX
-        pthread_mutex_t  raw_object;
-        #endif
+      private:
+#if eOPSYS == ePOSIX
+        pthread_mutex_t raw_object;
+#endif
 
-        #if eOPSYS == eOS2
+#if eOPSYS == eOS2
         HMTX raw_object;
-        #endif
+#endif
 
-        #if eOPSYS == eWIN32
+#if eOPSYS == eWIN32
         CRITICAL_SECTION raw_object;
-        #endif
+#endif
 
         // Inhibit copying.
-        mutex_sem( const mutex_sem & );
-        mutex_sem &operator=( const mutex_sem & );
+        mutex_sem(const mutex_sem&);
+        mutex_sem& operator=(const mutex_sem&);
     };
-
 
     //! Counting semaphores.
     /*!
@@ -101,47 +117,45 @@ namespace spica {
         to first "reserve" a unit for itself.
     */
     class counting_sem {
-    public:
-        counting_sem( int initial = 0 );
-       ~counting_sem( );
+      public:
+        counting_sem(int initial = 0);
+        ~counting_sem();
 
         //! Increments the count.
         /*!
             This method never blocks (for long). It might unblock another
             thread.
          */
-        void up( );
+        void up();
 
         //! Decrements the count.
         /*!
             Blocks the calling thread if the count is zero until some other
             thread does an up operation.
         */
-        void down( );
+        void down();
 
-    private:
-
-        #if eOPSYS == ePOSIX
+      private:
+#if eOPSYS == ePOSIX
         pthread_mutex_t lock;
-        pthread_cond_t  non_zero;
-        int             raw_count;
-        #endif
+        pthread_cond_t non_zero;
+        int raw_count;
+#endif
 
-        #if eOPSYS == eOS2
-        HMTX            lock;
-        HEV             non_zero;
-        int             raw_count;
-        #endif
+#if eOPSYS == eOS2
+        HMTX lock;
+        HEV non_zero;
+        int raw_count;
+#endif
 
-        #if eOPSYS == eWIN32
-        HANDLE          the_sem;
-        #endif
+#if eOPSYS == eWIN32
+        HANDLE the_sem;
+#endif
 
         // Inhibit copying.
-        counting_sem( const counting_sem & );
-        counting_sem &operator=( const counting_sem & );
+        counting_sem(const counting_sem&);
+        counting_sem& operator=(const counting_sem&);
     };
-
 
     //! Read/Write semaphore
     /*!
@@ -153,18 +167,18 @@ namespace spica {
         THIS CLASS IS CURRENTLY UNIMPLEMENTED!
     */
     class rw_sem {
-    public:
-        rw_sem( );
-       ~rw_sem( );
+      public:
+        rw_sem();
+        ~rw_sem();
 
         //! Read lock.
         /*!
             Asking for a read lock always returns at once unless a writer has locked.
         */
-        void r_lock( );
+        void r_lock();
 
         //! Release a read lock.
-        void r_unlock( );
+        void r_unlock();
 
         //! Write lock.
         /*!
@@ -172,126 +186,159 @@ namespace spica {
             readers or writers) are granted access. When a write lock is requested, it will be
             granted as soon as possible.
         */
-        void w_lock( );
+        void w_lock();
 
         //! Release a write lock.
-        void w_unlock( );
+        void w_unlock();
 
         //! Grabs a read lock using RAI idiom.
         class r_grabber {
-        public:
-            r_grabber( rw_sem &sem ) : the_sem( sem )
-                { the_sem.r_lock( ); }
+          public:
+            r_grabber(rw_sem& sem) : the_sem(sem)
+            {
+                the_sem.r_lock();
+            }
 
-           ~r_grabber( )
-                { the_sem.r_unlock( ); }
+            ~r_grabber()
+            {
+                the_sem.r_unlock();
+            }
 
-        private:
-            rw_sem &the_sem;
+          private:
+            rw_sem& the_sem;
         };
 
         //! Grabs a write lock using RAI idiom.
         class w_grabber {
-        public:
-            w_grabber( rw_sem &sem ) : the_sem( sem )
-                { the_sem.w_lock( ); }
+          public:
+            w_grabber(rw_sem& sem) : the_sem(sem)
+            {
+                the_sem.w_lock();
+            }
 
-           ~w_grabber( )
-                { the_sem.w_unlock( ); }
+            ~w_grabber()
+            {
+                the_sem.w_unlock();
+            }
 
-        private:
-            rw_sem &the_sem;
+          private:
+            rw_sem& the_sem;
         };
 
-    private:
+      private:
+#if eOPSYS == ePOSIX
+#endif
 
-        #if eOPSYS == ePOSIX
-        #endif
+#if eOPSYS == eOS2
+#endif
 
-        #if eOPSYS == eOS2
-        #endif
-
-        #if eOPSYS == eWIN32
-        #endif
+#if eOPSYS == eWIN32
+#endif
 
         // Inhibit copying.
-        rw_sem( const rw_sem & );
-        rw_sem &operator=( const rw_sem & );
+        rw_sem(const rw_sem&);
+        rw_sem& operator=(const rw_sem&);
     };
 
-
-   //==============================
+    //==============================
     //           mutex_sem
     //==============================
 
-    #if eOPSYS == ePOSIX
+#if eOPSYS == ePOSIX
 
-    inline mutex_sem::mutex_sem( )
-        { pthread_mutex_init( &raw_object, 0 ); }
+    inline mutex_sem::mutex_sem()
+    {
+        pthread_mutex_init(&raw_object, 0);
+    }
 
-    inline mutex_sem::~mutex_sem( )
-        { pthread_mutex_destroy( &raw_object ); }
+    inline mutex_sem::~mutex_sem()
+    {
+        pthread_mutex_destroy(&raw_object);
+    }
 
-    inline void mutex_sem::lock( )
-        { pthread_mutex_lock( &raw_object ); }
+    inline void mutex_sem::lock()
+    {
+        pthread_mutex_lock(&raw_object);
+    }
 
-    inline void mutex_sem::unlock( )
-        { pthread_mutex_unlock( &raw_object ); }
+    inline void mutex_sem::unlock()
+    {
+        pthread_mutex_unlock(&raw_object);
+    }
 
-    #endif
+#endif
 
+#if eOPSYS == eOS2
 
-    #if eOPSYS == eOS2
+    inline mutex_sem::mutex_sem()
+    {
+        DosCreateMutexSem(0, &raw_object, 0, FALSE);
+    }
 
-    inline mutex_sem::mutex_sem( )
-        { DosCreateMutexSem( 0, &raw_object, 0, FALSE ); }
+    inline mutex_sem::~mutex_sem()
+    {
+        DosCloseMutexSem(raw_object);
+    }
 
-    inline mutex_sem::~mutex_sem( )
-        { DosCloseMutexSem( raw_object ); }
+    inline void mutex_sem::lock()
+    {
+        DosRequestMutexSem(raw_object, SEM_INDEFINITE_WAIT);
+    }
 
-    inline void mutex_sem::lock( )
-        { DosRequestMutexSem( raw_object, SEM_INDEFINITE_WAIT ); }
+    inline void mutex_sem::unlock()
+    {
+        DosReleaseMutexSem(raw_object);
+    }
 
-    inline void mutex_sem::unlock( )
-        { DosReleaseMutexSem( raw_object ); }
+#endif
 
-    #endif
+#if eOPSYS == eWIN32
 
+    inline mutex_sem::mutex_sem()
+    {
+        InitializeCriticalSection(&raw_object);
+    }
 
-    #if eOPSYS == eWIN32
+    inline mutex_sem::~mutex_sem()
+    {
+        DeleteCriticalSection(&raw_object);
+    }
 
-    inline mutex_sem::mutex_sem( )
-        { InitializeCriticalSection( &raw_object ); }
+    inline void mutex_sem::lock()
+    {
+        EnterCriticalSection(&raw_object);
+    }
 
-    inline mutex_sem::~mutex_sem( )
-        { DeleteCriticalSection( &raw_object ); }
+    inline void mutex_sem::unlock()
+    {
+        LeaveCriticalSection(&raw_object);
+    }
 
-    inline void mutex_sem::lock( )
-        { EnterCriticalSection( &raw_object ); }
-
-    inline void mutex_sem::unlock( )
-        { LeaveCriticalSection( &raw_object ); }
-
-    #endif
-
+#endif
 
     //=================================
     //           counting_sem
     //=================================
 
-    #if eOPSYS == eWIN32
+#if eOPSYS == eWIN32
 
-    inline counting_sem::~counting_sem( )
-        { CloseHandle( the_sem ); }
+    inline counting_sem::~counting_sem()
+    {
+        CloseHandle(the_sem);
+    }
 
-    inline void counting_sem::up( )
-        { ReleaseSemaphore( the_sem, 1, 0 ); }
+    inline void counting_sem::up()
+    {
+        ReleaseSemaphore(the_sem, 1, 0);
+    }
 
-    inline void counting_sem::down( )
-        { WaitForSingleObject( the_sem, INFINITE ); }
+    inline void counting_sem::down()
+    {
+        WaitForSingleObject(the_sem, INFINITE);
+    }
 
-    #endif
+#endif
 
-}
+} // namespace spica
 
 #endif

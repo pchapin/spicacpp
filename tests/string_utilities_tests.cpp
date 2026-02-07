@@ -3,15 +3,15 @@
  *  \author  Peter Chapin <spicacality@kelseymountain.org>
  */
 
-#include <iostream>
 #include "../string_utilities.hpp"
+#include <iostream>
 
-int string_utilities_tests( )
+int string_utilities_tests()
 {
-  std::string result;
-  std::string search = "aabab";
+    std::string result;
+    std::string search = "aabab";
 
-  spica::create_long_string( result, search, 1024*1024, 2, true );
-  spica::display_partial_matches( result, search );
-  return 0;
+    spica::create_long_string(result, search, 1024 * 1024, 2, true);
+    spica::display_partial_matches(result, search);
+    return 0;
 }

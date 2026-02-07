@@ -32,12 +32,11 @@ namespace spica {
     namespace Windows {
 
         class RegistryKey {
-        private:
-            HKEY  key_handle; // Holds the handle to the key.
-            bool  error;      // =true if we couldn't create (or open) the key.
+          private:
+            HKEY key_handle; // Holds the handle to the key.
+            bool error;      // =true if we couldn't create (or open) the key.
 
-        public:
-            
+          public:
             /*!
              * Open or create the specified registry key. This function tries to set as many
              * things as possible to default values in order to make life simple for the caller.
@@ -45,12 +44,12 @@ namespace spica {
              * \param top_level_key Either HKEY_CURRENT_USER or HKEY_LOCAL_MACHINE.
              * \param key_name The path, relative to the top level, to the key of interest.
              */
-            RegistryKey( HKEY top_level_key, const char *key_name ) noexcept;
-            
+            RegistryKey(HKEY top_level_key, const char* key_name) noexcept;
+
             /*!
              * Close the key if it was opened successfully.
              */
-           ~RegistryKey( );
+            ~RegistryKey();
 
             /*!
              * Add the (name, value) pair to the key. This function only allows string values.
@@ -58,8 +57,8 @@ namespace spica {
              * \param name The name of the value.
              * \param value The value of the value.
              */
-            void set_value( const char *name, const std::string &value );
-            
+            void set_value(const char* name, const std::string& value);
+
             /*!
              * Retrieve the value associated with the given name. This function only retrieves
              * string values.
@@ -68,7 +67,7 @@ namespace spica {
              * \param value A reference to a std::string to receive the value of the value.
              * \return true if successful; false otherwise.
              */
-            bool get_value( const char *name, std::string &value );
+            bool get_value(const char* name, std::string& value);
 
             /*!
              * Add the (name, value) pair to the key. This function only allows DWORD values.
@@ -76,7 +75,7 @@ namespace spica {
              * \param name The name of the value.
              * \param value The value of the value.
              */
-            void set_value( const char *name, DWORD  value );
+            void set_value(const char* name, DWORD value);
 
             /*!
              * Retrieve the value associated with the given name. This function only retrieves
@@ -86,9 +85,9 @@ namespace spica {
              * \param value A reference to a DWORD to receive the value of the value.
              * \return true if successful; false otherwise.
              */
-            bool get_value( const char *name, DWORD &value );
+            bool get_value(const char* name, DWORD& value);
         };
-    }
-}
+    } // namespace Windows
+} // namespace spica
 
 #endif

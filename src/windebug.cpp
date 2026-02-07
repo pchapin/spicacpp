@@ -8,7 +8,7 @@
  * construction (or destruction) of non-local static objects in other modules, they might fail
  * because they might not be constructed yet. This is less than ideal since it would be
  * desirable to display debugging information for the constructors of non-local static objects.
- * Currently that can't be done reliably.
+ * Currently, that can't be done reliably.
  */
 
 #include <algorithm>
@@ -22,13 +22,13 @@
 #undef max
 #undef min
 
-#include <spicacpp/windebug.hpp>
 #include "windebug.rh"
+#include <spicacpp/windebug.hpp>
 #include <spicacpp/winexcept.hpp>
 
 #undef Tracer
-  // Remove this macro so that we can see the function declaration normally. That is necessary
-  // so that we can write the definition below!
+// Remove this macro so that we can see the function declaration normally. That is necessary
+// so that we can write the definition below!
 
 namespace spica {
     namespace Windows {
@@ -78,7 +78,7 @@ namespace spica {
         // program exits.
         //
         static std::ofstream log_file;
-        
+
         // =true when debug messages are being logged to a file.
         static bool logging = false;
 
@@ -104,17 +104,21 @@ namespace spica {
         // debug information at the same time.
         //
         static CRITICAL_SECTION lineNumber_mutex;
-        
-        class Init_DebuggingCritical {
-        private:
-            CRITICAL_SECTION *cs;
 
-        public:
-            Init_DebuggingCritical(CRITICAL_SECTION *p) : cs(p)
-            { InitializeCriticalSection(cs); }
+        class Init_DebuggingCritical {
+          private:
+            CRITICAL_SECTION* cs;
+
+          public:
+            Init_DebuggingCritical(CRITICAL_SECTION* p) : cs(p)
+            {
+                InitializeCriticalSection(cs);
+            }
 
             ~Init_DebuggingCritical()
-            { DeleteCriticalSection(cs); }
+            {
+                DeleteCriticalSection(cs);
+            }
         };
 
         // This object will insure that the debugMessages_mutex will be initialized even if no
@@ -137,14 +141,15 @@ namespace spica {
         // This function writes a line of text into the debugging window's list of text. This
         // function can be called even if the debugging window hasn't yet been created.
         //
-        static void display_debugText(const std::string &line)
+        static void display_debugText(const std::string& line)
         {
 #if defined(eMULTITHREADED)
             CriticalGrabber critical(&debugMessages_mutex);
 #endif
 
-            if (logging) log_file << line << std::endl;
-     
+            if (logging)
+                log_file << line << std::endl;
+
             // Add this line to the list.
             debug_messages.push_back(line);
 
@@ -167,28 +172,26 @@ namespace spica {
             }
         }
 
-
         //
         // register_debugWindow
         //
         // This function registers the debug window class with Windows.
         //
-        static void register_debugWindow(const char *class_name)
+        static void register_debugWindow(const char* class_name)
         {
             WNDCLASS the_class;
             static bool already_registered = false;
-            
+
             if (!already_registered) {
-                the_class.style         = CS_HREDRAW | CS_VREDRAW;
-                the_class.lpfnWndProc   = debug_callback;
-                the_class.cbClsExtra    = 0;
-                the_class.cbWndExtra    = 0;
-                the_class.hInstance     = GetModuleHandle(0);
-                the_class.hIcon         =
-                    LoadIcon(GetModuleHandle(0), MAKEINTRESOURCE(DEBUG_ICON));
-                the_class.hCursor       = LoadCursor(0, IDC_ARROW);
+                the_class.style = CS_HREDRAW | CS_VREDRAW;
+                the_class.lpfnWndProc = debug_callback;
+                the_class.cbClsExtra = 0;
+                the_class.cbWndExtra = 0;
+                the_class.hInstance = GetModuleHandle(0);
+                the_class.hIcon = LoadIcon(GetModuleHandle(0), MAKEINTRESOURCE(DEBUG_ICON));
+                the_class.hCursor = LoadCursor(0, IDC_ARROW);
                 the_class.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
-                the_class.lpszMenuName  = MAKEINTRESOURCE(DEBUG_MENU);
+                the_class.lpszMenuName = MAKEINTRESOURCE(DEBUG_MENU);
                 the_class.lpszClassName = class_name;
 
                 if (!RegisterClass(&the_class))
@@ -198,25 +201,19 @@ namespace spica {
             }
         }
 
-
         //
         // get_clientSize
         //
         // This function computes the size of the client area in character positions.
         //
-        static void get_clientSize(
-                                   HWND window_handle,
-                                   int &X_size,
-                                   int &Y_size,
-                                   int &char_width,
-                                   int &char_height
-                                   )
+        static void get_clientSize(HWND window_handle, int& X_size, int& Y_size, int& char_width,
+                                   int& char_height)
         {
-            HDC         context_handle;
-            TEXTMETRIC  text_metrics;
-            RECT        client_rectangle;
-            int         raw_X, raw_Y;
-            
+            HDC context_handle;
+            TEXTMETRIC text_metrics;
+            RECT client_rectangle;
+            int raw_X, raw_Y;
+
             // Figure out the character height so we can figure out the height of the window in
             // rows.
             context_handle = GetDC(window_handle);
@@ -224,7 +221,7 @@ namespace spica {
             // Set up the font.
             SelectObject(context_handle, GetStockObject(ANSI_FIXED_FONT));
             GetTextMetrics(context_handle, &text_metrics);
-            char_width  = text_metrics.tmAveCharWidth;
+            char_width = text_metrics.tmAveCharWidth;
             char_height = text_metrics.tmHeight + text_metrics.tmExternalLeading;
 
             ReleaseDC(window_handle, context_handle);
@@ -233,10 +230,9 @@ namespace spica {
             GetClientRect(window_handle, &client_rectangle);
             raw_X = client_rectangle.right - client_rectangle.left;
             raw_Y = client_rectangle.bottom - client_rectangle.top;
-            X_size = raw_X/char_width;
-            Y_size = raw_Y/char_height;
+            X_size = raw_X / char_width;
+            Y_size = raw_Y / char_height;
         }
-
 
         //
         // paint_function
@@ -266,26 +262,23 @@ namespace spica {
             std::string spaces(X_size + 1, ' ');
 
             // Loop over all lines in the client window.
-            int counter  = 0;
+            int counter = 0;
             while (counter < Y_size) {
                 int char_counter = 0;
 
                 // If there is text to display on this line, then do so.
                 if (V_position + counter < static_cast<int>(debug_messages.size())) {
                     char_counter = debug_messages[V_position + counter].size();
-                    if (char_counter > longest_line) longest_line = char_counter;
+                    if (char_counter > longest_line)
+                        longest_line = char_counter;
                     TextOut(painter, 0, counter * char_height,
                             debug_messages[V_position + counter].c_str(), char_counter);
                 }
 
                 // Erase the rest of this line.
                 if (X_size + 1 - char_counter > 0) {
-                    TextOut(
-                            painter,
-                            char_counter * char_width, counter * char_height,
-                            spaces.c_str(),
-                            X_size + 1 - char_counter
-                            );
+                    TextOut(painter, char_counter * char_width, counter * char_height,
+                            spaces.c_str(), X_size + 1 - char_counter);
                 }
                 counter++;
             }
@@ -294,36 +287,31 @@ namespace spica {
             SCROLLINFO scroll_info;
             memset(&scroll_info, 0, sizeof(scroll_info));
             scroll_info.cbSize = sizeof(scroll_info);
-            scroll_info.fMask  = SIF_ALL;
-            scroll_info.nMin   = 0;
-            scroll_info.nMax   = debug_messages.size() - 1;
-            scroll_info.nPage  = Y_size;
-            scroll_info.nPos   = V_position;
+            scroll_info.fMask = SIF_ALL;
+            scroll_info.nMin = 0;
+            scroll_info.nMax = debug_messages.size() - 1;
+            scroll_info.nPage = Y_size;
+            scroll_info.nPos = V_position;
             SetScrollInfo(window_handle, SB_VERT, &scroll_info, TRUE);
 
             memset(&scroll_info, 0, sizeof(scroll_info));
             scroll_info.cbSize = sizeof(scroll_info);
-            scroll_info.fMask  = SIF_ALL;
-            scroll_info.nMin   = 0;
-            scroll_info.nMax   = longest_line - 1;
-            scroll_info.nPage  = X_size;
-            scroll_info.nPos   = H_position;
+            scroll_info.fMask = SIF_ALL;
+            scroll_info.nMin = 0;
+            scroll_info.nMax = longest_line - 1;
+            scroll_info.nPage = X_size;
+            scroll_info.nPos = H_position;
             SetScrollInfo(window_handle, SB_HORZ, &scroll_info, TRUE);
-            
+
             return longest_line;
         }
-        
 
         //
         // Vscroll_function
         //
         // This function handles vertical scrolling in the debugging window.
         //
-        static void Vscroll_function(
-                                     HWND   window_handle,
-                                     WPARAM wParam,
-                                     LPARAM lParam
-                                     )
+        static void Vscroll_function(HWND window_handle, WPARAM wParam, LPARAM lParam)
         {
 #if defined(eMULTITHREADED)
             CriticalGrabber critical(&debugMessages_mutex);
@@ -333,28 +321,28 @@ namespace spica {
             case SB_LINEDOWN:
                 V_position++;
                 if (V_position > static_cast<int>(debug_messages.size()) - Y_size)
-                    V_position =
-                        std::max(0, static_cast<int>(debug_messages.size()) - Y_size);
+                    V_position = std::max(0, static_cast<int>(debug_messages.size()) - Y_size);
                 InvalidateRect(window_handle, 0, FALSE);
                 break;
 
             case SB_LINEUP:
                 V_position--;
-                if (V_position < 0) V_position = 0;
+                if (V_position < 0)
+                    V_position = 0;
                 InvalidateRect(window_handle, 0, FALSE);
                 break;
 
             case SB_PAGEDOWN:
                 V_position += Y_size;
                 if (V_position > static_cast<int>(debug_messages.size()) - Y_size)
-                    V_position =
-                        std::max(0, static_cast<int>(debug_messages.size()) - Y_size);
+                    V_position = std::max(0, static_cast<int>(debug_messages.size()) - Y_size);
                 InvalidateRect(window_handle, 0, FALSE);
                 break;
 
             case SB_PAGEUP:
                 V_position -= Y_size;
-                if (V_position < 0) V_position = 0;
+                if (V_position < 0)
+                    V_position = 0;
                 InvalidateRect(window_handle, 0, FALSE);
                 break;
 
@@ -365,18 +353,13 @@ namespace spica {
             }
         }
 
-
         //
         // Hscroll_function
         //
         // This function handles horizontal scrolling in the debugging window.
         //
-        static void Hscroll_function(
-                                     HWND   window_handle,
-                                     WPARAM wParam,
-                                     LPARAM lParam,
-                                     int    longest_line
-                                     )
+        static void Hscroll_function(HWND window_handle, WPARAM wParam, LPARAM lParam,
+                                     int longest_line)
         {
 #if defined(eMULTITHREADED)
             CriticalGrabber critical(&debugMessages_mutex);
@@ -389,10 +372,11 @@ namespace spica {
                     H_position = std::max(0, longest_line - X_size);
                 InvalidateRect(window_handle, 0, FALSE);
                 break;
-                
+
             case SB_LINEUP:
                 H_position--;
-                if (H_position < 0) H_position = 0;
+                if (H_position < 0)
+                    H_position = 0;
                 InvalidateRect(window_handle, 0, FALSE);
                 break;
 
@@ -405,7 +389,8 @@ namespace spica {
 
             case SB_PAGEUP:
                 H_position -= X_size;
-                if (H_position < 0) H_position = 0;
+                if (H_position < 0)
+                    H_position = 0;
                 InvalidateRect(window_handle, 0, FALSE);
                 break;
 
@@ -415,7 +400,6 @@ namespace spica {
                 break;
             }
         }
-
 
         //
         // size_function
@@ -437,42 +421,33 @@ namespace spica {
             //
             if (V_position + Y_size > debug_messages.size()) {
                 V_position = debug_messages.size() - Y_size;
-                if (V_position < 0) V_position = 0;
+                if (V_position < 0)
+                    V_position = 0;
             }
         }
-
 
         //--------------------------------------
         //           Tracer Functions
         //--------------------------------------
-        
+
         Tracer::Tracer(
-                       // Parameter declarations.
-                       int   trace_level,
-                       const char *trace_message,
-                       const char *file_name,
-                       int   line_number) :
+            // Parameter declarations.
+            int trace_level, const char* trace_message, const char* file_name, int line_number) :
 
             // Initializers for the members.
-            level  (trace_level),
-            message(trace_message),
-            file   (file_name),
-            line   (line_number)
+            level(trace_level), message(trace_message), file(file_name), line(line_number)
 
-            // Function body.
+        // Function body.
         {
             std::ostringstream message_text;
-            
+
             {
 #if defined(eMULTITHREADED)
                 CriticalGrabber critical(&lineNumber_mutex);
 #endif
-                
-                message_text << std::setw(4) << L_number++
-                             << " TP: (" << level << ") "
-                             << message
-                             << " FILE=" << file
-                             << " LINE=" << line;
+
+                message_text << std::setw(4) << L_number++ << " TP: (" << level << ") " << message
+                             << " FILE=" << file << " LINE=" << line;
             }
             display_debugText(message_text.str().c_str());
         }
@@ -480,7 +455,7 @@ namespace spica {
         //-------------------------------------------
         //           debugstream Functions
         //-------------------------------------------
-        
+
         void debugstream::say(int level)
         {
             std::ostringstream message_text;
@@ -489,9 +464,8 @@ namespace spica {
 #if defined(eMULTITHREADED)
                 CriticalGrabber critical(&lineNumber_mutex);
 #endif
-      
-                message_text << std::setw(4) << L_number++
-                             << "   : (" << level << ") " << str();
+
+                message_text << std::setw(4) << L_number++ << "   : (" << level << ") " << str();
             }
             display_debugText(message_text.str());
         }
@@ -511,24 +485,19 @@ namespace spica {
         void notifystream::say(HWND window_handle)
         {
             std::ostringstream message_text;
-            
+
             {
 #if defined(eMULTITHREADED)
                 CriticalGrabber critical(&lineNumber_mutex);
 #endif
-      
+
                 message_text << std::setw(4) << L_number++ << " EX: (0) " << str();
             }
             display_debugText(message_text.str());
 
             // Show the user as well and wait for a reaction.
-            MessageBox(window_handle,
-                       str().c_str(),
-                       "Exception Notification",
-                       MB_ICONEXCLAMATION
-                       );
+            MessageBox(window_handle, str().c_str(), "Exception Notification", MB_ICONEXCLAMATION);
         }
-
 
         //--------------------------------------
         //           Public Functions
@@ -550,27 +519,25 @@ namespace spica {
                 return;
             }
 
-            static const char *class_name = "spicaDebugging_Window";
-            DWORD my_style =
-                WS_OVERLAPPEDWINDOW | WS_VSCROLL | WS_HSCROLL | WS_CLIPCHILDREN;
+            static const char* class_name = "spicaDebugging_Window";
+            DWORD my_style = WS_OVERLAPPEDWINDOW | WS_VSCROLL | WS_HSCROLL | WS_CLIPCHILDREN;
 
             // Register the debug window class with windows.
             register_debugWindow(class_name);
-            
+
             // Create a specific instance of the window class named by class_name.
-            handle = CreateWindow(
-                class_name,           // From which class should this window be?
-                "Debugging",          // Text which appears on title bar and under icon.
-                my_style,             // Window style.
-                CW_USEDEFAULT,        // Horizontal position of window on screen.
-                CW_USEDEFAULT,        // Vertical position of window on screen.
-                CW_USEDEFAULT,        // Width of window.
-                CW_USEDEFAULT,        // Height of window.
-                0,                    // Handle of parent window.
-                0,                    // Handle of menu or child window identifier.
-                GetModuleHandle(0),   // Handle of creating program.
-                0                     // Address of "window creation" data.
-                                  );
+            handle = CreateWindow(class_name,    // From which class should this window be?
+                                  "Debugging",   // Text which appears on title bar and under icon.
+                                  my_style,      // Window style.
+                                  CW_USEDEFAULT, // Horizontal position of window on screen.
+                                  CW_USEDEFAULT, // Vertical position of window on screen.
+                                  CW_USEDEFAULT, // Width of window.
+                                  CW_USEDEFAULT, // Height of window.
+                                  0,             // Handle of parent window.
+                                  0,             // Handle of menu or child window identifier.
+                                  GetModuleHandle(0), // Handle of creating program.
+                                  0                   // Address of "window creation" data.
+            );
 
             if (handle == 0)
                 throw APIError("Unable to create debugging window");
@@ -587,7 +554,6 @@ namespace spica {
             window_exists = true;
         }
 
-
         //----------------------------------------
         //           Callback Functions
         //----------------------------------------
@@ -597,16 +563,12 @@ namespace spica {
         //
         // This function handles all messages that are sent to the debug window.
         //
-        LRESULT CALLBACK debug_callback(
-                                        HWND   window_handle,
-                                        UINT   message,
-                                        WPARAM wParam,
-                                        LPARAM lParam
-                                        )
+        LRESULT CALLBACK debug_callback(HWND window_handle, UINT message, WPARAM wParam,
+                                        LPARAM lParam)
         {
             static int longest_line = 0;
             // The longest line currently in the window. This is updated for each WM_PAINT.
-    
+
             try {
                 switch (message) {
 
@@ -633,18 +595,20 @@ namespace spica {
                     // The user pressed a key.
                 case WM_KEYDOWN:
                     switch (wParam) {
-                    case VK_HOME : break;
-                    case VK_END  : break;
+                    case VK_HOME:
+                        break;
+                    case VK_END:
+                        break;
                     case VK_PRIOR:
                         SendMessage(handle, WM_VSCROLL, SB_PAGEUP, 0L);
                         break;
-                    case VK_NEXT :
+                    case VK_NEXT:
                         SendMessage(handle, WM_VSCROLL, SB_PAGEDOWN, 0L);
                         break;
-                    case VK_UP   :
+                    case VK_UP:
                         SendMessage(handle, WM_VSCROLL, SB_LINEUP, 0L);
                         break;
-                    case VK_DOWN :
+                    case VK_DOWN:
                         SendMessage(handle, WM_VSCROLL, SB_LINEDOWN, 0L);
                         break;
                     }
@@ -656,20 +620,20 @@ namespace spica {
 
                         // Save the current list of debug messages to a file.
                     case DEBUG_SAVEBUFFER: {
-            
-                        char file_name[260+1];
+
+                        char file_name[260 + 1];
                         OPENFILENAME log_info;
                         memset(&log_info, 0, sizeof(log_info));
-                        log_info.lStructSize  = sizeof(log_info);
-                        log_info.hwndOwner    = window_handle;
-                        log_info.lpstrFilter  = "Debug Log File(*.dbg)\0*.dbg\0";
+                        log_info.lStructSize = sizeof(log_info);
+                        log_info.hwndOwner = window_handle;
+                        log_info.lpstrFilter = "Debug Log File(*.dbg)\0*.dbg\0";
                         log_info.nFilterIndex = 1;
-                        log_info.lpstrFile    = file_name;
+                        log_info.lpstrFile = file_name;
                         file_name[0] = '\0';
-                        log_info.nMaxFile     = 261;
-                        log_info.lpstrTitle   = "Specify Buffer File";
-                        log_info.Flags        = OFN_LONGNAMES | OFN_PATHMUSTEXIST;
-                        log_info.lpstrDefExt  = "dbg";
+                        log_info.nMaxFile = 261;
+                        log_info.lpstrTitle = "Specify Buffer File";
+                        log_info.Flags = OFN_LONGNAMES | OFN_PATHMUSTEXIST;
+                        log_info.lpstrDefExt = "dbg";
 
                         // We are ready to get the name of the file. (Finally!)
                         if (GetSaveFileName(&log_info) == TRUE) {
@@ -677,15 +641,13 @@ namespace spica {
                             // Open the file and send all the current debug text to it.
                             std::ofstream output_file(file_name);
                             if (!output_file)
-                                MessageBox(window_handle,
-                                           "Unable to open file!", "Debug Error",
-                                           MB_ICONEXCLAMATION
-                                           );
+                                MessageBox(window_handle, "Unable to open file!", "Debug Error",
+                                           MB_ICONEXCLAMATION);
                             else {
 #if defined(eMULTITHREADED)
                                 CriticalGrabber critical(&debugMessages_mutex);
 #endif
-                  
+
                                 std::deque<std::string>::iterator p(debug_messages.begin());
 
                                 while (p != debug_messages.end()) {
@@ -694,9 +656,8 @@ namespace spica {
                                 }
                             }
                         }
-                    }
-                        break;
-                        
+                    } break;
+
                         // Specify the name of a file for logging debug messages.
                     case DEBUG_STARTSAVE: {
 
@@ -704,33 +665,30 @@ namespace spica {
                         log_file.close();
                         logging = false;
 
-                        char file_name[260+1];
+                        char file_name[260 + 1];
                         OPENFILENAME log_info;
                         memset(&log_info, 0, sizeof(log_info));
-                        log_info.lStructSize  = sizeof(log_info);
-                        log_info.hwndOwner    = window_handle;
-                        log_info.lpstrFilter  = "Debug Log File(*.dbg)\0*.dbg\0";
+                        log_info.lStructSize = sizeof(log_info);
+                        log_info.hwndOwner = window_handle;
+                        log_info.lpstrFilter = "Debug Log File(*.dbg)\0*.dbg\0";
                         log_info.nFilterIndex = 1;
-                        log_info.lpstrFile    = file_name;
+                        log_info.lpstrFile = file_name;
                         file_name[0] = '\0';
-                        log_info.nMaxFile     = 261;
-                        log_info.lpstrTitle   = "Specify Log File";
-                        log_info.Flags        = OFN_LONGNAMES | OFN_PATHMUSTEXIST;
-                        log_info.lpstrDefExt  = "dbg";
+                        log_info.nMaxFile = 261;
+                        log_info.lpstrTitle = "Specify Log File";
+                        log_info.Flags = OFN_LONGNAMES | OFN_PATHMUSTEXIST;
+                        log_info.lpstrDefExt = "dbg";
 
                         // We are ready to get the name of the file. (Finally!)
                         if (GetSaveFileName(&log_info) == TRUE) {
                             log_file.open(file_name);
                             if (!log_file)
-                                MessageBox(window_handle,
-                                           "Unable to open file!", "Debug Error",
-                                           MB_ICONEXCLAMATION
-                                           );
+                                MessageBox(window_handle, "Unable to open file!", "Debug Error",
+                                           MB_ICONEXCLAMATION);
                             else
                                 logging = true;
                         }
-                    }
-                        break;
+                    } break;
 
                         // Stop logging debug messages.
                     case DEBUG_STOPSAVE:
@@ -745,8 +703,7 @@ namespace spica {
                     case DEBUG_EXIT:
                     case DEBUG_HELPTOPICS:
                     case DEBUG_ABOUT:
-                        MessageBox(window_handle,
-                                   "Not implemented", "Sorry", MB_ICONEXCLAMATION);
+                        MessageBox(window_handle, "Not implemented", "Sorry", MB_ICONEXCLAMATION);
                         break;
                     }
                     break;
@@ -770,8 +727,7 @@ namespace spica {
             }
             catch (APIError We) {
                 notifystream message;
-                message << "Unexpected API error in debugging window\r"
-                        << We.what() << "\r"
+                message << "Unexpected API error in debugging window\r" << We.what() << "\r"
                         << "Error code = " << We.error_code();
                 message.say(window_handle);
                 return 0;
@@ -782,10 +738,10 @@ namespace spica {
                 message.say(window_handle);
                 return 0;
             }
-            
+
             // Pass messages we don't care about to Windows for default handling.
             return DefWindowProc(window_handle, message, wParam, lParam);
         }
-        
-    } // End of namespace scopes.
-}
+
+    } // namespace Windows
+} // namespace spica

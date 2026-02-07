@@ -24,15 +24,15 @@ const int str_switch = 3;
 
 const int bad_switch = 1; // Error level for bad switch found.
 
-struct SwitchInfo{
-    char   name;               // Name of the command line switch.
-    int    type;               // Switch type (see above).
-    int   *value;              // Pointer to variable.
-    const char **pvalue;       // Pointer to variable for str_switch.
-    const char  *help_message; // Pointer to help message.
+struct SwitchInfo {
+    char name;                // Name of the command line switch.
+    int type;                 // Switch type (see above).
+    int* value;               // Pointer to variable.
+    const char** pvalue;      // Pointer to variable for str_switch.
+    const char* help_message; // Pointer to help message.
 };
 
-extern void print_usage( SwitchInfo *, int, std::ostream & );
-extern int  get_switchs( int, char **, SwitchInfo *, int );
+extern void print_usage(SwitchInfo*, int, std::ostream&);
+extern int get_switchs(int, char**, SwitchInfo*, int);
 
 #endif

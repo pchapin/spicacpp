@@ -19,8 +19,7 @@
 #include <spicacpp/BinomialHeap.hpp>
 #include <spicacpp/BoundedList.hpp>
 #include <spicacpp/Graph.hpp>
-#include <spicacpp/sorters.hpp>
 #include <spicacpp/VeryLong.hpp>
+#include <spicacpp/sorters.hpp>
 
 #endif
-

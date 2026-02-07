@@ -53,16 +53,15 @@ namespace {
     // Actually, to insure consistency with the rest of the iostreams library, this issue should
     // be handled with the istream manipulator 'eatwhite'.
     //
-    int is_white( char ch )
+    int is_white(char ch)
     {
-        if( ch == ' '  || ch == '\t' || ch == '\n' ||
-            ch == '\f' || ch == '\r' || ch == '\v'    )
+        if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\f' || ch == '\r' || ch == '\v')
             return 1;
 
         return 0;
     }
 
-}
+} // namespace
 
 namespace spica {
 
@@ -71,12 +70,11 @@ namespace spica {
     //---------------------------------
 
     // The following static constants are public. They exist as a convenience to the user.
-    const VeryLong VeryLong::negative_one( -1L );
-    const VeryLong VeryLong::zero( 0L );
-    const VeryLong VeryLong::one(  1L );
-    const VeryLong VeryLong::two(  2L );
-    const VeryLong VeryLong::ten( 10L );
-
+    const VeryLong VeryLong::negative_one(-1L);
+    const VeryLong VeryLong::zero(0L);
+    const VeryLong VeryLong::one(1L);
+    const VeryLong VeryLong::two(2L);
+    const VeryLong VeryLong::ten(10L);
 
     //-------------------------------------
     //           Private Methods
@@ -88,29 +86,32 @@ namespace spica {
     // This method does the grunt work of initializing a VeryLong from a string of digit
     // characters.
     //
-    void VeryLong::initialize( const char *digit_string )
+    void VeryLong::initialize(const char* digit_string)
     {
         int final_sign = +1;
 
-        // First order of business is to make *this a zero. If we find letters in the input string
-        // right away, then we will treat that as a zero input.
+        // The first order of business is to make *this a zero. If we find letters in the input
+        // string right away, then we will treat that as a zero input.
         //
-        digits.resize( 0 );
+        digits.resize(0);
         sign_flag = +1;
 
         // Skip over leading white space.
-        while( *digit_string && is_white( *digit_string ) ) digit_string++;
-        if( *digit_string == '\0' ) return;
+        while (*digit_string && is_white(*digit_string))
+            digit_string++;
+        if (*digit_string == '\0')
+            return;
 
         // If we came to a +/- sign, handle it.
-        if( *digit_string == '+' || *digit_string == '-' ) {
-            final_sign = ( *digit_string == '+' ) ? +1 : -1;
+        if (*digit_string == '+' || *digit_string == '-') {
+            final_sign = (*digit_string == '+') ? +1 : -1;
             digit_string++;
-            while( *digit_string && is_white( *digit_string ) ) digit_string++;
+            while (*digit_string && is_white(*digit_string))
+                digit_string++;
         }
 
         // Now process characters as long as we keep getting digits.
-        while( *digit_string && isdigit( *digit_string ) ) {
+        while (*digit_string && isdigit(*digit_string)) {
 
             *this *= ten;
             *this += *digit_string - '0';
@@ -121,17 +122,16 @@ namespace spica {
 
         // Now apply the proper sign (I couldn't do this earlier, because negative values would
         // get lost in the first multiplication (when *this is zero).
-        // 
+        //
         sign_flag = final_sign;
 
         // This handles the case where we got a '-' on the input, but then encountered an
         // end-of-string before we saw any digits.
         //
-        if( digits.empty( ) ) {
+        if (digits.empty()) {
             sign_flag = +1;
         }
     }
-
 
     //
     // void VeryLong::trim_zeros( )
@@ -139,29 +139,32 @@ namespace spica {
     // This method removes any leading zero digits from the VeryLong object's internal
     // representation. It correctly handles the case when the number is all zero digits.
     //
-    void VeryLong::trim_zeros( )
+    void VeryLong::trim_zeros()
     {
         // If there are no digits, we are done.
-        if( digits.empty( ) ) return;
+        if (digits.empty())
+            return;
 
         // Count the number of leading zeros. Note the careful handling of the condition. The type
         // size_type is unsigned so i >= 0 won't do.
         //
         size_type leading_zeros = 0;
         size_type i;
-        for( i = digits.size( ) - 1; i > 0; i-- ) {
-            if( digits[i] != 0 ) break;
+        for (i = digits.size() - 1; i > 0; i--) {
+            if (digits[i] != 0)
+                break;
             leading_zeros++;
         }
-        if( i == 0 && digits[0] == 0 ) leading_zeros++;
+        if (i == 0 && digits[0] == 0)
+            leading_zeros++;
 
         // Now resize the array of digits.
-        digits.resize( digits.size( ) - leading_zeros );
+        digits.resize(digits.size() - leading_zeros);
 
         // If this number is zero, be sure that it is positive zero.
-        if( digits.empty( ) ) sign_flag = +1;
+        if (digits.empty())
+            sign_flag = +1;
     }
-
 
     //
     // void VeryLong::shift_left( size_type )
@@ -169,27 +172,25 @@ namespace spica {
     // This method shifts the long digits in the VeryLong to the left by the indicated number of
     // digit positions. It will shift zero correctly (creating a number with leading zeros).
     //
-    void VeryLong::shift_left( size_type count )
+    void VeryLong::shift_left(size_type count)
     {
         // Resize the number to allow for the new digits.
-        size_type old_size = digits.size( );
-        digits.resize( digits.size( ) + count );
+        size_type old_size = digits.size();
+        digits.resize(digits.size() + count);
 
         // Loop over the existing digits, moving them.
         size_type index;
         size_type loop_counter;
-        for( loop_counter = 0, index = old_size - 1;
-             loop_counter < old_size;
-             loop_counter++, index-- ) {
+        for (loop_counter = 0, index = old_size - 1; loop_counter < old_size;
+             loop_counter++, index--) {
             digits[index + count] = digits[index];
         }
 
         // Fill in the "new" places with zeros.
-        for( index = 0; index < count; index++ ) {
+        for (index = 0; index < count; index++) {
             digits[index] = 0;
         }
     }
-
 
     //
     // bool VeryLong::smaller_than( const VeryLong & ) const
@@ -197,26 +198,28 @@ namespace spica {
     // This method returns true if *this has a smaller absolute magnitude than the given object.
     // It is used in the comparison function and to order the operands of subtraction.
     //
-    bool VeryLong::smaller_than( const VeryLong &other ) const
+    bool VeryLong::smaller_than(const VeryLong& other) const
     {
         // check the number of digits first.
-        if( other.digits.size( ) > digits.size( ) ) return true;
-        if( other.digits.size( ) < digits.size( ) ) return false;
+        if (other.digits.size() > digits.size())
+            return true;
+        if (other.digits.size() < digits.size())
+            return false;
 
         // They have the same number of digits.
         size_type index;
         size_type loop_counter;
-        for( loop_counter = 0, index = digits.size( ) - 1;
-             loop_counter < digits.size( );
-             loop_counter++, index-- ) {
-            if( other.digits[index] > digits[index] ) return true;
-            if( other.digits[index] < digits[index] ) return false;
+        for (loop_counter = 0, index = digits.size() - 1; loop_counter < digits.size();
+             loop_counter++, index--) {
+            if (other.digits[index] > digits[index])
+                return true;
+            if (other.digits[index] < digits[index])
+                return false;
         }
 
         // They are equal.
         return false;
     }
-
 
     //-------------------------------------
     //           Friend Functions
@@ -229,7 +232,7 @@ namespace spica {
     // space. It then processes all the digits it encounters. It leaves the first non-digit it
     // finds on the input stream.
     //
-    istream &operator>>( istream &input, VeryLong &number )
+    istream& operator>>(istream& input, VeryLong& number)
     {
         // Initialize to something sensible in case the stream is at EOF right away.
         char ch = ' ';
@@ -237,32 +240,35 @@ namespace spica {
         string digit_string;
 
         // Skip over leading white space.
-        while( input.get( ch ) && is_white( ch ) ) ;
-        if( !input ) return input;
+        while (input.get(ch) && is_white(ch))
+            ;
+        if (!input)
+            return input;
 
         // If we came to a +/- sign, handle it.
-        if( ch == '+' || ch == '-' ) {
-            digit_string.push_back( ch );
-            while( input.get( ch ) && is_white( ch ) ) ;
+        if (ch == '+' || ch == '-') {
+            digit_string.push_back(ch);
+            while (input.get(ch) && is_white(ch))
+                ;
         }
 
         // Now process characters as long as we keep getting digits.
-        while( input && isdigit( ch ) ) {
-            digit_string.push_back( ch );
+        while (input && isdigit(ch)) {
+            digit_string.push_back(ch);
 
             // Get the next character.
-            input.get( ch );
+            input.get(ch);
         }
 
         // We got something that wasn't a digit. Put it back.
-        if( input ) input.putback( ch );
+        if (input)
+            input.putback(ch);
 
         // Now install this digit string into number.
-        number.initialize( digit_string.c_str( ) );
+        number.initialize(digit_string.c_str());
 
         return input;
     }
-
 
     //
     // ostream &operator<<( ostream &, const VeryLong & )
@@ -271,21 +277,21 @@ namespace spica {
     // Really to do this right, I should pay attention to the formatting flags inside the given
     // ostream and honor them. This version does not do this.
     //
-    ostream &operator<<( ostream &output, const VeryLong &number )
+    ostream& operator<<(ostream& output, const VeryLong& number)
     {
         // Handle zero as a special case.
-        if( number.digits.empty( ) ) {
+        if (number.digits.empty()) {
             output << '0';
         }
 
         // Non-zero numbers get ugly.
         else {
-            VeryLong          current( number );
-            string             result;
+            VeryLong current(number);
+            string result;
             VeryLong::vldiv_t division_results;
 
             // If the number is negative, deal with that.
-            if( current.sign_flag < 0 ) {
+            if (current.sign_flag < 0) {
                 output << '-';
                 current.sign_flag = +1;
             }
@@ -293,15 +299,15 @@ namespace spica {
             // Keep dividing by 10 until there is no number left. Pack the remainders into a
             // string. The least significant digit is on the left side of the string.
             //
-            while( current != VeryLong::zero ) {
-                VeryLong::vldiv( current, VeryLong::ten, &division_results );
+            while (current != VeryLong::zero) {
+                VeryLong::vldiv(current, VeryLong::ten, &division_results);
 
                 // Handle the case of a zero remainder in a special way.
-                if( division_results.rem.digits.empty( ) ) {
-                    result.push_back( '0' );
+                if (division_results.rem.digits.empty()) {
+                    result.push_back('0');
                 }
                 else {
-                    result.push_back( static_cast<char>( division_results.rem.digits[0] + '0' ) );
+                    result.push_back(static_cast<char>(division_results.rem.digits[0] + '0'));
                 }
                 current = division_results.quot;
             }
@@ -309,12 +315,11 @@ namespace spica {
             // Reverse the string (so the least significant digit is to the right) and output the
             // result.
             //
-            reverse( result.begin( ), result.end( ) );
+            reverse(result.begin(), result.end());
             output << result;
         }
         return output;
     }
-
 
     //
     // bool operator==( const VeryLong &, const VeryLong & )
@@ -322,26 +327,28 @@ namespace spica {
     // This function returns true if both operands have the same value. Otherwise it returns
     // false.
     //
-    bool operator==( const VeryLong &left, const VeryLong &right )
+    bool operator==(const VeryLong& left, const VeryLong& right)
     {
         // If they have different signs, they are not equal (no +/- zero).
-        if( left.sign_flag != right.sign_flag ) return false;
+        if (left.sign_flag != right.sign_flag)
+            return false;
 
         // If they have a different number of digits they are not equal (no leading zeros).
         //
-        if( left.digits.size( ) != right.digits.size( ) ) return false;
+        if (left.digits.size() != right.digits.size())
+            return false;
 
         // They have the same number of digits. Compare them. If both numbers are zero, the loop
         // below will work out.
         //
-        for( VeryLong::size_type i = 0; i < left.digits.size( ); i++ ) {
-            if( left.digits[i] != right.digits[i] ) return false;
+        for (VeryLong::size_type i = 0; i < left.digits.size(); i++) {
+            if (left.digits[i] != right.digits[i])
+                return false;
         }
 
         // If we get here, the numbers were equal.
         return true;
     }
-
 
     //
     // bool operator<( const VeryLong &, const VeryLong & )
@@ -349,23 +356,26 @@ namespace spica {
     // The following function returns true if the left operand is less than the right operand.
     // Otherwise it returns false.
     //
-    bool operator<( const VeryLong &left, const VeryLong &right )
+    bool operator<(const VeryLong& left, const VeryLong& right)
     {
         // Deal with sign flags.
-        if( left.sign_flag < 0 && right.sign_flag > 0 ) return true;
-        if( left.sign_flag > 0 && right.sign_flag < 0 ) return false;
+        if (left.sign_flag < 0 && right.sign_flag > 0)
+            return true;
+        if (left.sign_flag > 0 && right.sign_flag < 0)
+            return false;
 
         // The sign flags are the same.
-        if( left.sign_flag < 0 ) {
-            if( right.smaller_than( left ) ) return true;
+        if (left.sign_flag < 0) {
+            if (right.smaller_than(left))
+                return true;
         }
         else {
-            if( left.smaller_than( right ) ) return true;
+            if (left.smaller_than(right))
+                return true;
         }
 
         return false;
     }
-
 
     //
     // void swap( VeryLong &, VeryLong & )
@@ -373,12 +383,11 @@ namespace spica {
     // This swap function makes use of vector's fast swap to implement a fast, O(1), swap for
     // VeryLong.
     //
-    void swap( VeryLong &left, VeryLong &right )
+    void swap(VeryLong& left, VeryLong& right)
     {
-        std::swap( left.digits, right.digits );
-        std::swap( left.sign_flag, right.sign_flag );
+        std::swap(left.digits, right.digits);
+        std::swap(left.sign_flag, right.sign_flag);
     }
-
 
     //------------------------------------
     //           Public Methods
@@ -390,33 +399,31 @@ namespace spica {
     // This method sets the number to zero. The digits vector will be constructed as an empty
     // vector by default. This is the correct way to represent zero.
     //
-    VeryLong::VeryLong( )
+    VeryLong::VeryLong()
     {
         sign_flag = +1;
     }
-
 
     //
     // VeryLong::VeryLong( long )
     //
     // This method initializes a VeryLong from an ordinary integer. It is reasonably efficient.
     //
-    VeryLong::VeryLong( long number )
+    VeryLong::VeryLong(long number)
     {
         // Figure out the sign flag and then "normalize" number to a positive value.
         sign_flag = +1;
-        if( number < 0 ) {
+        if (number < 0) {
             sign_flag = -1;
             number = -number;
         }
 
         // Compute the digits.
-        while( number != 0 ) {
-            digits.push_back( static_cast< storage_type >( number & DIGIT_MASK ) );
+        while (number != 0) {
+            digits.push_back(static_cast<storage_type>(number & DIGIT_MASK));
             number >>= BITS_PER_LONGDIGIT;
         }
     }
-
 
     //
     // long VeryLong::to_long( ) const
@@ -424,14 +431,14 @@ namespace spica {
     // Conversions have to be explicit to prevent surprises. This is especially important
     // considering that this method can loose significant digits.
     //
-    long VeryLong::to_long( ) const
+    long VeryLong::to_long() const
     {
         // Handle the number zero as a special case.
-        if( digits.empty( ) ) return 0;
+        if (digits.empty())
+            return 0;
 
         return sign_flag * digits[0];
     }
-
 
     //
     // VeryLong::size_type VeryLong::number_bits( ) const
@@ -439,23 +446,23 @@ namespace spica {
     // The following method returns the number of bits in the number. If the number has a value of
     // zero, it has zero bits.
     //
-    VeryLong::size_type VeryLong::number_bits( ) const
+    VeryLong::size_type VeryLong::number_bits() const
     {
         // Handle the number zero as a special case.
-        if( digits.empty( ) ) return 0;
-        
-        // Compute the number of bits.
-        size_type count = BITS_PER_LONGDIGIT * ( digits.size( ) - 1 );
-        storage_type last_digit = digits[digits.size( ) - 1];
+        if (digits.empty())
+            return 0;
 
-        while( last_digit != 0 ) {
+        // Compute the number of bits.
+        size_type count = BITS_PER_LONGDIGIT * (digits.size() - 1);
+        storage_type last_digit = digits[digits.size() - 1];
+
+        while (last_digit != 0) {
             last_digit >>= 1;
             count++;
         }
 
         return count;
     }
-
 
     //
     // int VeryLong::get_bit( size_type ) const
@@ -464,16 +471,16 @@ namespace spica {
     // bit is bit 0. This method returns either 1 or 0 as appropriate. If the bit does not
     // exist, it returns zero. The sign of the VeryLong is not considered.
     //
-    int VeryLong::get_bit( size_type bit_index ) const
+    int VeryLong::get_bit(size_type bit_index) const
     {
         size_type digit_number = bit_index / BITS_PER_LONGDIGIT;
-        size_type bit_number   = bit_index % BITS_PER_LONGDIGIT;
+        size_type bit_number = bit_index % BITS_PER_LONGDIGIT;
 
-        if( digit_number >= digits.size( ) ) return 0;
+        if (digit_number >= digits.size())
+            return 0;
         storage_type digit = digits[digit_number];
-        return ( ( digit & ( static_cast< storage_type >( 0x1 ) << bit_number ) ) ? 1 : 0 );
+        return ((digit & (static_cast<storage_type>(0x1) << bit_number)) ? 1 : 0);
     }
-
 
     //
     // void VeryLong::put_bit(size_type, int)
@@ -481,44 +488,43 @@ namespace spica {
     // This method installs a new bit value at the specified index. The least significant bit is
     // bit 0. If the bit does not exist, the number is extended (with zeros) until it does.
     //
-    void VeryLong::put_bit( size_type bit_index, int new_value )
+    void VeryLong::put_bit(size_type bit_index, int new_value)
     {
         size_type digit_number = bit_index / BITS_PER_LONGDIGIT;
-        size_type bit_number   = bit_index % BITS_PER_LONGDIGIT;
+        size_type bit_number = bit_index % BITS_PER_LONGDIGIT;
 
         // If the number isn't big enough, extend it.
-        if( digit_number >= digits.size( ) ) {
-            size_type old_size = digits.size( );
-            digits.resize( digit_number + 1 );
-            for( size_type i = old_size; i < digits.size(); i++ ) {
+        if (digit_number >= digits.size()) {
+            size_type old_size = digits.size();
+            digits.resize(digit_number + 1);
+            for (size_type i = old_size; i < digits.size(); i++) {
                 digits[i] = 0;
             }
         }
 
         // Now perform the necessary manipulations.
-        if( new_value != 0 ) {
-            digits[digit_number] |= static_cast< storage_type >(  ( 0x1 << bit_number ) );
+        if (new_value != 0) {
+            digits[digit_number] |= static_cast<storage_type>((0x1 << bit_number));
         }
         else {
-            digits[digit_number] &= static_cast< storage_type >( ~( 0x1 << bit_number ) );
-            trim_zeros( );
+            digits[digit_number] &= static_cast<storage_type>(~(0x1 << bit_number));
+            trim_zeros();
         }
     }
 
-    
     //
     // VeryLong VeryLong::operator-( ) const
     //
     // This method just returns a VeryLong with the opposite sign as the implicit object. It has
     // to be careful about zero since zero is always positive.
     //
-    VeryLong VeryLong::operator-( ) const
+    VeryLong VeryLong::operator-() const
     {
         VeryLong result = *this;
-        if( !result.digits.empty( ) ) result.sign_flag = -result.sign_flag;
+        if (!result.digits.empty())
+            result.sign_flag = -result.sign_flag;
         return result;
     }
-
 
     //
     // VeryLong &VeryLong::operator++( );
@@ -531,32 +537,31 @@ namespace spica {
     // done with the right semantics so they will be satisfactory for now.
     //
 
-    VeryLong &VeryLong::operator++( )
+    VeryLong& VeryLong::operator++()
     {
         *this += 1;
         return *this;
     }
 
-    VeryLong &VeryLong::operator--( )
+    VeryLong& VeryLong::operator--()
     {
         *this -= 1;
         return *this;
     }
 
-    VeryLong VeryLong::operator++( int )
+    VeryLong VeryLong::operator++(int)
     {
         VeryLong old = *this;
         *this += 1;
         return old;
     }
 
-    VeryLong VeryLong::operator--( int )
+    VeryLong VeryLong::operator--(int)
     {
         VeryLong old = *this;
         *this -= 1;
         return old;
     }
-
 
     //
     // void VeryLong::operator+=( const VeryLong & )
@@ -564,44 +569,49 @@ namespace spica {
     // Because of the possibility of positive and negative numbers, we have to deal with both the
     // addition and subtraction operations here.
     //
-    void VeryLong::operator+=( const VeryLong &other )
+    void VeryLong::operator+=(const VeryLong& other)
     {
         // Let's dispense with the easy stuff first.
-        if( other.digits.empty(  )) return;
-        if( digits.empty( ) ) {
+        if (other.digits.empty())
+            return;
+        if (digits.empty()) {
             *this = other;
             return;
         }
 
         // Neither number is zero...
-        vector< storage_type > result;
+        vector<storage_type> result;
 
         // Which number is longer? Figure out the maximum size.
-        size_type max_size = digits.size( );
-        if( other.digits.size( ) > max_size ) max_size = other.digits.size( );
+        size_type max_size = digits.size();
+        if (other.digits.size() > max_size)
+            max_size = other.digits.size();
 
         // Are we adding or subtracting? If the sign flags are the same we just add the
         // magnitudes.
         //
-        if( sign_flag == other.sign_flag ) {
+        if (sign_flag == other.sign_flag) {
 
             // Now scan down the numbers adding corresponding digits as we go.
             compute_type carry = 0;
-            for( size_type i = 0; i < max_size; i++ ) {
+            for (size_type i = 0; i < max_size; i++) {
                 compute_type sum = carry;
 
                 // Make sure each number has a digit before adding it in. If no digit, use zero.
-                if( i < digits.size( ) ) sum += digits[i];
-                if( i < other.digits.size( ) ) sum += other.digits[i];
+                if (i < digits.size())
+                    sum += digits[i];
+                if (i < other.digits.size())
+                    sum += other.digits[i];
 
                 // Break the sum of two digits into a new digit and a carry.
-                result.push_back( static_cast< storage_type >( sum & DIGIT_MASK ) );
+                result.push_back(static_cast<storage_type>(sum & DIGIT_MASK));
                 carry = sum >> BITS_PER_LONGDIGIT;
             }
-            if( carry ) result.push_back( static_cast< storage_type >( carry ) );
+            if (carry)
+                result.push_back(static_cast<storage_type>(carry));
 
             // Put the computed sum where we want it.
-            swap( digits, result );
+            swap(digits, result);
         }
 
         // Otherwise we are subtracting.
@@ -610,9 +620,9 @@ namespace spica {
             // Point 'small' and 'large' at the objects with the smaller (or larger) absolute
             // magnitude.
             //
-            const VeryLong *small;
-            const VeryLong *large;
-            if( smaller_than( other ) ) {
+            const VeryLong* small;
+            const VeryLong* large;
+            if (smaller_than(other)) {
                 small = this;
                 large = &other;
             }
@@ -628,7 +638,7 @@ namespace spica {
             // might be zero if large and small are the same).
             //
             compute_type borrow = 0;
-            for( size_type i = 0; i < max_size; i++ ) {
+            for (size_type i = 0; i < max_size; i++) {
                 compute_type next_borrow = 0;
 
                 // Get the digits we will be working with. Handle the possibility that we have
@@ -636,39 +646,40 @@ namespace spica {
                 //
                 compute_type large_digit = large->digits[i];
                 compute_type small_digit = 0;
-                if( i < small->digits.size( ) ) small_digit = small->digits[i];
+                if (i < small->digits.size())
+                    small_digit = small->digits[i];
 
                 // Do we have to borrow? If so, do it.
-                if( large_digit < small_digit + borrow ) {
+                if (large_digit < small_digit + borrow) {
                     large_digit += DIGIT_RANGE;
                     next_borrow = 1;
                 }
 
                 // Compute and install the new digit.
                 compute_type result_digit = large_digit - small_digit - borrow;
-                result.push_back( static_cast< storage_type >( result_digit ) );
-            
+                result.push_back(static_cast<storage_type>(result_digit));
+
                 // Remember the amount we borrowed for the next loop pass.
                 borrow = next_borrow;
             }
 
             // Install the answer.
-            swap( digits, result );
-            trim_zeros( );
+            swap(digits, result);
+            trim_zeros();
         }
     }
-
 
     //
     // void VeryLong::operator-=( const VeryLong & )
     //
     // This method implements subtraction by just adding a negative.
     //
-    void VeryLong::operator-=( const VeryLong &other )
+    void VeryLong::operator-=(const VeryLong& other)
     {
         // Handle zero special so we don't accidently send a -0 to operator+=().
-        if( other.digits.empty( ) ) return;
-        if( digits.empty( ) ) {
+        if (other.digits.empty())
+            return;
+        if (digits.empty()) {
             *this = other;
             sign_flag = -sign_flag;
             return;
@@ -680,11 +691,11 @@ namespace spica {
         sign_flag = -sign_flag;
         *this += other;
         sign_flag = -sign_flag;
-        
-        // Protect against creating -0.
-        if( digits.empty( ) ) sign_flag = +1;
-    }
 
+        // Protect against creating -0.
+        if (digits.empty())
+            sign_flag = +1;
+    }
 
     //
     // void VeryLong::operator*=( const VeryLong & )
@@ -694,12 +705,13 @@ namespace spica {
     // Seminumerical Algorithms" (third edition, published by Addison-Wesley, copyright 1998, page
     // 268- 270).
     //
-    void VeryLong::operator*=( const VeryLong &other )
+    void VeryLong::operator*=(const VeryLong& other)
     {
         // Handle zero cases.
-        if( digits.empty( ) ) return;
-        if( other.digits.empty( ) ) {
-            digits.resize( 0 );
+        if (digits.empty())
+            return;
+        if (other.digits.empty()) {
+            digits.resize(0);
             sign_flag = +1;
             return;
         }
@@ -708,63 +720,62 @@ namespace spica {
         sign_flag *= other.sign_flag;
 
         // Allocate a workspace that is large enough to hold the result.
-        size_type m = digits.size( );
-        size_type n = other.digits.size( );
-        std::vector< storage_type > workspace( m + n, 0 );
+        size_type m = digits.size();
+        size_type n = other.digits.size();
+        std::vector<storage_type> workspace(m + n, 0);
 
         // Do the multiplication.
-        for( size_type j = 0; j < n; ++j ) {
+        for (size_type j = 0; j < n; ++j) {
             compute_type carry = 0;
-            for( size_type i = 0; i < m; ++i ) {
-                compute_type temp = carry + 
-                    static_cast< compute_type >( digits[i] ) * other.digits[j]  + workspace[i + j];
-                workspace[i + j] = static_cast< storage_type >( temp & DIGIT_MASK );
+            for (size_type i = 0; i < m; ++i) {
+                compute_type temp = carry + static_cast<compute_type>(digits[i]) * other.digits[j] +
+                                    workspace[i + j];
+                workspace[i + j] = static_cast<storage_type>(temp & DIGIT_MASK);
                 carry = temp >> BITS_PER_LONGDIGIT;
             }
-            workspace[j + m] = static_cast< storage_type >( carry );
+            workspace[j + m] = static_cast<storage_type>(carry);
         }
-    
-        // Install new digits.
-        swap( digits, workspace );
-        trim_zeros( );
-    }
 
+        // Install new digits.
+        swap(digits, workspace);
+        trim_zeros();
+    }
 
     //
     // void VeryLong::operator/=( const VeryLong & )
     //
     // This method computes the quotient after division.
     //
-    void VeryLong::operator/=( const VeryLong &other )
+    void VeryLong::operator/=(const VeryLong& other)
     {
         // Let me handle zero as a special case.
-        if( digits.empty( ) ) return;
+        if (digits.empty())
+            return;
 
         vldiv_t division_results;
-        vldiv( *this, other, &division_results );
+        vldiv(*this, other, &division_results);
 
         // Put the results where we want them.
-        swap( *this, division_results.quot );
+        swap(*this, division_results.quot);
     }
-
 
     //
     // void VeryLong::operator%=( const VeryLong & )
     //
     // This method computes the remainder after division.
     //
-    void VeryLong::operator%=( const VeryLong &other )
+    void VeryLong::operator%=(const VeryLong& other)
     {
         // Let me handle zero as a special case.
-        if( digits.empty( ) ) return;
+        if (digits.empty())
+            return;
 
         vldiv_t division_results;
-        vldiv( *this, other, &division_results );
+        vldiv(*this, other, &division_results);
 
         // Put the results where we want them.
-        swap( *this, division_results.rem );
+        swap(*this, division_results.rem);
     }
-
 
     //
     // void VeryLong::vldiv( const VeryLong &, const VeryLong &, vldiv_t * )
@@ -772,75 +783,79 @@ namespace spica {
     // This is where I actually do the grunt work of dividing. I compute both the quotient and
     // remainder at the same time and load them into the given vldiv_t object. Cool!
     //
-    void VeryLong::vldiv( const VeryLong &left, const VeryLong &right, vldiv_t *result )
+    void VeryLong::vldiv(const VeryLong& left, const VeryLong& right, vldiv_t* result)
     {
         // If they are trying to divide by zero, they are bad people. What we do doesn't matter.
         // The documentation says the effect is "undefined".
         //
-        if( right.digits.empty( ) ) return;
+        if (right.digits.empty())
+            return;
 
         // Set the sign flags.
         result->quot.sign_flag = left.sign_flag / right.sign_flag;
-        result->rem.sign_flag  = left.sign_flag;
+        result->rem.sign_flag = left.sign_flag;
 
         // Handle some of the easy special cases.
-        if( left.digits.empty( ) ) {
+        if (left.digits.empty()) {
             result->quot.sign_flag = +1;
-            result->quot.digits.resize( 0 );
-            result->rem.digits.resize( 0 );
+            result->quot.digits.resize(0);
+            result->rem.digits.resize(0);
             return;
         }
-        if( left.smaller_than( right ) ) {
+        if (left.smaller_than(right)) {
             result->quot.sign_flag = +1;
-            result->quot.digits.resize( 0 );
+            result->quot.digits.resize(0);
             result->rem.digits = left.digits;
             return;
         }
 
         // Neither left nor right are zero and abs(left) >= abs(right). Now I have to work.
 
-        VeryLong remainder   = left;   remainder.sign_flag   = +1;
-        VeryLong denominator = right;  denominator.sign_flag = +1;
+        VeryLong remainder = left;
+        remainder.sign_flag = +1;
+        VeryLong denominator = right;
+        denominator.sign_flag = +1;
         VeryLong subtractor;
         VeryLong quotient;
-        size_type shift_count = remainder.digits.size( ) - denominator.digits.size( );
+        size_type shift_count = remainder.digits.size() - denominator.digits.size();
 
         // Keep looping until we have our answer.
-        while( 1 ) {
+        while (1) {
 
             // Create a new digit for the quotient.
-            quotient.shift_left( 1 );
+            quotient.shift_left(1);
             quotient.digits[0] = 0;
 
             // We have to keep looping, making positive and negative corrections as necessary,
             // until the remainder is positive and yet less than the shifted subtractor.
             //
-            while( 1 ) {
+            while (1) {
 
                 // Line up the subtractor below the remainder.
                 subtractor = denominator;
-                subtractor.shift_left( shift_count );
+                subtractor.shift_left(shift_count);
 
                 // If we are done thinking about this digit, leave the loop.
-                if( remainder < subtractor ) break;
+                if (remainder < subtractor)
+                    break;
 
                 // The remainder is >= the subtractor.
 
                 // Compute the trial quotient.
-                compute_type sub_digit = subtractor.digits[subtractor.digits.size( ) - 1];
-                compute_type rem_digit = remainder.digits[subtractor.digits.size( ) - 1];
-                if( remainder.digits.size( ) > subtractor.digits.size( ) ) {
+                compute_type sub_digit = subtractor.digits[subtractor.digits.size() - 1];
+                compute_type rem_digit = remainder.digits[subtractor.digits.size() - 1];
+                if (remainder.digits.size() > subtractor.digits.size()) {
                     rem_digit +=
-                        static_cast< compute_type >( remainder.digits[subtractor.digits.size( )] )
+                        static_cast<compute_type>(remainder.digits[subtractor.digits.size()])
                         << BITS_PER_LONGDIGIT;
                 }
                 compute_type trial_qdigit = rem_digit / sub_digit;
 
                 // Install the quotient digit.
-                quotient.digits[0] += static_cast< storage_type >( trial_qdigit );
+                quotient.digits[0] += static_cast<storage_type>(trial_qdigit);
 
-                subtractor *= static_cast< long >( trial_qdigit );
-                remainder  -= subtractor;
+                subtractor *= static_cast<long>(trial_qdigit);
+                remainder -= subtractor;
 
                 // If the remainder is negative, our last operation was too much. We need to
                 // correct it. Sometimes the trial quotient digit we calculate here will not be
@@ -848,43 +863,45 @@ namespace spica {
                 // it will be too much correction. In that case, the outer loop will continue
                 // and another "chunk" will be subtracted from the remainder.
                 //
-                while( remainder < 0L ) {
+                while (remainder < 0L) {
 
                     // Line the subtractor up the way it was for the previous operation.
                     subtractor = denominator;
-                    subtractor.shift_left( shift_count );
+                    subtractor.shift_left(shift_count);
 
                     // Compute a trial quotient digit.
-                    compute_type sub_digit = subtractor.digits[subtractor.digits.size( ) - 1];
+                    compute_type sub_digit = subtractor.digits[subtractor.digits.size() - 1];
                     compute_type rem_digit = 0;
-                    if( remainder.digits.size( ) >= subtractor.digits.size( ) )
-                        rem_digit = remainder.digits[subtractor.digits.size( ) - 1];
+                    if (remainder.digits.size() >= subtractor.digits.size())
+                        rem_digit = remainder.digits[subtractor.digits.size() - 1];
                     compute_type trial_qdigit = rem_digit / sub_digit;
 
                     // A small negative remainder still needs correction.
-                    if( trial_qdigit == 0 ) trial_qdigit = 1;
+                    if (trial_qdigit == 0)
+                        trial_qdigit = 1;
 
                     // Correct the current quotient digit.
-                    quotient.digits[0] -= static_cast< storage_type >( trial_qdigit );
+                    quotient.digits[0] -= static_cast<storage_type>(trial_qdigit);
 
                     // Scale the subtractor and add it to the remainder to compensate for the
                     // previous excess.
                     //
-                    subtractor *= static_cast< long >( trial_qdigit );
-                    remainder  += subtractor;
+                    subtractor *= static_cast<long>(trial_qdigit);
+                    remainder += subtractor;
                 }
             }
 
             // If this was the last digit, we are done.
-            if( shift_count == 0 ) break;
-            
+            if (shift_count == 0)
+                break;
+
             // We have completely handled this digit.
             shift_count--;
         }
 
-        quotient.trim_zeros( );
-        std::swap( result->quot.digits, quotient.digits );
-        std::swap( result->rem.digits, remainder.digits );
+        quotient.trim_zeros();
+        std::swap(result->quot.digits, quotient.digits);
+        std::swap(result->rem.digits, remainder.digits);
     }
 
-}
+} // namespace spica

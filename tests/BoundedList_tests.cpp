@@ -6,208 +6,205 @@
 #include <stdexcept>
 
 #include "../BoundedList.hpp"
-#include "../u_tests.hpp"
 #include "../UnitTestManager.hpp"
+#include "../u_tests.hpp"
 
 using namespace spica;
 
-static void make_list( BoundedList<int> &my_list )
+static void make_list(BoundedList<int>& my_list)
 {
-    for( int i = 0; i < 100; ++i ) {
-        my_list.push_back( i );
+    for (int i = 0; i < 100; ++i) {
+        my_list.push_back(i);
     }
-    UNIT_CHECK( my_list.size( ) == 100 );
+    UNIT_CHECK(my_list.size() == 100);
 }
 
-
-static void constructor_test( )
+static void constructor_test()
 {
-    UnitTestManager::UnitTest test( "constructor" );
+    UnitTestManager::UnitTest test("constructor");
 
-    BoundedList<int> list_d(   0 );  // Degenerate case.
-    BoundedList<int> list_0(   1 );
-    BoundedList<int> list_1(  10 );
-    BoundedList<int> list_2( 100 );
-    BoundedList<int> list_3 = { 1, 2, 3, 4, 5 };
+    BoundedList<int> list_d(0); // Degenerate case.
+    BoundedList<int> list_0(1);
+    BoundedList<int> list_1(10);
+    BoundedList<int> list_2(100);
+    BoundedList<int> list_3 = {1, 2, 3, 4, 5};
 
-    UNIT_CHECK( list_d.empty( ) );
-    UNIT_CHECK( list_0.empty( ) );
-    UNIT_CHECK( list_1.empty( ) );
-    UNIT_CHECK( list_2.empty( ) );
-    UNIT_CHECK( list_3.size( ) == 5 );
+    UNIT_CHECK(list_d.empty());
+    UNIT_CHECK(list_0.empty());
+    UNIT_CHECK(list_1.empty());
+    UNIT_CHECK(list_2.empty());
+    UNIT_CHECK(list_3.size() == 5);
 
     try {
-        list_d.push_back( 1 );
-        UNIT_FAIL( "Unexpectedly able to push_back to a full BoundedList" );
+        list_d.push_back(1);
+        UNIT_FAIL("Unexpectedly able to push_back to a full BoundedList");
     }
-    catch( std::length_error &) {
+    catch (std::length_error&) {
         // okay.
     }
-    catch( ... ) {
-        UNIT_FAIL( "Unexpected exception while executing push_back to a full BoundedList" );
+    catch (...) {
+        UNIT_FAIL("Unexpected exception while executing push_back to a full BoundedList");
     }
 
-    BoundedList<int>::iterator p( list_3.begin( ) );
+    BoundedList<int>::iterator p(list_3.begin());
     int i = 1;
-    while( p != list_3.end( ) ) {
-        UNIT_CHECK( *p == i );
+    while (p != list_3.end()) {
+        UNIT_CHECK(*p == i);
         ++i;
         ++p;
     }
 }
 
-
-static void push_back_test( )
+static void push_back_test()
 {
-    UnitTestManager::UnitTest test( "push_back" );
+    UnitTestManager::UnitTest test("push_back");
 
-    BoundedList<int> my_list( 100 );
+    BoundedList<int> my_list(100);
 
-    make_list( my_list );
-    BoundedList<int>::iterator p( my_list.begin( ) );
+    make_list(my_list);
+    BoundedList<int>::iterator p(my_list.begin());
     int i = 0;
-    while( p != my_list.end( ) ) {
-        UNIT_CHECK( *p == i );
+    while (p != my_list.end()) {
+        UNIT_CHECK(*p == i);
         ++i;
         ++p;
     }
 }
 
-static void pop_back_test( )
+static void pop_back_test()
 {
-    UnitTestManager::UnitTest test( "pop_back" );
+    UnitTestManager::UnitTest test("pop_back");
 
     int i;
-    BoundedList<int> my_list( 100 );
+    BoundedList<int> my_list(100);
 
-    make_list( my_list );
+    make_list(my_list);
 
     i = 100;
     do {
         --i;
-        UNIT_CHECK( my_list.back( ) == i );
-        my_list.pop_back( );
-    } while( i > 0 );
-    UNIT_CHECK( my_list.empty( ) );
+        UNIT_CHECK(my_list.back() == i);
+        my_list.pop_back();
+    } while (i > 0);
+    UNIT_CHECK(my_list.empty());
 }
 
-static void iterator_test( )
+static void iterator_test()
 {
-    UnitTestManager::UnitTest test( "iterator" );
+    UnitTestManager::UnitTest test("iterator");
 
     int i;
-    BoundedList<int> my_list( 100 );
+    BoundedList<int> my_list(100);
     BoundedList<int>::iterator p;
 
-    make_list( my_list );
+    make_list(my_list);
 
-    p = my_list.begin( );
-    for( i = 0; i < 100; ++i ) {
-        UNIT_CHECK( *p == i );
-        UNIT_CHECK( i == 0 || p != my_list.begin( ) );
-        UNIT_CHECK( p != my_list.end( ) );
+    p = my_list.begin();
+    for (i = 0; i < 100; ++i) {
+        UNIT_CHECK(*p == i);
+        UNIT_CHECK(i == 0 || p != my_list.begin());
+        UNIT_CHECK(p != my_list.end());
         ++p;
     }
-    UNIT_CHECK( p == my_list.end( ) );
+    UNIT_CHECK(p == my_list.end());
 
     do {
         --i;
         --p;
-        UNIT_CHECK( p != my_list.end( ) );
-        UNIT_CHECK( i == 0 || p != my_list.begin( ) );
-        UNIT_CHECK( *p == i );
-    } while( i > 0 );
-    UNIT_CHECK( p == my_list.begin( ) );
+        UNIT_CHECK(p != my_list.end());
+        UNIT_CHECK(i == 0 || p != my_list.begin());
+        UNIT_CHECK(*p == i);
+    } while (i > 0);
+    UNIT_CHECK(p == my_list.begin());
 }
 
-
-static void insert_test( )
+static void insert_test()
 {
-    UnitTestManager::UnitTest test( "insert" );
+    UnitTestManager::UnitTest test("insert");
 
-    BoundedList<int> my_list( 103 );
+    BoundedList<int> my_list(103);
     BoundedList<int>::iterator p1, p2;
 
-    make_list( my_list );
+    make_list(my_list);
 
     // Try inserting at the beginning.
-    p2 = my_list.insert( my_list.begin( ), -1 );
-    UNIT_CHECK( *my_list.begin( ) == -1 );
-    UNIT_CHECK( *p2 == -1 );
-    UNIT_CHECK( my_list.size( ) == 101 );
+    p2 = my_list.insert(my_list.begin(), -1);
+    UNIT_CHECK(*my_list.begin() == -1);
+    UNIT_CHECK(*p2 == -1);
+    UNIT_CHECK(my_list.size() == 101);
 
     // Try inserting at the end.
-    p2 = my_list.insert( my_list.end( ), -2 );
-    p1 = my_list.end( );
+    p2 = my_list.insert(my_list.end(), -2);
+    p1 = my_list.end();
     --p1;
-    UNIT_CHECK( *p1 == -2 );
-    UNIT_CHECK( *p2 == -2 );
-    UNIT_CHECK( my_list.size( ) == 102 );
+    UNIT_CHECK(*p1 == -2);
+    UNIT_CHECK(*p2 == -2);
+    UNIT_CHECK(my_list.size() == 102);
 
     // Try inserting in the middle.
-    p1 = my_list.begin( );
-    for( int i = 0; i < 50; ++i ) ++p1;
+    p1 = my_list.begin();
+    for (int i = 0; i < 50; ++i)
+        ++p1;
     const int temp = *p1;
-    p2 = my_list.insert( p1, -3 );
-    UNIT_CHECK( *p1 == temp );
-    UNIT_CHECK( *p2 == -3 );
-    UNIT_CHECK( my_list.size( ) == 103 );
+    p2 = my_list.insert(p1, -3);
+    UNIT_CHECK(*p1 == temp);
+    UNIT_CHECK(*p2 == -3);
+    UNIT_CHECK(my_list.size() == 103);
 
     // Try inserting into an empty list.
-    BoundedList<int> empty_list( 100 );
-    p2 = empty_list.insert( empty_list.begin( ), -1 );
-    UNIT_CHECK( *empty_list.begin( ) == -1 );
-    UNIT_CHECK( *p2 == -1 );
-    UNIT_CHECK( empty_list.size( ) == 1 );
+    BoundedList<int> empty_list(100);
+    p2 = empty_list.insert(empty_list.begin(), -1);
+    UNIT_CHECK(*empty_list.begin() == -1);
+    UNIT_CHECK(*p2 == -1);
+    UNIT_CHECK(empty_list.size() == 1);
 }
 
-
-static void erase_test( )
+static void erase_test()
 {
-    UnitTestManager::UnitTest test( "erase" );
+    UnitTestManager::UnitTest test("erase");
 
-    BoundedList<int> my_list( 100 );
+    BoundedList<int> my_list(100);
     BoundedList<int>::iterator p1, p2;
     int i;
 
-    make_list( my_list );
+    make_list(my_list);
 
     // Try erasing at the beginning.
-    for( i = 0; i < 100; ++i ) {
-        UNIT_CHECK( *my_list.begin( ) == i );
-        p2 = my_list.erase( my_list.begin( ) );
-        UNIT_CHECK( p2 == my_list.end( ) || *p2 == i + 1 );
-        UNIT_CHECK( static_cast<int>( my_list.size( ) ) == 100 - i - 1 );
+    for (i = 0; i < 100; ++i) {
+        UNIT_CHECK(*my_list.begin() == i);
+        p2 = my_list.erase(my_list.begin());
+        UNIT_CHECK(p2 == my_list.end() || *p2 == i + 1);
+        UNIT_CHECK(static_cast<int>(my_list.size()) == 100 - i - 1);
     }
 
-    make_list( my_list );
+    make_list(my_list);
 
     // Try erasing at the end.
-    p1 = my_list.end( );
+    p1 = my_list.end();
     --p1;
-    p2 = my_list.erase( p1 );
-    UNIT_CHECK( p2 == my_list.end( ) );
-    UNIT_CHECK( my_list.size( ) == 99 );
+    p2 = my_list.erase(p1);
+    UNIT_CHECK(p2 == my_list.end());
+    UNIT_CHECK(my_list.size() == 99);
 
     // Try erasing in the middle.
-    p1 = my_list.begin( );
-    for( i = 0; i < 50; ++i ) ++p1;
+    p1 = my_list.begin();
+    for (i = 0; i < 50; ++i)
+        ++p1;
     p2 = p1;
     ++p2;
     const int temp = *p2;
-    p2 = my_list.erase( p1 );
-    UNIT_CHECK( *p2 == temp );
-    UNIT_CHECK( my_list.size( ) == 98 );
+    p2 = my_list.erase(p1);
+    UNIT_CHECK(*p2 == temp);
+    UNIT_CHECK(my_list.size() == 98);
 }
 
-
-bool BoundedList_tests( )
+bool BoundedList_tests()
 {
-    constructor_test( );
-    push_back_test( );
-    pop_back_test( );
-    iterator_test( );
-    insert_test( );
-    erase_test( );
+    constructor_test();
+    push_back_test();
+    pop_back_test();
+    iterator_test();
+    insert_test();
+    erase_test();
     return true;
 }
