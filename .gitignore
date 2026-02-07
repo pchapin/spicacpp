@@ -1,21 +1,13 @@
 build/
 
+# CLion generated files.
+.idea/
+
 # Visual Studio generated files.
-Debug/
-Release/
-Spica.sdf
 .vs/
-*.aps
-*.user
 
 # Doxygen generated files.
 api/
-
-# gcc generated files.
-*.o
-libSpicaCpp.a
-u_tests
-u_tests.exe
 
 # LaTeX generated files.
 *.aux

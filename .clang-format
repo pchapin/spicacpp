@@ -1,0 +1,30 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+
+# Handling of braces.
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction: true
+  AfterControlStatement: Never
+  BeforeCatch: true
+  BeforeElse: true
+
+IndentWidth: 4
+NamespaceIndentation: All
+PointerAlignment: Left
+ColumnLimit: 100
+MaxEmptyLinesToKeep: 1
+FixNamespaceComments: true
+
+# Don't collapse short functions or blocks into one line.
+AllowShortFunctionsOnASingleLine: None
+AllowShortBlocksOnASingleLine: Never
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+
+# Handling of constructor initializer lists.
+ConstructorInitializerIndentWidth: 4
+BreakConstructorInitializers: AfterColon
+AllowAllConstructorInitializersOnNextLine: true
+---
