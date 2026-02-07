@@ -1,0 +1,77 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "windows-arm64-debug",
+            "displayName": "Windows ARM64 Debug",
+            "description": "Native build for Whirlpool",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "architecture": {
+                "value": "arm64",
+                "strategy": "external"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            },
+            "vendor": {
+                "microsoft.com/VisualStudioSettings/CMake/1.0": {
+                    "hostOS": ["Windows"]
+                }
+            }
+        },
+        {
+            "name": "windows-x64-debug",
+            "displayName": "Windows x64 Debug",
+            "description": "Native build for Cyclone",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "linux-clang-debug",
+            "displayName": "Linux Clang Debug",
+            "description": "Native build for Tornado",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}",
+                "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "macos-clang-debug",
+            "displayName": "macOS Clang Debug",
+            "description": "Native build for Hurricane",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "/opt/homebrew/opt/llvm/bin/clang++",
+                "CMAKE_OSX_SYSROOT": "$penv{SDKROOT}",
+                "CMAKE_BUILD_TYPE": "Debug"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "linux-clang-debug",
+            "configurePreset": "linux-clang-debug"
+        },
+        {
+            "name": "macos-clang-debug",
+            "configurePreset": "macos-clang-debug"
+        }
+    ]
+}

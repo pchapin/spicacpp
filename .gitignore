@@ -1,34 +1,15 @@
+build/
+
 # Visual Studio generated files.
-Debug
-Release
+Debug/
+Release/
 Spica.sdf
-.vs
+.vs/
 *.aps
 *.user
 
-# Code::Blocks generated files.
-bin
-obj
-*.depend
-*.layout
-
-# depend generated files.
-depend.out
-
 # Doxygen generated files.
-api
-
-# Open Watcom generated files.
-owbuild
-*.err
-*.obj
-*.lb1
-*.mk
-*.mk1
-SpicaCpp.lib
-
-# LLVM generated files.
-*.bc
+api/
 
 # gcc generated files.
 *.o
@@ -40,11 +21,3 @@ u_tests.exe
 *.aux
 *.log
 *.pdf
-
-# Eclipse files.
-
-# There is controversy about this file. It includes a hash of the environment that
-# is unique to each developer's system. However, it also includes some items that
-# probably should be shared between developers. See:
-# https://www.eclipse.org/forums/index.php/t/1074031/
-.settings/language.settings.xml
