@@ -1,0 +1,6 @@
+# The compile-commands.json file is copied to the root of the project by CMake. We don't need to
+# point to it here. However, this file is retained for future expansion. The definition of
+# CompilationDatabase is redundant, and could be removed, but it is needed now to avoid this being
+# an empty file (which clangd doesn't like).
+CompileFlags:
+  CompilationDatabase: .

@@ -5,46 +5,45 @@
     \warning This code has not been extensively tested!
 
 
-The functions in this file do base64 encoding and decoding as described in RFC-2045. The text
-below has been extracted from RFC-2045 and documents the format. This implementation does not
-attempt to convert the input to canonical form first (as required by the MIME standard for email
-attachments). Such a conversion requires prior knowledge of the MIME type being encoded. It is
-up to the caller to resolve that matter before using these functions.
+The functions in this file do base64 encoding and decoding as described in RFC-2045. The text below
+has been extracted from RFC-2045 and documents the format. This implementation does not attempt to
+convert the input to canonical form first (as required by the MIME standard for email attachments).
+Such a conversion requires prior knowledge of the MIME type being encoded. It is up to the caller to
+resolve that matter before using these functions.
 
 -----> BEGIN excerpt from RFC-2045 <-----
 
 6.8.  Base64 Content-Transfer-Encoding
 
-   The Base64 Content-Transfer-Encoding is designed to represent arbitrary sequences of octets
-   in a form that need not be humanly readable. The encoding and decoding algorithms are simple,
-   but the encoded data are consistently only about 33 percent larger than the unencoded data.
-   This encoding is virtually identical to the one used in Privacy Enhanced Mail (PEM)
-   applications, as defined in RFC 1421.
+   The Base64 Content-Transfer-Encoding is designed to represent arbitrary sequences of octets in a
+   form that need not be humanly readable. The encoding and decoding algorithms are simple, but the
+   encoded data are consistently only about 33 percent larger than the unencoded data. This encoding
+   is virtually identical to the one used in Privacy Enhanced Mail (PEM) applications, as defined in
+   RFC 1421.
 
    A 65-character subset of US-ASCII is used, enabling 6 bits to be represented per printable
    character. (The extra 65th character, "=", is used to signify a special processing function.)
 
-   NOTE: This subset has the important property that it is represented identically in all
-   versions of ISO 646, including US-ASCII, and all characters in the subset are also
-   represented identically in all versions of EBCDIC. Other popular encodings, such as the
-   encoding used by the uuencode utility, Macintosh binhex 4.0 [RFC-1741], and the base85
-   encoding specified as part of Level 2 PostScript, do not share these properties, and thus do
-   not fulfill the portability requirements a binary transport encoding for mail must meet.
+   NOTE: This subset has the important property that it is represented identically in all versions
+   of ISO 646, including US-ASCII, and all characters in the subset are also represented identically
+   in all versions of EBCDIC. Other popular encodings, such as the encoding used by the uuencode
+   utility, Macintosh binhex 4.0 [RFC-1741], and the base85 encoding specified as part of Level 2
+   PostScript, do not share these properties, and thus do not fulfill the portability requirements a
+   binary transport encoding for mail must meet.
 
    The encoding process represents 24-bit groups of input bits as output strings of 4 encoded
-   characters. Proceeding from left to right, a 24-bit input group is formed by concatenating 3
-   8bit input groups. These 24 bits are then treated as 4 concatenated 6-bit groups, each of
-   which is translated into a single digit in the base64 alphabet. When encoding a bit stream
-   via the base64 encoding, the bit stream must be presumed to be ordered with the
-   most-significant-bit first. That is, the first bit in the stream will be the high-order bit
-   in the first 8bit byte, and the eighth bit will be the low-order bit in the first 8bit byte,
-   and so on.
+   characters. Proceeding from left to right, a 24-bit input group is formed by concatenating 3 8bit
+   input groups. These 24 bits are then treated as 4 concatenated 6-bit groups, each of which is
+   translated into a single digit in the base64 alphabet. When encoding a bit stream via the base64
+   encoding, the bit stream must be presumed to be ordered with the most-significant-bit first. That
+   is, the first bit in the stream will be the high-order bit in the first 8bit byte, and the eighth
+   bit will be the low-order bit in the first 8bit byte, and so on.
 
    Each 6-bit group is used as an index into an array of 64 printable characters. The character
-   referenced by the index is placed in the output string. These characters, identified in Table
-   1, below, are selected so as to be universally representable, and the set excludes characters
-   with particular significance to SMTP (e.g., ".", CR, LF) and to the multipart boundary
-   delimiters defined in RFC 2046 (e.g., "-").
+   referenced by the index is placed in the output string. These characters, identified in Table 1,
+   below, are selected so as to be universally representable, and the set excludes characters with
+   particular significance to SMTP (e.g., ".", CR, LF) and to the multipart boundary delimiters
+   defined in RFC 2046 (e.g., "-").
 
 <pre>
                     Table 1: The Base64 Alphabet
@@ -69,40 +68,39 @@ up to the caller to resolve that matter before using these functions.
         16 Q            33 h            50 y
 </pre>
 
-   The encoded output stream must be represented in lines of no more than 76 characters each.
-   All line breaks or other characters not found in Table 1 must be ignored by decoding
-   software. In base64 data, characters other than those in Table 1, line breaks, and other
-   white space probably indicate a transmission error, about which a warning message or even a
-   message rejection might be appropriate under some circumstances.
+   The encoded output stream must be represented in lines of no more than 76 characters each. All
+   line breaks or other characters not found in Table 1 must be ignored by decoding software. In
+   base64 data, characters other than those in Table 1, line breaks, and other white space probably
+   indicate a transmission error, about which a warning message or even a message rejection might be
+   appropriate under some circumstances.
 
-   Special processing is performed if fewer than 24 bits are available at the end of the data
-   being encoded. A full encoding quantum is always completed at the end of a body. When fewer
-   than 24 input bits are available in an input group, zero bits are added (on the right) to
-   form an integral number of 6-bit groups. Padding at the end of the data is performed using
-   the "=" character. Since all base64 input is an integral number of octets, only the following
-   cases can arise: (1) the final quantum of encoding input is an integral multiple of 24 bits;
-   here, the final unit of encoded output will be an integral multiple of 4 characters with no
-   "=" padding, (2) the final quantum of encoding input is exactly 8 bits; here, the final unit
-   of encoded output will be two characters followed by two "=" padding characters, or (3) the
-   final quantum of encoding input is exactly 16 bits; here, the final unit of encoded output
-   will be three characters followed by one "=" padding character.
+   Special processing is performed if fewer than 24 bits are available at the end of the data being
+   encoded. A full encoding quantum is always completed at the end of a body. When fewer than 24
+   input bits are available in an input group, zero bits are added (on the right) to form an
+   integral number of 6-bit groups. Padding at the end of the data is performed using the "="
+   character. Since all base64 input is an integral number of octets, only the following cases can
+   arise: (1) the final quantum of encoding input is an integral multiple of 24 bits; here, the
+   final unit of encoded output will be an integral multiple of 4 characters with no "=" padding,
+   (2) the final quantum of encoding input is exactly 8 bits; here, the final unit of encoded output
+   will be two characters followed by two "=" padding characters, or (3) the final quantum of
+   encoding input is exactly 16 bits; here, the final unit of encoded output will be three
+   characters followed by one "=" padding character.
 
-   Because it is used only for padding at the end of the data, the occurrence of any "="
-   characters may be taken as evidence that the end of the data has been reached (without
-   truncation in transit). No such assurance is possible, however, when the number of octets
-   transmitted was a multiple of three and no "=" characters are present.
+   Because it is used only for padding at the end of the data, the occurrence of any "=" characters
+   may be taken as evidence that the end of the data has been reached (without truncation in
+   transit). No such assurance is possible, however, when the number of octets transmitted was a
+   multiple of three and no "=" characters are present.
 
    Any characters outside of the base64 alphabet are to be ignored in base64-encoded data.
 
    Care must be taken to use the proper octets for line breaks if base64 encoding is applied
-   directly to text material that has not been converted to canonical form. In particular, text
-   line breaks must be converted into CRLF sequences prior to base64 encoding. The important
-   thing to note is that this may be done directly by the encoder rather than in a prior
-   canonicalization step in some implementations.
+   directly to text material that has not been converted to canonical form. In particular, text line
+   breaks must be converted into CRLF sequences prior to base64 encoding. The important thing to
+   note is that this may be done directly by the encoder rather than in a prior canonicalization
+   step in some implementations.
 
-   NOTE: There is no need to worry about quoting potential boundary delimiters within
-   base64-encoded bodies within multipart entities because no hyphen characters are used in the
-   base64 encoding.
+   NOTE: There is no need to worry about quoting potential boundary delimiters within base64-encoded
+   bodies within multipart entities because no hyphen characters are used in the base64 encoding.
 
 -----> END excerpt from RFC-2045 <-----
 */
@@ -169,8 +167,8 @@ void base64_decode(std::FILE*, std::FILE*)
 }
 
 #ifdef NEVER
-// I wrote the following C++ implementation for CourseSmart. It shouldn't be too hard to
-// translate it into C.
+// I wrote the following C++ implementation for CourseSmart. It shouldn't be too hard to translate
+// it into C.
 //
 
 // Helper function for read_string (below).
@@ -200,9 +198,9 @@ static int read_string(unsigned char* buffer, std::string::size_type desired, st
 
 void FileSystem::decode(const std::string& name, const std::string& contents)
 {
-    // Creating a temp here is probably not great. What if the file is large? However,
-    // read_string modifies the string as it reads it (to avoid having to keep track of any
-    // internal state) so I need to copy the constant string given as an argument.
+    // Creating a temp here is probably not great. What if the file is large? However, read_string
+    // modifies the string as it reads it (to avoid having to keep track of any internal state) so I
+    // need to copy the constant string given as an argument.
     //
     std::string temp(contents);
 

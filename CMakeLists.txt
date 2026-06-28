@@ -10,6 +10,9 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Create compile_commands.json for IDEs and tools.
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Collect source files.
 file(GLOB_RECURSE SPICACPP_SOURCES "src/*.cpp")
 file(GLOB_RECURSE SPICACPP_HEADERS "include/spicacpp/*.hpp")
@@ -43,3 +46,11 @@ target_include_directories(spicacpp
 
 # Set any compile options
 target_compile_options(spicacpp PRIVATE -Wall)
+
+# Create a custom target to copy compile_commands.json to the source directory.
+# This simplifies access for IDEs and tools (such as language servers).
+add_custom_target(copy-compile-commands ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_BINARY_DIR}/compile_commands.json
+        ${CMAKE_SOURCE_DIR}/compile_commands.json
+)
