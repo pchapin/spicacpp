@@ -3,11 +3,11 @@
  *  \author  Peter Chapin <spicacality@kelseymountain.org>
  */
 
-#include "environ.hpp"
+#include <spicacpp/environ.hpp>
 
-#include "FileVector.hpp"
 #include <algorithm>
 #include <iostream>
+#include <spicacpp/FileVector.hpp>
 
 //
 // Function to test operator[]( )

@@ -3,8 +3,8 @@
  *  \author  Peter Chapin <spicacality@kelseymountain.org>
  */
 
-#include "../string_utilities.hpp"
 #include <iostream>
+#include <spicacpp/string_utilities.hpp>
 
 int string_utilities_tests()
 {

@@ -5,9 +5,9 @@
 
 #include <stdexcept>
 
-#include "../BoundedList.hpp"
-#include "../UnitTestManager.hpp"
-#include "../u_tests.hpp"
+#include "u_tests.hpp"
+#include <spicacpp/BoundedList.hpp>
+#include <spicacpp/UnitTestManager.hpp>
 
 using namespace spica;
 

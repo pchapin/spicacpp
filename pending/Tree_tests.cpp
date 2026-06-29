@@ -3,10 +3,11 @@
  *  \author  Peter Chapin <spicacality@kelseymountain.org>
  */
 
-#include "../BinaryTree.hpp"
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <random>
+#include <spicacpp/BinaryTree.hpp>
 #include <vector>
 
 #define MAXCOUNT 10000
@@ -64,7 +65,7 @@ int main()
     // Verify that reverse iteration returns items in reverse order.
     // EXTRA CREDIT (5 pts).
 
-    std::random_shuffle(numbers.begin(), last);
+    std::shuffle(numbers.begin(), last, std::mt19937{std::random_device{}()});
     for (current = numbers.begin(); current != last; ++current) {
         p = my_tree.find(*current);
         my_tree.erase(p);

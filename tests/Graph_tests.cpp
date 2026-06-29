@@ -5,9 +5,9 @@
 
 #include <iostream>
 
-#include "../Graph.hpp"
-#include "../UnitTestManager.hpp"
-#include "../u_tests.hpp"
+#include "u_tests.hpp"
+#include <spicacpp/Graph.hpp>
+#include <spicacpp/UnitTestManager.hpp>
 
 using namespace spica;
 

@@ -6,12 +6,12 @@
  * certainly not exhaustive but it is a start. Hopefully it is better than nothing.
  */
 
-#include "../environ.hpp"
+#include <spicacpp/environ.hpp>
 
 #include <iostream>
 
-#include "../RexxString.hpp"
 #include <process.h>
+#include <spicacpp/RexxString.hpp>
 #include <windows.h>
 
 spica::RexxString* A;

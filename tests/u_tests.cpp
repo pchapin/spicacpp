@@ -7,8 +7,8 @@
 #include <fstream>
 #include <iostream>
 
+#include "u_tests.hpp"
 #include <spicacpp/UnitTestManager.hpp>
-#include <spicacpp/u_tests.hpp>
 
 using namespace std;
 

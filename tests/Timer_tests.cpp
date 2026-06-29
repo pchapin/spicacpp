@@ -3,7 +3,7 @@
  *  \author  Peter Chapin <spicacality@kelseymountain.org>
  */
 
-#include "../environ.hpp"
+#include <spicacpp/environ.hpp>
 
 #include <iostream>
 
@@ -19,9 +19,9 @@
 #include <unistd.h>
 #endif
 
-#include "../Timer.hpp"
-#include "../UnitTestManager.hpp"
-#include "../u_tests.hpp"
+#include "u_tests.hpp"
+#include <spicacpp/Timer.hpp>
+#include <spicacpp/UnitTestManager.hpp>
 
 namespace {
 

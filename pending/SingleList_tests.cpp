@@ -3,10 +3,10 @@
  *  \author  Peter Chapin <spicacality@kelseymountain.org>
  */
 
-#include "../SingleList.hpp"
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
+#include <spicacpp/SingleList.hpp>
 #include <string>
 #include <utility>
 #include <vector>

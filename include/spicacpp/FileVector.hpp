@@ -175,7 +175,10 @@ namespace spica {
 
         void erase(iterator Position);
         void erase(iterator first, iterator last);
-        void clear() { item_count = 0 };
+        void clear()
+        {
+            item_count = 0;
+        }
         void resize(size_type n, const T& fill = T());
         void assign(size_type n, const T& new_item);
 

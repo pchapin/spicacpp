@@ -11,9 +11,9 @@
 #include <cstring>
 #include <sstream>
 
-#include "../RexxString.hpp"
-#include "../UnitTestManager.hpp"
-#include "../u_tests.hpp"
+#include "u_tests.hpp"
+#include <spicacpp/RexxString.hpp>
+#include <spicacpp/UnitTestManager.hpp>
 
 using namespace std;
 using namespace spica;

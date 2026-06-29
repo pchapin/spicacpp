@@ -7,9 +7,9 @@
 #include <functional>
 #include <iostream>
 
-#include "../UnitTestManager.hpp"
-#include "../sorters.hpp"
-#include "../u_tests.hpp"
+#include "u_tests.hpp"
+#include <spicacpp/UnitTestManager.hpp>
+#include <spicacpp/sorters.hpp>
 
 // Test cases can contain no more than this many elements.
 const int MAX_SIZE = 16;

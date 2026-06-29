@@ -8,13 +8,14 @@
 #ifndef SEMAPHORE_HPP
 #define SEMAPHORE_HPP
 
-#include <boost/thread.hpp>
+#include <condition_variable>
+#include <mutex>
 
 namespace spica {
 
     class Semaphore {
-        Semaphore(const Semaphore&);
-        Semaphore& operator=(const Semaphore&);
+        Semaphore(const Semaphore&) = delete;
+        Semaphore& operator=(const Semaphore&) = delete;
 
       public:
         //! Initializes a semaphore.
@@ -41,8 +42,8 @@ namespace spica {
         void down();
 
       private:
-        boost::mutex lock;
-        boost::condition_variable non_zero;
+        std::mutex lock;
+        std::condition_variable non_zero;
         int raw_count;
     };
 
